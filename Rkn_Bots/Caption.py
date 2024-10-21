@@ -5,6 +5,7 @@
 # Telegram Channel @RknDeveloper & @Rkn_Botz
 # Developer @RknDeveloperr
 
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
 from config import Rkn_Bots
 import asyncio, re, time, sys
