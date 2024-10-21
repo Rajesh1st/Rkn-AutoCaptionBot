@@ -22,7 +22,7 @@ class Rkn_Bots(object):
     PORT = int(os.environ.get("PORT", "8080"))
 
     # force subs channel ( required.. 😥)
-    FORCE_SUB = os.environ.get("FORCE_SUB", "Rkn_Botz") 
+    FORCE_SUB = os.environ.get("FORCE_SUB", "luxBotz") 
     
     # database config ( required.. 😥)
     DB_NAME = os.environ.get("DB_NAME", "AutoCaption_V024_Bot")     
