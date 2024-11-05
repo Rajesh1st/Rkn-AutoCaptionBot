@@ -255,19 +255,49 @@ async def auto_edit_caption(bot, message):
             obj = getattr(message, file_type, None)
             if obj and hasattr(obj, "file_name"):
                 file_name = obj.file_name
+                file_size = obj.file_size  # Get file size in bytes
+
+                # Convert file size to human-readable format
+                # ... (existing code for size conversion)
+
+                # Clean up the file name
                 file_name = (
                     re.sub(r"@\w+\s*", "", file_name)
                     .replace("_", " ")
                     .replace(".", " ")
                 )
+
+                # Extract additional file details
+                file_details = extract_file_details(file_name)
+
                 cap_dets = await chnl_ids.find_one({"chnl_id": chnl_id})
                 try:
                     if cap_dets:
                         cap = cap_dets["caption"]
-                        replaced_caption = cap.format(file_name=file_name)
+
+                        # Format the caption using all extracted and existing values
+                        replaced_caption = cap.format(
+                            file_name=file_name,
+                            file_size=file_size_text,
+                            file_caption=message.caption or "No caption",
+                            file_language=file_details["file_language"],
+                            year=file_details["year"],
+                            file_quality=file_details["file_quality"],
+                            file_duration=file_details["file_duration"]
+                        )
+
                         await message.edit(replaced_caption)
                     else:
-                        replaced_caption = Rkn_Bots.DEF_CAP.format(file_name=file_name)
+                        # If no custom caption is set, use the default caption
+                        replaced_caption = Rkn_Bots.DEF_CAP.format(
+                            file_name=file_name,
+                            file_size=file_size_text,
+                            file_caption=message.caption or "No caption",
+                            file_language=file_details["file_language"],
+                            year=file_details["year"],
+                            file_quality=file_details["file_quality"],
+                            file_duration=file_details["file_duration"]
+                        )
                         await message.edit(replaced_caption)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
