@@ -213,69 +213,70 @@ async def back_to_start_callback(bot, callback_query):
         ]]))
     
 
-# this command works on channels only 
+# Command to set the caption for the channel
 @Client.on_message(filters.command("set_caption") & filters.channel)
 async def setCaption(bot, message):
     if len(message.command) < 2:
         return await message.reply(
-            "Exam.: /set_caption <code> set your caption ( use {file_name} to show file name</code>)"
+            "Example: /set_caption <code>set your caption (use {file_name} to show file name)</code>"
         )
+
     chnl_id = message.chat.id
-    caption = (
-        message.text.split(" ", 1)[1] if len(message.text.split(" ", 1)) > 1 else None
-    )
-    chkData = await chnl_ids.find_one({"chnl_id": chnl_id})
-    if chkData:
-        await updateCap(chnl_id, caption)
-        return await message.reply(f"Successfully Updated Your Caption.\n\nYour New Caption: `{caption}`")
-    else:
-        await addCap(chnl_id, caption)
-        return await message.reply(f"Successfully Updated Your Caption.\n\nYour New Caption: `{caption}`")
+    caption = message.text.split(" ", 1)[1] if len(message.text.split(" ", 1)) > 1 else None
+    if caption is None:
+        return await message.reply("Please provide a valid caption.")
 
+    try:
+        chkData = await chnl_ids.find_one({"chnl_id": chnl_id})
 
-# this command works on channels only 
+        if chkData:
+            await updateCap(chnl_id, caption)
+            return await message.reply(f"Successfully Updated Your Caption.\n\nYour New Caption: `{caption}`")
+        else:
+            await addCap(chnl_id, caption)
+            return await message.reply(f"Successfully Added Your Caption.\n\nYour New Caption: `{caption}`")
+    except Exception as e:
+        return await message.reply(f"An error occurred while updating the caption: {e}")
+
+# Command to delete the caption from the channel
 @Client.on_message(filters.command(["delcaption", "del_caption", "delete_caption"]) & filters.channel)
 async def delCaption(_, msg):
     chnl_id = msg.chat.id
     try:
-        await chnl_ids.delete_one({"chnl_id": chnl_id})
-        return await msg.reply("<b>Successfully deleted your caption..From now i will use my default caption</b>")
+        result = await chnl_ids.delete_one({"chnl_id": chnl_id})
+        if result.deleted_count > 0:
+            return await msg.reply("<b>Successfully deleted your caption. I will now use my default caption.</b>")
+        else:
+            return await msg.reply("<b>No caption was found to delete.</b>")
     except Exception as e:
-        rkn = await msg.reply(f"Error: {e}")
+        rkn = await msg.reply(f"Error occurred: {e}")
         await asyncio.sleep(5)
         await rkn.delete()
-        return
 
-
+# Automatically edits the caption of the message based on stored caption
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
     chnl_id = message.chat.id
     if message.media:
         for file_type in ("video", "audio", "document", "voice"):
             obj = getattr(message, file_type, None)
+
             if obj and hasattr(obj, "file_name"):
                 file_name = obj.file_name
                 file_size = obj.file_size  # Get file size in bytes
-
-                # Convert file size to human-readable format
-                # ... (existing code for size conversion)
+                file_size_text = format_file_size(file_size)  # Assuming you have a function for this
 
                 # Clean up the file name
-                file_name = (
-                    re.sub(r"@\w+\s*", "", file_name)
-                    .replace("_", " ")
-                    .replace(".", " ")
-                )
+                file_name = re.sub(r"@\w+\s*", "", file_name).replace("_", " ").replace(".", " ")
 
                 # Extract additional file details
                 file_details = extract_file_details(file_name)
 
-                cap_dets = await chnl_ids.find_one({"chnl_id": chnl_id})
                 try:
+                    cap_dets = await chnl_ids.find_one({"chnl_id": chnl_id})
+
                     if cap_dets:
                         cap = cap_dets["caption"]
-
-                        # Format the caption using all extracted and existing values
                         replaced_caption = cap.format(
                             file_name=file_name,
                             file_size=file_size_text,
@@ -285,10 +286,8 @@ async def auto_edit_caption(bot, message):
                             file_quality=file_details["file_quality"],
                             file_duration=file_details["file_duration"]
                         )
-
                         await message.edit(replaced_caption)
                     else:
-                        # If no custom caption is set, use the default caption
                         replaced_caption = Rkn_Bots.DEF_CAP.format(
                             file_name=file_name,
                             file_size=file_size_text,
@@ -299,9 +298,13 @@ async def auto_edit_caption(bot, message):
                             file_duration=file_details["file_duration"]
                         )
                         await message.edit(replaced_caption)
+
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
+                except Exception as e:
+                    await message.reply(f"An error occurred while editing the caption: {e}")
+
     return
 
 # Rkn Developer 
