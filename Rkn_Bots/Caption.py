@@ -336,21 +336,26 @@ async def auto_edit_caption(bot, message):
                 # Remove words from the file_name based on the removable words list
                 for word in removable_words:
                     file_name = file_name.replace(word, "")
-                
+
+                # Process file_caption
+                file_caption = message.caption or "No caption"
+                for word in removable_words:
+                    file_caption = file_caption.replace(word, "")
+
                 try:
                     if cap_dets:
                         cap = cap_dets["caption"]
                         replaced_caption = cap.format(
                             file_name=file_name,
                             file_size=file_size_text,
-                            file_caption=message.caption or "No caption"
+                            file_caption=file_caption  # Apply word removal to the caption too
                         )
                         await message.edit(replaced_caption)
                     else:
                         replaced_caption = Rkn_Bots.DEF_CAP.format(
                             file_name=file_name,
                             file_size=file_size_text,
-                            file_caption=message.caption or "No caption"
+                            file_caption=file_caption  # Apply word removal to the caption
                         )
                         await message.edit(replaced_caption)
                 except FloodWait as e:
