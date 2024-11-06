@@ -251,26 +251,31 @@ import re
 async def add_buttons(bot, message):
     chnl_id = message.chat.id
 
+    # Split the command to get button data
     button_data = message.text.split(" ", 1)
     if len(button_data) < 2:
         return await message.reply("<b>Usage:</b> /add_button [Button Name][buttonurl:https://url]")
 
     buttons = button_data[1]
     button_list = []
-    button_items = buttons.split(",")
+    button_items = buttons.split(", ")
+    
     for item in button_items:
         match = re.match(r"([^]+)buttonurl:(https?://[^\s]+)", item.strip())
         if match:
-            button_name = match.group(1)
-            button_url = match.group(2)
+            button_name = match.group(1).strip()
+            button_url = match.group(2).strip()
             button_list.append(InlineKeyboardButton(button_name, url=button_url))
         else:
             return await message.reply("<b>Error:</b> Invalid button format. Example: [Button Name][buttonurl:https://url]")
 
+    # Convert button_list to list of lists for InlineKeyboardMarkup
+    button_markup = [button_list] if button_list else []
+
     try:
         await chnl_ids.update_one(
             {"chnl_id": chnl_id},
-            {"$set": {"buttons": button_list}},
+            {"$set": {"buttons": button_markup}},
             upsert=True
         )
         return await message.reply(f"<b>Buttons added successfully:</b>\n{', '.join([b.text for b in button_list])}")
