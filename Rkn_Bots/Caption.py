@@ -261,7 +261,7 @@ async def add_buttons(bot, message):
     button_items = buttons.split(", ")
     
     for item in button_items:
-        match = re.match(r"([^]+)buttonurl:(https?://[^\s]+)", item.strip())
+        match = re.match(r"(.*?)buttonurl:(https?://[^\s]+)", item.strip())
         if match:
             button_name = match.group(1).strip()
             button_url = match.group(2).strip()
@@ -270,7 +270,7 @@ async def add_buttons(bot, message):
             return await message.reply("<b>Error:</b> Invalid button format. Example: [Button Name][buttonurl:https://url]")
 
     # Convert button_list to list of lists for InlineKeyboardMarkup
-    button_markup = [button_list] if button_list else []
+    button_markup = InlineKeyboardMarkup([button_list])
 
     try:
         await chnl_ids.update_one(
