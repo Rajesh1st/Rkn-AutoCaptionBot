@@ -148,6 +148,9 @@ async def html_tags_callback(bot, callback_query):
 ➢ Mono Text
 ☞ <code>&lt;code&gt;{filename}&lt;/code&gt;</code>
 
+➢ Pre Text
+☞ <code>&lt;pre&gt;{filename}&lt;/pre&gt;</code>
+
 ➢ Hyperlink Text
 ☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{filename}&lt;/a&gt;</code>"""
 
@@ -429,7 +432,12 @@ async def auto_edit_caption(bot, message):
                 # Apply prefix and suffix to the caption
                 if prefix:
                     file_name = f"{prefix} {file_name}"
-                if suffix:
+                
+                # Adding suffix before '.mkv' if applicable
+                if suffix and file_name.endswith(".mkv"):
+                    base_name = file_name.rsplit(".mkv", 1)[0]
+                    file_name = f"{base_name} {suffix}.mkv"
+                elif suffix:
                     file_name = f"{file_name} {suffix}"
 
                 try:
@@ -452,7 +460,7 @@ async def auto_edit_caption(bot, message):
                     await asyncio.sleep(e.x)
                     continue
     return
-    
+
 # Rkn Developer 
 # Don't Remove Credit 😔
 # Telegram Channel @RknDeveloper & @Rkn_Botz
