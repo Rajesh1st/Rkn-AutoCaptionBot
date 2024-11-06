@@ -310,12 +310,16 @@ async def auto_edit_caption(bot, message):
                 else:
                     file_size_text = f"{file_size / 1024**3:.2f} GB"
 
-                # Remove usernames and replace underscores and dots
+                # Remove usernames and replace underscores and dots in file name
                 file_name = re.sub(r"@\w+\s*", "", file_name).replace("_", " ").replace(".", " ")
 
                 # Remove specified symbols if enabled
                 if remove_symbols:
                     file_name = re.sub(r"[¥¢©\;<#\$/*!?%^~]", "", file_name)
+                    # Apply symbol removal to the caption as well
+                    file_caption = re.sub(r"[¥¢©\;<#\$/*!?%^~]", "", message.caption or "No caption")
+                else:
+                    file_caption = message.caption or "No caption"
 
                 cap_dets = await chnl_ids.find_one({"chnl_id": chnl_id})
                 try:
@@ -324,14 +328,14 @@ async def auto_edit_caption(bot, message):
                         replaced_caption = cap.format(
                             file_name=file_name,
                             file_size=file_size_text,
-                            file_caption=message.caption or "No caption"
+                            file_caption=file_caption
                         )
                         await message.edit(replaced_caption)
                     else:
                         replaced_caption = Rkn_Bots.DEF_CAP.format(
                             file_name=file_name,
                             file_size=file_size_text,
-                            file_caption=message.caption or "No caption"
+                            file_caption=file_caption
                         )
                         await message.edit(replaced_caption)
                 except FloodWait as e:
