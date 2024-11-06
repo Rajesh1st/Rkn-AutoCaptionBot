@@ -242,57 +242,75 @@ async def del_caption(_, msg):
         await asyncio.sleep(5)
         await rkn.delete()
 
-# Command to enable symbol removal in file titles
-@Client.on_message(filters.command("rem_symbols") & filters.channel)
-async def enable_symbol_removal(bot, message):
-    chnl_id = message.chat.id
-    await chnl_ids.update_one(
-        {"chnl_id": chnl_id},
-        {"$set": {"remove_symbols": True}},
-        upsert=True
-    )
-    await message.reply("Symbol removal is now [Enabled ✅] for this channel.")
+import re
 
-# Command to disable symbol removal in file titles
-@Client.on_message(filters.command("rem_symbols_off") & filters.channel)
-async def disable_symbol_removal(bot, message):
+# Command to set removable words
+@Client.on_message(filters.command("rem_words") & filters.channel)
+async def rem_words(bot, message):
     chnl_id = message.chat.id
-    await chnl_ids.update_one(
-        {"chnl_id": chnl_id},
-        {"$set": {"remove_symbols": False}},
-        upsert=True
-    )
-    await message.reply("Symbol removal is now [Disabled ❌] for this channel.")
+    if len(message.command) < 2:
+        return await message.reply(
+            "<b>Provide words to remove</b>\n<u>Example:</u> ⬇️\n\n<code>/rem_words test mkv</code>"
+        )
+    
+    words_to_remove = message.text.split(" ", 1)[1]
+    words_list = re.findall(r'\S+', words_to_remove)  # Split into words
+    
+    # Save the words list in the database for the channel
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if chk_data:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$set": {"removable_words": words_list}}
+        )
+        return await message.reply(f"Words to remove set for this channel ✅: {', '.join(words_list)}")
+    else:
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "removable_words": words_list})
+        return await message.reply(f"Words to remove set for this channel ✅: {', '.join(words_list)}")
 
-# Updated /view command to show symbol removal status and caption template
+# Command to turn off removable words
+@Client.on_message(filters.command("rem_words_off") & filters.channel)
+async def rem_words_off(bot, message):
+    chnl_id = message.chat.id
+    
+    # Remove the removable words setting from the database
+    try:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$unset": {"removable_words": ""}}
+        )
+        return await message.reply("Removable words list has been reset for this channel.")
+    except Exception as e:
+        rkn = await message.reply(f"Error: {e}")
+        await asyncio.sleep(5)
+        await rkn.delete()
+
+# Command to view current caption and removable words
 @Client.on_message(filters.command("view") & filters.channel)
 async def view_caption(bot, message):
     chnl_id = message.chat.id
     chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
-    symbol_status = "[Enabled ✅]" if chk_data and chk_data.get("remove_symbols") else "[Disabled ❌]"
-    
-    # Display custom caption if available
-    if chk_data and "caption" in chk_data:
-        current_caption = chk_data["caption"]
-        await message.reply(
+    if chk_data:
+        current_caption = chk_data.get("caption", "No custom caption set.")
+        removable_words = chk_data.get("removable_words", None)
+        
+        if removable_words:
+            removable_words_text = ", ".join(removable_words)
+        else:
+            removable_words_text = "None"
+        
+        return await message.reply(
             f"<b>Channel Details</b>\n\n"
-            f"Remove Symbols !-(^>...: {symbol_status}\n\n"
-            f"<b>Caption Template:</b> `{current_caption}`"
+            f"<b>Removable Words:</b> {removable_words_text}\n\n"
+            f"<b>Caption Template:</b>\n{current_caption}"
         )
     else:
-        await message.reply(
-            f"<b>Channel Details</b>\n\n"
-            f"Remove Symbols !-(^>...: {symbol_status}\n\n"
-            "<b>Caption Template:</b> No custom caption set. Using the default caption."
-        )
+        return await message.reply("<b>No custom caption set. Using the default caption.</b>")
 
-# Automatically edit captions for files and apply symbol removal if enabled
+# Automatically edit captions for files by removing words from the title
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
     chnl_id = message.chat.id
-    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
-    remove_symbols = chk_data.get("remove_symbols") if chk_data else False
-    
     if message.media:
         for file_type in ("video", "audio", "document", "voice"):
             obj = getattr(message, file_type, None)
@@ -310,34 +328,31 @@ async def auto_edit_caption(bot, message):
                 else:
                     file_size_text = f"{file_size / 1024**3:.2f} GB"
 
-                # Remove usernames and replace underscores and dots
                 file_name = re.sub(r"@\w+\s*", "", file_name).replace("_", " ").replace(".", " ")
 
-                # Remove specified symbols if enabled
-                if remove_symbols:
-                    file_name = re.sub(r"[¥¢©\;<#\$/*!?%^~]", "", file_name)
-
                 cap_dets = await chnl_ids.find_one({"chnl_id": chnl_id})
+                removable_words = cap_dets.get("removable_words", [])
+
+                # Remove words from the file_name based on the removable words list
+                for word in removable_words:
+                    file_name = file_name.replace(word, "")
+                
                 try:
                     if cap_dets:
                         cap = cap_dets["caption"]
                         replaced_caption = cap.format(
-                            file_name=file_name,  # Cleaned-up file name
+                            file_name=file_name,
                             file_size=file_size_text,
-                            file_caption=message.caption or "No caption"  # The original caption
+                            file_caption=message.caption or "No caption"
                         )
-                        # Only edit if the caption has changed
-                        if message.caption != replaced_caption:
-                            await message.edit(replaced_caption)
+                        await message.edit(replaced_caption)
                     else:
                         replaced_caption = Rkn_Bots.DEF_CAP.format(
                             file_name=file_name,
                             file_size=file_size_text,
                             file_caption=message.caption or "No caption"
                         )
-                        # Only edit if the caption has changed
-                        if message.caption != replaced_caption:
-                            await message.edit(replaced_caption)
+                        await message.edit(replaced_caption)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
