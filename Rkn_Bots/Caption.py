@@ -242,21 +242,57 @@ async def del_caption(_, msg):
         await asyncio.sleep(5)
         await rkn.delete()
 
-# Command to view the current caption
+# Command to enable symbol removal in file titles
+@Client.on_message(filters.command("rem_symbols") & filters.channel)
+async def enable_symbol_removal(bot, message):
+    chnl_id = message.chat.id
+    await chnl_ids.update_one(
+        {"chnl_id": chnl_id},
+        {"$set": {"remove_symbols": True}},
+        upsert=True
+    )
+    await message.reply("Symbol removal is now [Enabled ✅] for this channel.")
+
+# Command to disable symbol removal in file titles
+@Client.on_message(filters.command("rem_symbols_off") & filters.channel)
+async def disable_symbol_removal(bot, message):
+    chnl_id = message.chat.id
+    await chnl_ids.update_one(
+        {"chnl_id": chnl_id},
+        {"$set": {"remove_symbols": False}},
+        upsert=True
+    )
+    await message.reply("Symbol removal is now [Disabled ❌] for this channel.")
+
+# Updated /view command to show symbol removal status and caption template
 @Client.on_message(filters.command("view") & filters.channel)
 async def view_caption(bot, message):
     chnl_id = message.chat.id
     chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
-    if chk_data:
+    symbol_status = "[Enabled ✅]" if chk_data and chk_data.get("remove_symbols") else "[Disabled ❌]"
+    
+    # Display custom caption if available
+    if chk_data and "caption" in chk_data:
         current_caption = chk_data["caption"]
-        return await message.reply(f"Your Current Caption:\n`{current_caption}`")
+        await message.reply(
+            f"<b>Channel Details</b>\n\n"
+            f"Remove Symbols !-(^>...: {symbol_status}\n\n"
+            f"<b>Caption Template:</b> `{current_caption}`"
+        )
     else:
-        return await message.reply("<b>No custom caption set. Using the default caption.</b>")
+        await message.reply(
+            f"<b>Channel Details</b>\n\n"
+            f"Remove Symbols !-(^>...: {symbol_status}\n\n"
+            "<b>Caption Template:</b> No custom caption set. Using the default caption."
+        )
 
-# Automatically edit captions for files
+# Automatically edit captions for files and apply symbol removal if enabled
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
     chnl_id = message.chat.id
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    remove_symbols = chk_data.get("remove_symbols") if chk_data else False
+    
     if message.media:
         for file_type in ("video", "audio", "document", "voice"):
             obj = getattr(message, file_type, None)
@@ -274,7 +310,12 @@ async def auto_edit_caption(bot, message):
                 else:
                     file_size_text = f"{file_size / 1024**3:.2f} GB"
 
+                # Remove usernames and replace underscores and dots
                 file_name = re.sub(r"@\w+\s*", "", file_name).replace("_", " ").replace(".", " ")
+
+                # Remove specified symbols if enabled
+                if remove_symbols:
+                    file_name = re.sub(r"[¥¢©\;<#\$/*!?%^~]", "", file_name)
 
                 cap_dets = await chnl_ids.find_one({"chnl_id": chnl_id})
                 try:
