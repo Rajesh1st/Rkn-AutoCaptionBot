@@ -242,73 +242,157 @@ async def del_caption(_, msg):
         await asyncio.sleep(5)
         await rkn.delete()
 
-import re
-
-# Assume chnl_ids is a database collection where we store data for each channel
-
-# Command to add buttons
-@Client.on_message(filters.command("add_button") & filters.channel)
-async def add_buttons(bot, message):
+# Command to set prefix in caption
+@Client.on_message(filters.command("set_prefix") & filters.channel)
+async def set_prefix(bot, message):
     chnl_id = message.chat.id
-
-    # Split the command to get button data
-    button_data = message.text.split(" ", 1)
-    if len(button_data) < 2:
-        return await message.reply("<b>Usage:</b> /add_button [Button Name][buttonurl:https://url]")
-
-    buttons = button_data[1]
-    button_list = []
-    button_items = buttons.split(", ")
     
-    for item in button_items:
-        match = re.match(r"(.*?)buttonurl:(https?://[^\s]+)", item.strip())
-        if match:
-            button_name = match.group(1).strip()
-            button_url = match.group(2).strip()
-            button_list.append(InlineKeyboardButton(button_name, url=button_url))
+    # Ensure the user has provided a prefix
+    if len(message.command) < 2:
+        return await message.reply("<b>Provide a prefix to set</b>\n<u>Example:</u> ⬇️\n\n<code>/set_prefix @rxbotz~</code>")
+    
+    # Extract prefix from the message
+    prefix = message.text.split(" ", 1)[1]
+    
+    # Save or update the prefix in the database
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if chk_data:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$set": {"prefix": prefix}}
+        )
+        return await message.reply(f"Prefix set for this channel ✅: {prefix}")
+    else:
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "prefix": prefix})
+        return await message.reply(f"Prefix set for this channel ✅: {prefix}")
+
+
+# Command to clear prefix from caption
+@Client.on_message(filters.command("clear_prefix") & filters.channel)
+async def clear_prefix(bot, message):
+    chnl_id = message.chat.id
+    
+    # Remove the prefix setting from the database
+    try:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$unset": {"prefix": ""}}
+        )
+        return await message.reply("Prefix has been cleared for this channel.")
+    except Exception as e:
+        rkn = await message.reply(f"Error: {e}")
+        await asyncio.sleep(5)
+        await rkn.delete()
+
+
+# Command to set suffix in caption
+@Client.on_message(filters.command("set_suffix") & filters.channel)
+async def set_suffix(bot, message):
+    chnl_id = message.chat.id
+    
+    # Ensure the user has provided a suffix
+    if len(message.command) < 2:
+        return await message.reply("<b>Provide a suffix to set</b>\n<u>Example:</u> ⬇️\n\n<code>/set_suffix ~@rxbotz</code>")
+    
+    # Extract suffix from the message
+    suffix = message.text.split(" ", 1)[1]
+    
+    # Save or update the suffix in the database
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if chk_data:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$set": {"suffix": suffix}}
+        )
+        return await message.reply(f"Suffix set for this channel ✅: {suffix}")
+    else:
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "suffix": suffix})
+        return await message.reply(f"Suffix set for this channel ✅: {suffix}")
+
+
+# Command to clear suffix from caption
+@Client.on_message(filters.command("clear_suffix") & filters.channel)
+async def clear_suffix(bot, message):
+    chnl_id = message.chat.id
+    
+    # Remove the suffix setting from the database
+    try:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$unset": {"suffix": ""}}
+        )
+        return await message.reply("Suffix has been cleared for this channel.")
+    except Exception as e:
+        rkn = await message.reply(f"Error: {e}")
+        await asyncio.sleep(5)
+        await rkn.delete()
+
+
+# Command to set removable words
+@Client.on_message(filters.command("rem_words") & filters.channel)
+async def rem_words(bot, message):
+    chnl_id = message.chat.id
+    if len(message.command) < 2:
+        return await message.reply(
+            "<b>Provide words to remove</b>\n<u>Example:</u> ⬇️\n\n<code>/rem_words test mkv</code>"
+        )
+    
+    words_to_remove = message.text.split(" ", 1)[1]
+    words_list = re.findall(r'\S+', words_to_remove)  # Split into words
+    
+    # Save the words list in the database for the channel
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if chk_data:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$set": {"removable_words": words_list}}
+        )
+        return await message.reply(f"Words to remove set for this channel ✅: {', '.join(words_list)}")
+    else:
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "removable_words": words_list})
+        return await message.reply(f"Words to remove set for this channel ✅: {', '.join(words_list)}")
+
+
+# Command to turn off removable words
+@Client.on_message(filters.command("rem_words_off") & filters.channel)
+async def rem_words_off(bot, message):
+    chnl_id = message.chat.id
+    
+    # Remove the removable words setting from the database
+    try:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$unset": {"removable_words": ""}}
+        )
+        return await message.reply("Removable words list has been reset for this channel.")
+    except Exception as e:
+        rkn = await message.reply(f"Error: {e}")
+        await asyncio.sleep(5)
+        await rkn.delete()
+
+
+# Command to view current caption and removable words
+@Client.on_message(filters.command("view") & filters.channel)
+async def view_caption(bot, message):
+    chnl_id = message.chat.id
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if chk_data:
+        current_caption = chk_data.get("caption", "No custom caption set.")
+        removable_words = chk_data.get("removable_words", None)
+        
+        if removable_words:
+            removable_words_text = ", ".join(removable_words)
         else:
-            return await message.reply("<b>Error:</b> Invalid button format. Example: [Button Name][buttonurl:https://url]")
-
-    # Convert button_list to list of lists for InlineKeyboardMarkup
-    button_markup = InlineKeyboardMarkup([button_list])
-
-    try:
-        await chnl_ids.update_one(
-            {"chnl_id": chnl_id},
-            {"$set": {"buttons": button_markup}},
-            upsert=True
+            removable_words_text = "None"
+        
+        return await message.reply(
+            f"<b>Channel Details</b>\n\n"
+            f"<b>Removable Words:</b> {removable_words_text}\n\n"
+            f"<b>Caption Template:</b>\n{current_caption}"
         )
-        return await message.reply(f"<b>Buttons added successfully:</b>\n{', '.join([b.text for b in button_list])}")
-    except Exception as e:
-        return await message.reply(f"<b>Error:</b> {e}")
+    else:
+        return await message.reply("<b>No custom caption set. Using the default caption.</b>")
 
-# Command to delete buttons
-@Client.on_message(filters.command("del_button") & filters.channel)
-async def delete_buttons(bot, message):
-    chnl_id = message.chat.id
-    try:
-        await chnl_ids.update_one(
-            {"chnl_id": chnl_id},
-            {"$unset": {"buttons": ""}}
-        )
-        return await message.reply("<b>Buttons removed successfully. No buttons will be shown in future posts.</b>")
-    except Exception as e:
-        return await message.reply(f"<b>Error:</b> {e}")
-
-# Automatically add buttons to media posts when they are sent
-@Client.on_message(filters.channel)
-async def auto_add_buttons(bot, message):
-    chnl_id = message.chat.id
-    if message.media:
-        channel_data = await chnl_ids.find_one({"chnl_id": chnl_id})
-        if channel_data and "buttons" in channel_data:
-            buttons = channel_data["buttons"]
-            markup = InlineKeyboardMarkup([buttons])
-            try:
-                await message.edit(reply_markup=markup)
-            except Exception as e:
-                await message.reply(f"<b>Error:</b> {e}")
-    return
 
 # Automatically edit captions for files by removing words from the title
 @Client.on_message(filters.channel)
@@ -319,7 +403,7 @@ async def auto_edit_caption(bot, message):
             obj = getattr(message, file_type, None)
             if obj and hasattr(obj, "file_name"):
                 file_name = obj.file_name
-                file_size = obj.file_size
+                file_size = obj.file_size  # Get file size in bytes
 
                 # Convert file size to human-readable format
                 if file_size < 1024:
@@ -334,16 +418,19 @@ async def auto_edit_caption(bot, message):
                 file_name = re.sub(r"@\w+\s*", "", file_name).replace("_", " ").replace(".", " ")
 
                 cap_dets = await chnl_ids.find_one({"chnl_id": chnl_id})
+                prefix = cap_dets.get("prefix", "")
+                suffix = cap_dets.get("suffix", "")
                 removable_words = cap_dets.get("removable_words", [])
 
                 # Remove words from the file_name based on the removable words list
                 for word in removable_words:
                     file_name = file_name.replace(word, "")
-
-                # Process file_caption
-                file_caption = message.caption or "No caption"
-                for word in removable_words:
-                    file_caption = file_caption.replace(word, "")
+                
+                # Apply prefix and suffix to the caption
+                if prefix:
+                    file_name = f"{prefix} {file_name}"
+                if suffix:
+                    file_name = f"{file_name} {suffix}"
 
                 try:
                     if cap_dets:
@@ -351,14 +438,14 @@ async def auto_edit_caption(bot, message):
                         replaced_caption = cap.format(
                             file_name=file_name,
                             file_size=file_size_text,
-                            file_caption=file_caption  # Apply word removal to the caption too
+                            file_caption=message.caption or "No caption"
                         )
                         await message.edit(replaced_caption)
                     else:
                         replaced_caption = Rkn_Bots.DEF_CAP.format(
                             file_name=file_name,
                             file_size=file_size_text,
-                            file_caption=file_caption  # Apply word removal to the caption
+                            file_caption=message.caption or "No caption"
                         )
                         await message.edit(replaced_caption)
                 except FloodWait as e:
