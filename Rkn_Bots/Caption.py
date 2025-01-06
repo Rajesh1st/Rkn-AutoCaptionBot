@@ -259,6 +259,69 @@ def extract_year(default_caption):
     match = re.search(r'\b(19\d{2}|20\d{2})\b', default_caption)
     return match.group(1) if match else None
 
+# Command to display HTML tags example
+@Client.on_message(filters.command("tags") & filters.channel)
+async def tags(bot, message):
+    html_tags_text = """🔰 Usᴇ ᴛʜɪs ʜᴛᴍʟ ᴛᴀɢs
+➢ Bold Text
+☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
+
+➢ Spoiler Text
+☞ <code>&lt;spoiler&gt;{filename}&lt;/spoiler&gt;</code>
+
+➢ Block Quote Text
+☞ <code>&lt;blockquote&gt;{filename}&lt;/blockquote&gt;</code>
+
+➢ Italic Text
+☞ <code>&lt;i&gt;{filename}&lt;/i&gt;</code>
+
+➢ Underline Text
+☞ <code>&lt;u&gt;{filename}&lt;/u&gt;</code>
+
+➢ Strike Text
+☞ <code>&lt;s&gt;{filename}&lt;/s&gt;</code>
+
+➢ Mono Text
+☞ <code>&lt;code&gt;{filename}&lt;/code&gt;</code>
+
+➢ Pre Text
+☞ <code>&lt;pre&gt;{filename}&lt;/pre&gt;</code>
+
+➢ Hyperlink Text
+☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{filename}&lt;/a&gt;</code>"""
+    
+    await message.reply(html_tags_text)
+
+# Command to list all available bot commands and their usage
+@Client.on_message(filters.command("Cmd") & filters.channel)
+async def list_commands(bot, message):
+    command_list = """
+<b>Available Bot Commands:</b>
+
+<code>/set_prefix</code> - This command is used to set the prefix for the channel's caption.
+
+<code>/clear_prefix</code> - Clears the set prefix.
+
+<code>/set_suffix</code> - This command is used to set the suffix for the channel's caption.
+
+<code>/clear_suffix</code> - Clears the set suffix.
+
+<code>/rem_words</code> - Set a list of words to be removed from the caption.
+
+<code>/rem_words_off</code> - Turns off the removable words feature for the channel.
+
+<code>/replace_words</code> - Replace a word with another in the channel caption.
+
+<code>/del_replace_word</code> - Disable the word replacement feature.
+
+<code>/view</code> - View the current caption, prefix, suffix, removable words, replace words, and more.
+
+<code>/tags</code> - View a list of HTML tags for text formatting (e.g., Bold, Italic, etc.).
+
+<code>/Cmd</code> - Get a list of available bot commands with descriptions.
+"""
+    await message.reply(command_list)
+
 # Command to set words replacement (original word -> replacement word)
 @Client.on_message(filters.command("replace_words") & filters.channel)
 async def replace_words(bot, message):
@@ -409,4 +472,4 @@ async def auto_edit_caption(bot, message):
                     await asyncio.sleep(e.x)
                     continue
     return
-    
+                
