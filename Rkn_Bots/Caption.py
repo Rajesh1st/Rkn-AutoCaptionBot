@@ -245,19 +245,32 @@ async def del_caption(_, msg):
         await asyncio.sleep(5)
         await rkn.delete()
 
+
+# Function to extract language from a caption
+def extract_language(default_caption):
+    language_pattern = r'\b(Hindi|English|Tamil|Telugu|Malayalam|Kannada|Hin)\b'  # Add more languages if needed
+    languages = set(re.findall(language_pattern, default_caption, re.IGNORECASE))
+    if not languages:
+        return "Hindi-English"
+    return ", ".join(sorted(languages, key=str.lower))
+
+
+# Function to extract year from a caption
+def extract_year(default_caption):
+    match = re.search(r'\b(19\d{2}|20\d{2})\b', default_caption)
+    return match.group(1) if match else None
+
+
 # Command to set prefix in caption
 @Client.on_message(filters.command("set_prefix") & filters.channel)
 async def set_prefix(bot, message):
     chnl_id = message.chat.id
     
-    # Ensure the user has provided a prefix
     if len(message.command) < 2:
         return await message.reply("<b>Provide a prefix to set</b>\n<u>Example:</u> ⬇️\n\n<code>/set_prefix @rxbotz~</code>")
     
-    # Extract prefix from the message
     prefix = message.text.split(" ", 1)[1]
     
-    # Save or update the prefix in the database
     chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
     if chk_data:
         await chnl_ids.update_one(
@@ -275,7 +288,6 @@ async def set_prefix(bot, message):
 async def clear_prefix(bot, message):
     chnl_id = message.chat.id
     
-    # Remove the prefix setting from the database
     try:
         await chnl_ids.update_one(
             {"chnl_id": chnl_id},
@@ -293,14 +305,11 @@ async def clear_prefix(bot, message):
 async def set_suffix(bot, message):
     chnl_id = message.chat.id
     
-    # Ensure the user has provided a suffix
     if len(message.command) < 2:
         return await message.reply("<b>Provide a suffix to set</b>\n<u>Example:</u> ⬇️\n\n<code>/set_suffix ~@rxbotz</code>")
     
-    # Extract suffix from the message
     suffix = message.text.split(" ", 1)[1]
     
-    # Save or update the suffix in the database
     chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
     if chk_data:
         await chnl_ids.update_one(
@@ -318,7 +327,6 @@ async def set_suffix(bot, message):
 async def clear_suffix(bot, message):
     chnl_id = message.chat.id
     
-    # Remove the suffix setting from the database
     try:
         await chnl_ids.update_one(
             {"chnl_id": chnl_id},
@@ -341,9 +349,8 @@ async def rem_words(bot, message):
         )
     
     words_to_remove = message.text.split(" ", 1)[1]
-    words_list = re.findall(r'\S+', words_to_remove)  # Split into words
+    words_list = re.findall(r'\S+', words_to_remove)
     
-    # Save the words list in the database for the channel
     chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
     if chk_data:
         await chnl_ids.update_one(
@@ -361,7 +368,6 @@ async def rem_words(bot, message):
 async def rem_words_off(bot, message):
     chnl_id = message.chat.id
     
-    # Remove the removable words setting from the database
     try:
         await chnl_ids.update_one(
             {"chnl_id": chnl_id},
@@ -374,14 +380,20 @@ async def rem_words_off(bot, message):
         await rkn.delete()
 
 
-# Command to view current caption and removable words
+# Command to view current caption, removable words, and language/year
 @Client.on_message(filters.command("view") & filters.channel)
 async def view_caption(bot, message):
     chnl_id = message.chat.id
     chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    
     if chk_data:
         current_caption = chk_data.get("caption", "No custom caption set.")
+        prefix = chk_data.get("prefix", "None")
+        suffix = chk_data.get("suffix", "None")
         removable_words = chk_data.get("removable_words", None)
+        
+        language = chk_data.get("language", "Not Set")
+        year = chk_data.get("year", "Not Set")
         
         if removable_words:
             removable_words_text = ", ".join(removable_words)
@@ -390,7 +402,11 @@ async def view_caption(bot, message):
         
         return await message.reply(
             f"<b>Channel Details</b>\n\n"
-            f"<b>Removable Words:</b> {removable_words_text}\n\n"
+            f"<b>Prefix:</b> {prefix}\n"
+            f"<b>Suffix:</b> {suffix}\n"
+            f"<b>Removable Words:</b> {removable_words_text}\n"
+            f"<b>Language:</b> {language}\n"
+            f"<b>Year:</b> {year}\n\n"
             f"<b>Caption Template:</b>\n{current_caption}"
         )
     else:
@@ -408,7 +424,6 @@ async def auto_edit_caption(bot, message):
                 file_name = obj.file_name
                 file_size = obj.file_size  # Get file size in bytes
 
-                # Convert file size to human-readable format
                 if file_size < 1024:
                     file_size_text = f"{file_size} B"
                 elif file_size < 1024**2:
@@ -424,38 +439,30 @@ async def auto_edit_caption(bot, message):
                 prefix = cap_dets.get("prefix", "")
                 suffix = cap_dets.get("suffix", "")
                 removable_words = cap_dets.get("removable_words", [])
+                current_caption = cap_dets.get("caption", "")
 
-                # Remove words from the file_name based on the removable words list
+                # Extract language and year
+                language = extract_language(file_name + " " + (message.caption or ""))
+                year = extract_year(file_name + " " + (message.caption or ""))
+
                 for word in removable_words:
                     file_name = file_name.replace(word, "")
                 
-                # Apply prefix and suffix to the caption
+                # Apply prefix and suffix
                 if prefix:
                     file_name = f"{prefix} {file_name}"
-                
-                # Adding suffix before '.mkv' if applicable
-                if suffix and file_name.endswith(".mkv"):
-                    base_name = file_name.rsplit(".mkv", 1)[0]
-                    file_name = f"{base_name} {suffix}.mkv"
-                elif suffix:
+                if suffix:
                     file_name = f"{file_name} {suffix}"
 
                 try:
-                    if cap_dets:
-                        cap = cap_dets["caption"]
-                        replaced_caption = cap.format(
-                            file_name=file_name,
-                            file_size=file_size_text,
-                            file_caption=message.caption or "No caption"
-                        )
-                        await message.edit(replaced_caption)
-                    else:
-                        replaced_caption = Rkn_Bots.DEF_CAP.format(
-                            file_name=file_name,
-                            file_size=file_size_text,
-                            file_caption=message.caption or "No caption"
-                        )
-                        await message.edit(replaced_caption)
+                    replaced_caption = current_caption.format(
+                        file_name=file_name,
+                        file_size=file_size_text,
+                        file_caption=message.caption or "No caption",
+                        language=language,
+                        year=year
+                    )
+                    await message.edit(replaced_caption)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
