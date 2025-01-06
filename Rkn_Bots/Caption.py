@@ -305,11 +305,14 @@ async def clear_prefix(bot, message):
 async def set_suffix(bot, message):
     chnl_id = message.chat.id
     
+    # Ensure the user has provided a suffix
     if len(message.command) < 2:
         return await message.reply("<b>Provide a suffix to set</b>\n<u>Example:</u> ⬇️\n\n<code>/set_suffix ~@rxbotz</code>")
     
+    # Extract suffix from the message
     suffix = message.text.split(" ", 1)[1]
     
+    # Save or update the suffix in the database
     chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
     if chk_data:
         await chnl_ids.update_one(
@@ -327,6 +330,7 @@ async def set_suffix(bot, message):
 async def clear_suffix(bot, message):
     chnl_id = message.chat.id
     
+    # Remove the suffix setting from the database
     try:
         await chnl_ids.update_one(
             {"chnl_id": chnl_id},
