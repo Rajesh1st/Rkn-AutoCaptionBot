@@ -248,7 +248,7 @@ async def del_caption(_, msg):
 
 # Use the provided language extraction function
 def extract_language(default_caption):
-    language_pattern = r'\b(Hindi|English|Tamil|Telugu|Malayalam|Kannada|Hin)\b'  # Extend with more languages if necessary
+    language_pattern = r'\b(Hindi|English|Tamil|Telugu|Malayalam|Gujarati|Kannada|Indonesian|Danish|Urdu|Korean|Chinese|Japanese|Hin|Tam|Tel|Ben|Guj|Mal|Mar|Kan|Eng|Kor|Chi|jap)\b'  # Extend with more languages if necessary
     languages = set(re.findall(language_pattern, default_caption, re.IGNORECASE))
     if not languages:
         return "Hindi-English"
