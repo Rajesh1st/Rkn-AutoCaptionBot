@@ -304,6 +304,35 @@ async def tags(bot, message):
     
     await message.reply(html_tags_text)
 
+# Command to list all available caption placeholders
+@Client.on_message(filters.command("placeholders") & filters.channel)
+async def list_placeholders(bot, message):
+    placeholders_text = """
+<b>Available Caption Placeholders:</b>
+
+➢ <code>{file_name}</code> - The name of the file (e.g., movie name, song title, etc.)
+
+➢ <code>{file_size}</code> - The size of the file in human-readable format (e.g., 2.5 MB, 3 GB, etc.)
+
+➢ <code>{file_caption}</code> - The caption of the file (may include word replacements and removals)
+
+➢ <code>{language}</code> - The language(s) extracted from the file name or caption (e.g., English, Hindi, etc.)
+
+➢ <code>{year}</code> - The year extracted from the file name or caption (e.g., 2021, 2019, etc.)
+
+➢ <code>{subtitles}</code> - Display "ESub" or "MSub" based on the presence of subtitles in the file name or caption. If neither is found, it will show nothing.
+
+➢ <code>{wish}</code> - A time-based greeting (e.g., Good Morning, Good Afternoon, Good Evening).
+
+➢ <code>{prefix}</code> - The custom prefix set for the channel.
+
+➢ <code>{suffix}</code> - The custom suffix set for the channel.
+
+<b>Note:</b> You can use these placeholders in your channel's caption template. 
+For example: <code>{prefix} {file_name} {year} {language} {subtitles} {suffix}</code>
+"""
+    await message.reply(placeholders_text)
+    
 # Command to list all available bot commands and their usage
 @Client.on_message(filters.command("Cmd") & filters.channel)
 async def list_commands(bot, message):
@@ -454,7 +483,7 @@ async def rem_words_off(bot, message):
         await rkn.delete()
 
 
-# Automatically edit captions for files by removing words, applying replacements, and adding {year} and {language}
+# Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, and {subtitles}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
     chnl_id = message.chat.id
@@ -515,8 +544,12 @@ async def auto_edit_caption(bot, message):
                 # Add time-based wish
                 wish = generate_wish()
 
-                # Get subtitle if exists
-                subtitles = message.caption or "No subtitles available"
+                # Subtitle Extraction: Check for "ESub" or "MSub"
+                subtitles = ""
+                if "ESub" in file_name or "ESub" in caption_text:
+                    subtitles = "ESub"
+                elif "MSub" in file_name or "MSub" in caption_text:
+                    subtitles = "MSub"
                 
                 try:
                     replaced_caption = current_caption.format(
@@ -526,11 +559,11 @@ async def auto_edit_caption(bot, message):
                         language=language,
                         year=year,
                         wish=wish,
-                        subtitles=subtitles
+                        subtitles=subtitles  # Include subtitles (ESub or MSub)
                     )
                     await message.edit(replaced_caption)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
     return
-    
+               
