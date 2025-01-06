@@ -246,145 +246,51 @@ async def del_caption(_, msg):
         await rkn.delete()
 
 
-# Function to extract language from a caption or file name
-def extract_language(default_caption):
-    language_pattern = r'\b(Hindi|English|Tamil|Telugu|Malayalam|Kannada|Hin)\b'  # Add more languages if needed
-    languages = set(re.findall(language_pattern, default_caption, re.IGNORECASE))
-    if not languages:
-        return "Hindi-English"
-    return ", ".join(sorted(languages, key=str.lower))
-
-
-# Function to extract year from a caption or file name
-def extract_year(default_caption):
-    match = re.search(r'\b(19\d{2}|20\d{2})\b', default_caption)
-    return match.group(1) if match else None
-
-
-# Command to set prefix in caption
-@Client.on_message(filters.command("set_prefix") & filters.channel)
-async def set_prefix(bot, message):
+# Command to set words replacement (original word -> replacement word)
+@Client.on_message(filters.command("replace_words") & filters.channel)
+async def replace_words(bot, message):
     chnl_id = message.chat.id
-    
-    if len(message.command) < 2:
-        return await message.reply("<b>Provide a prefix to set</b>\n<u>Example:</u> ⬇️\n\n<code>/set_prefix @rxbotz~</code>")
-    
-    prefix = message.text.split(" ", 1)[1]
-    
-    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
-    if chk_data:
-        await chnl_ids.update_one(
-            {"chnl_id": chnl_id},
-            {"$set": {"prefix": prefix}}
-        )
-        return await message.reply(f"Prefix set for this channel ✅: {prefix}")
-    else:
-        await chnl_ids.insert_one({"chnl_id": chnl_id, "prefix": prefix})
-        return await message.reply(f"Prefix set for this channel ✅: {prefix}")
-
-
-# Command to clear prefix from caption
-@Client.on_message(filters.command("clear_prefix") & filters.channel)
-async def clear_prefix(bot, message):
-    chnl_id = message.chat.id
-    
-    try:
-        await chnl_ids.update_one(
-            {"chnl_id": chnl_id},
-            {"$unset": {"prefix": ""}}
-        )
-        return await message.reply("Prefix has been cleared for this channel.")
-    except Exception as e:
-        rkn = await message.reply(f"Error: {e}")
-        await asyncio.sleep(5)
-        await rkn.delete()
-
-
-# Command to set suffix in caption
-@Client.on_message(filters.command("set_suffix") & filters.channel)
-async def set_suffix(bot, message):
-    chnl_id = message.chat.id
-    
-    # Ensure the user has provided a suffix
-    if len(message.command) < 2:
-        return await message.reply("<b>Provide a suffix to set</b>\n<u>Example:</u> ⬇️\n\n<code>/set_suffix ~@rxbotz</code>")
-    
-    # Extract suffix from the message
-    suffix = message.text.split(" ", 1)[1]
-    
-    # Save or update the suffix in the database
-    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
-    if chk_data:
-        await chnl_ids.update_one(
-            {"chnl_id": chnl_id},
-            {"$set": {"suffix": suffix}}
-        )
-        return await message.reply(f"Suffix set for this channel ✅: {suffix}")
-    else:
-        await chnl_ids.insert_one({"chnl_id": chnl_id, "suffix": suffix})
-        return await message.reply(f"Suffix set for this channel ✅: {suffix}")
-
-
-# Command to clear suffix from caption
-@Client.on_message(filters.command("clear_suffix") & filters.channel)
-async def clear_suffix(bot, message):
-    chnl_id = message.chat.id
-    
-    # Remove the suffix setting from the database
-    try:
-        await chnl_ids.update_one(
-            {"chnl_id": chnl_id},
-            {"$unset": {"suffix": ""}}
-        )
-        return await message.reply("Suffix has been cleared for this channel.")
-    except Exception as e:
-        rkn = await message.reply(f"Error: {e}")
-        await asyncio.sleep(5)
-        await rkn.delete()
-
-
-# Command to set removable words
-@Client.on_message(filters.command("rem_words") & filters.channel)
-async def rem_words(bot, message):
-    chnl_id = message.chat.id
-    if len(message.command) < 2:
+    if len(message.command) < 3:
         return await message.reply(
-            "<b>Provide words to remove</b>\n<u>Example:</u> ⬇️\n\n<code>/rem_words test mkv</code>"
+            "<b>Provide the word to replace and the word to replace it with</b>\n<u>Example:</u> ⬇️\n\n<code>/replace_words oldword newword</code>"
         )
     
-    words_to_remove = message.text.split(" ", 1)[1]
-    words_list = re.findall(r'\S+', words_to_remove)
+    original_word, replacement_word = message.text.split(" ", 2)[1:]
     
+    # Fetch existing data from the database
     chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
     if chk_data:
+        # Update word replacement mapping in the database
+        replace_words = chk_data.get("replace_words", [])
+        replace_words.append((original_word, replacement_word))
         await chnl_ids.update_one(
             {"chnl_id": chnl_id},
-            {"$set": {"removable_words": words_list}}
+            {"$set": {"replace_words": replace_words}}
         )
-        return await message.reply(f"Words to remove set for this channel ✅: {', '.join(words_list)}")
+        return await message.reply(f"Word replacement set for this channel ✅: {original_word} -> {replacement_word}")
     else:
-        await chnl_ids.insert_one({"chnl_id": chnl_id, "removable_words": words_list})
-        return await message.reply(f"Words to remove set for this channel ✅: {', '.join(words_list)}")
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "replace_words": [(original_word, replacement_word)]})
+        return await message.reply(f"Word replacement set for this channel ✅: {original_word} -> {replacement_word}")
 
 
-# Command to turn off removable words
-@Client.on_message(filters.command("rem_words_off") & filters.channel)
-async def rem_words_off(bot, message):
+# Command to turn off replace words
+@Client.on_message(filters.command("del_replace_word") & filters.channel)
+async def del_replace_word(bot, message):
     chnl_id = message.chat.id
     
     try:
         await chnl_ids.update_one(
             {"chnl_id": chnl_id},
-            {"$unset": {"removable_words": ""}}
+            {"$unset": {"replace_words": ""}}
         )
-        return await message.reply("Removable words list has been reset for this channel.")
+        return await message.reply("Word replacements list has been reset for this channel.")
     except Exception as e:
         rkn = await message.reply(f"Error: {e}")
         await asyncio.sleep(5)
         await rkn.delete()
 
 
-# Command to view current caption, removable words, and language/year
+# Command to view current caption settings
 @Client.on_message(filters.command("view") & filters.channel)
 async def view_caption(bot, message):
     chnl_id = message.chat.id
@@ -395,29 +301,31 @@ async def view_caption(bot, message):
         prefix = chk_data.get("prefix", "None")
         suffix = chk_data.get("suffix", "None")
         removable_words = chk_data.get("removable_words", None)
-        
-        language = chk_data.get("language", "Not Set")
-        year = chk_data.get("year", "Not Set")
+        replace_words = chk_data.get("replace_words", None)
         
         if removable_words:
             removable_words_text = ", ".join(removable_words)
         else:
             removable_words_text = "None"
         
+        if replace_words:
+            replace_words_text = ", ".join([f"{original} -> {replacement}" for original, replacement in replace_words])
+        else:
+            replace_words_text = "None"
+        
         return await message.reply(
             f"<b>Channel Details</b>\n\n"
             f"<b>Prefix:</b> {prefix}\n"
             f"<b>Suffix:</b> {suffix}\n"
             f"<b>Removable Words:</b> {removable_words_text}\n"
-            f"<b>Language:</b> {language}\n"
-            f"<b>Year:</b> {year}\n\n"
+            f"<b>Replace Words:</b> {replace_words_text}\n\n"
             f"<b>Caption Template:</b>\n{current_caption}"
         )
     else:
         return await message.reply("<b>No custom caption set. Using the default caption.</b>")
 
 
-# Automatically edit captions for files by removing words from the title
+# Automatically edit captions for files by removing words, applying replacements, and adding {year} and {language}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
     chnl_id = message.chat.id
@@ -428,6 +336,7 @@ async def auto_edit_caption(bot, message):
                 file_name = obj.file_name
                 file_size = obj.file_size  # Get file size in bytes
 
+                # Convert file size to human-readable format
                 if file_size < 1024:
                     file_size_text = f"{file_size} B"
                 elif file_size < 1024**2:
@@ -443,19 +352,27 @@ async def auto_edit_caption(bot, message):
                 prefix = cap_dets.get("prefix", "")
                 suffix = cap_dets.get("suffix", "")
                 removable_words = cap_dets.get("removable_words", [])
+                replace_words = cap_dets.get("replace_words", [])
                 current_caption = cap_dets.get("caption", "")
 
-                language = extract_language(file_name)  # Extract language from file name
-                year = extract_year(file_name)  # Extract year from file name
+                # Process replace words
+                for original, replacement in replace_words:
+                    file_name = file_name.replace(original, replacement)
 
+                # Remove words based on the removable words list
                 for word in removable_words:
                     file_name = file_name.replace(word, "")
                 
+                # Apply prefix and suffix to the caption
                 if prefix:
                     file_name = f"{prefix} {file_name}"
                 
                 if suffix:
                     file_name = f"{file_name} {suffix}"
+
+                # Extract language and year from the file name
+                language = extract_language(file_name)  # Assume you have a function to extract language
+                year = extract_year(file_name)  # Assume you have a function to extract year
 
                 try:
                     replaced_caption = current_caption.format(
