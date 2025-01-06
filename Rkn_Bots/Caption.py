@@ -246,7 +246,7 @@ async def del_caption(_, msg):
         await rkn.delete()
 
 
-# Function to extract language from a caption
+# Function to extract language from a caption or file name
 def extract_language(default_caption):
     language_pattern = r'\b(Hindi|English|Tamil|Telugu|Malayalam|Kannada|Hin)\b'  # Add more languages if needed
     languages = set(re.findall(language_pattern, default_caption, re.IGNORECASE))
@@ -255,7 +255,7 @@ def extract_language(default_caption):
     return ", ".join(sorted(languages, key=str.lower))
 
 
-# Function to extract year from a caption
+# Function to extract year from a caption or file name
 def extract_year(default_caption):
     match = re.search(r'\b(19\d{2}|20\d{2})\b', default_caption)
     return match.group(1) if match else None
@@ -441,16 +441,15 @@ async def auto_edit_caption(bot, message):
                 removable_words = cap_dets.get("removable_words", [])
                 current_caption = cap_dets.get("caption", "")
 
-                # Extract language and year
-                language = extract_language(file_name + " " + (message.caption or ""))
-                year = extract_year(file_name + " " + (message.caption or ""))
+                language = extract_language(file_name)  # Extract language from file name
+                year = extract_year(file_name)  # Extract year from file name
 
                 for word in removable_words:
                     file_name = file_name.replace(word, "")
                 
-                # Apply prefix and suffix
                 if prefix:
                     file_name = f"{prefix} {file_name}"
+                
                 if suffix:
                     file_name = f"{file_name} {suffix}"
 
@@ -467,8 +466,4 @@ async def auto_edit_caption(bot, message):
                     await asyncio.sleep(e.x)
                     continue
     return
-
-# Rkn Developer 
-# Don't Remove Credit 😔
-# Telegram Channel @RknDeveloper & @Rkn_Botz
-# Developer @RknDeveloperr
+    
