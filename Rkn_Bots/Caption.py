@@ -489,9 +489,14 @@ async def rem_words_off(bot, message):
 
 # Function to format duration in HH:MM:SS
 def format_duration(duration_seconds):
+    # Ensure that duration is an integer and not a floating-point number
+    duration_seconds = int(duration_seconds)  # Cast to integer to discard decimals
+    
     hours = duration_seconds // 3600
     minutes = (duration_seconds % 3600) // 60
     seconds = duration_seconds % 60
+    
+    # Return the formatted duration
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 # Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, and {duration}
@@ -586,4 +591,4 @@ async def auto_edit_caption(bot, message):
                     await asyncio.sleep(e.x)
                     continue
     return
-    
+                
