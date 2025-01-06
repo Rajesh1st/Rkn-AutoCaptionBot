@@ -246,6 +246,19 @@ async def del_caption(_, msg):
         await rkn.delete()
 
 
+# Use the provided language extraction function
+def extract_language(default_caption):
+    language_pattern = r'\b(Hindi|English|Tamil|Telugu|Malayalam|Kannada|Hin)\b'  # Extend with more languages if necessary
+    languages = set(re.findall(language_pattern, default_caption, re.IGNORECASE))
+    if not languages:
+        return "Hindi-English"
+    return ", ".join(sorted(languages, key=str.lower))
+
+# Use the provided year extraction function
+def extract_year(default_caption):
+    match = re.search(r'\b(19\d{2}|20\d{2})\b', default_caption)
+    return match.group(1) if match else None
+
 # Command to set words replacement (original word -> replacement word)
 @Client.on_message(filters.command("replace_words") & filters.channel)
 async def replace_words(bot, message):
@@ -355,10 +368,10 @@ async def auto_edit_caption(bot, message):
                 replace_words = cap_dets.get("replace_words", [])
                 current_caption = cap_dets.get("caption", "")
 
-                # Process replace words
+                # Process word replacements
                 for original, replacement in replace_words:
                     file_name = file_name.replace(original, replacement)
-
+                
                 # Remove words based on the removable words list
                 for word in removable_words:
                     file_name = file_name.replace(word, "")
@@ -371,14 +384,23 @@ async def auto_edit_caption(bot, message):
                     file_name = f"{file_name} {suffix}"
 
                 # Extract language and year from the file name
-                language = extract_language(file_name)  # Assume you have a function to extract language
-                year = extract_year(file_name)  # Assume you have a function to extract year
+                language = extract_language(file_name)  # Extract language from file name
+                year = extract_year(file_name)  # Extract year from file name
+
+                # Process word replacements in the caption as well (for {file_caption})
+                caption_text = message.caption or "No caption"
+                for original, replacement in replace_words:
+                    caption_text = caption_text.replace(original, replacement)
+
+                # Remove words from the caption based on removable words list
+                for word in removable_words:
+                    caption_text = caption_text.replace(word, "")
 
                 try:
                     replaced_caption = current_caption.format(
                         file_name=file_name,
                         file_size=file_size_text,
-                        file_caption=message.caption or "No caption",
+                        file_caption=caption_text,  # Updated caption with replacements and removals
                         language=language,
                         year=year
                     )
