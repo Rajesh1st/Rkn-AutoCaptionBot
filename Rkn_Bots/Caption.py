@@ -8,6 +8,7 @@
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
 from config import Rkn_Bots
+from datetime import datetime
 import asyncio, re, time, sys
 from .database import total_user, getid, delete, addCap, updateCap, insert, chnl_ids
 from pyrogram.errors import FloodWait
@@ -245,8 +246,7 @@ async def del_caption(_, msg):
         await asyncio.sleep(5)
         await rkn.delete()
 
-
-# Use the provided language extraction function
+# Extract language from the caption
 def extract_language(default_caption):
     language_pattern = r'\b(Hindi|English|Tamil|Telugu|Malayalam|Gujarati|Kannada|Indonesian|Danish|Urdu|Korean|Chinese|Japanese|Hin|Tam|Tel|Ben|Guj|Mal|Mar|Kan|Eng|Kor|Chi|jap)\b'  # Extend with more languages if necessary
     languages = set(re.findall(language_pattern, default_caption, re.IGNORECASE))
@@ -254,10 +254,22 @@ def extract_language(default_caption):
         return "Hindi-English"
     return ", ".join(sorted(languages, key=str.lower))
 
-# Use the provided year extraction function
+# Extract year from the caption
 def extract_year(default_caption):
     match = re.search(r'\b(19\d{2}|20\d{2})\b', default_caption)
     return match.group(1) if match else None
+
+# Generate greetings based on the current time
+def generate_wish():
+    current_hour = datetime.now().hour
+    if 5 <= current_hour < 12:
+        return "Good Morning"
+    elif 12 <= current_hour < 17:
+        return "Good Afternoon"
+    elif 17 <= current_hour < 21:
+        return "Good Evening"
+    else:
+        return "Good Night"
 
 # Command to display HTML tags example
 @Client.on_message(filters.command("tags") & filters.channel)
@@ -500,17 +512,25 @@ async def auto_edit_caption(bot, message):
                 for word in removable_words:
                     caption_text = caption_text.replace(word, "")
 
+                # Add time-based wish
+                wish = generate_wish()
+
+                # Get subtitle if exists
+                subtitles = message.caption or "No subtitles available"
+                
                 try:
                     replaced_caption = current_caption.format(
                         file_name=file_name,
                         file_size=file_size_text,
                         file_caption=caption_text,  # Updated caption with replacements and removals
                         language=language,
-                        year=year
+                        year=year,
+                        wish=wish,
+                        subtitles=subtitles
                     )
                     await message.edit(replaced_caption)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
     return
-                
+    
