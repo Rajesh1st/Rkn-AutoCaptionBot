@@ -401,6 +401,47 @@ async def view_caption(bot, message):
         return await message.reply("<b>No custom caption set. Using the default caption.</b>")
 
 
+# Command to set removable words
+@Client.on_message(filters.command("rem_words") & filters.channel)
+async def rem_words(bot, message):
+    chnl_id = message.chat.id
+    if len(message.command) < 2:
+        return await message.reply(
+            "<b>Provide words to remove</b>\n<u>Example:</u> ⬇️\n\n<code>/rem_words test mkv</code>"
+        )
+    
+    words_to_remove = message.text.split(" ", 1)[1]
+    words_list = re.findall(r'\S+', words_to_remove)
+    
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if chk_data:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$set": {"removable_words": words_list}}
+        )
+        return await message.reply(f"Words to remove set for this channel ✅: {', '.join(words_list)}")
+    else:
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "removable_words": words_list})
+        return await message.reply(f"Words to remove set for this channel ✅: {', '.join(words_list)}")
+
+
+# Command to turn off removable words
+@Client.on_message(filters.command("rem_words_off") & filters.channel)
+async def rem_words_off(bot, message):
+    chnl_id = message.chat.id
+    
+    try:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$unset": {"removable_words": ""}}
+        )
+        return await message.reply("Removable words list has been reset for this channel.")
+    except Exception as e:
+        rkn = await message.reply(f"Error: {e}")
+        await asyncio.sleep(5)
+        await rkn.delete()
+
+
 # Automatically edit captions for files by removing words, applying replacements, and adding {year} and {language}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
