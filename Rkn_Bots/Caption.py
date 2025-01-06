@@ -324,11 +324,13 @@ async def list_placeholders(bot, message):
 
 ➢ <code>{wish}</code> - A time-based greeting (e.g., Good Morning, Good Afternoon, Good Evening).
 
+➢ <code>{duration}</code> - The total duration of the media in HH:MM:SS format (e.g., 01:50:34).
+
 ➢ <code>{prefix}</code> - The custom prefix set for the channel.
 
 ➢ <code>{suffix}</code> - The custom suffix set for the channel.
 
-<b>Note:</b> You can use these placeholders in your channel's caption template. 
+<b>Note:</b> Yᴏᴜ ᴄᴀɴ ᴄᴜsᴛᴏᴍɪᴢᴇ ʏᴏᴜʀ ᴄᴀᴘᴛɪᴏɴ ᴛᴇᴍᴘʟᴀᴛᴇ ʙʏ ᴜsɪɴɢ ᴛʜᴇsᴇ ᴘʟᴀᴄᴇʜᴏʟᴅᴇʀs ᴛᴏ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ғɪʟʟ ɪɴ ᴅᴇᴛᴀɪʟs ᴀʙᴏᴜᴛ ᴛʜᴇ ғɪʟᴇ.
 For example: <code>{prefix} {file_name} {year} {language} {subtitles} {suffix}</code>
 """
     await message.reply(placeholders_text)
@@ -360,6 +362,8 @@ async def list_commands(bot, message):
 <code>/tags</code> - View a list of HTML tags for text formatting (e.g., Bold, Italic, etc.).
 
 <code>/Cmd</code> - Get a list of available bot commands with descriptions.
+
+<code>/placeholders</code> - View a list of available placeholders and their usage in captions. 
 """
     await message.reply(command_list)
 
@@ -483,7 +487,14 @@ async def rem_words_off(bot, message):
         await rkn.delete()
 
 
-# Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, and {subtitles}
+# Function to format duration in HH:MM:SS
+def format_duration(duration_seconds):
+    hours = duration_seconds // 3600
+    minutes = (duration_seconds % 3600) // 60
+    seconds = duration_seconds % 60
+    return f"{hours:02}:{minutes:02}:{seconds:02}"
+
+# Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, and {duration}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
     chnl_id = message.chat.id
@@ -493,6 +504,9 @@ async def auto_edit_caption(bot, message):
             if obj and hasattr(obj, "file_name"):
                 file_name = obj.file_name
                 file_size = obj.file_size  # Get file size in bytes
+
+                # Get duration (in seconds) for video or audio
+                duration_seconds = getattr(obj, "duration", None)
 
                 # Convert file size to human-readable format
                 if file_size < 1024:
@@ -551,6 +565,11 @@ async def auto_edit_caption(bot, message):
                 elif "MSub" in file_name or "MSub" in caption_text:
                     subtitles = "MSub"
                 
+                # Get the duration in HH:MM:SS format if available
+                duration_text = ""
+                if duration_seconds:
+                    duration_text = format_duration(duration_seconds)
+
                 try:
                     replaced_caption = current_caption.format(
                         file_name=file_name,
@@ -559,11 +578,12 @@ async def auto_edit_caption(bot, message):
                         language=language,
                         year=year,
                         wish=wish,
-                        subtitles=subtitles  # Include subtitles (ESub or MSub)
+                        subtitles=subtitles,  # Include subtitles (ESub or MSub)
+                        duration=duration_text  # Add the duration placeholder
                     )
                     await message.edit(replaced_caption)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
     return
-               
+    
