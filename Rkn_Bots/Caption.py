@@ -9,6 +9,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
 from config import Rkn_Bots
 from Script import script
+from script import ABOUT_TXT  # Import updated ABOUT text
 import os
 from datetime import datetime
 import asyncio, re, time, sys
@@ -123,7 +124,7 @@ async def close_html_tags_callback(bot, callback_query):
 @Client.on_callback_query(filters.regex('about_button'))
 async def about_callback(bot, callback_query):
     await callback_query.message.edit_text(
-        script.ABOUT_TEXT,  # Use the updated ABOUT text from script.py
+        ABOUT_TXT,  # Use the updated ABOUT text from script.py
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
             InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url='https://t.me/RxBotz')
