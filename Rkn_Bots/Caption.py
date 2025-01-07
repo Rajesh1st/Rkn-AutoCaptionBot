@@ -395,11 +395,11 @@ async def add_button(bot, message):
     command_args = message.text.split(" ", 2)
     
     if len(command_args) < 3:
-        await message.reply("Please provide the button title and URL. Example: /add_button [Button Name] [buttonurl:https://t.me/RxBotz]")
+        await message.reply("Please provide the button title and URL. Example: /add_button [testing] [buttonurl:https://t.me/Silicon_Bot_Update]")
         return
     
-    button_name = command_args[1]
-    button_url = command_args[2].replace("buttonurl:", "")  # Remove the 'buttonurl:' part from the URL
+    button_name = command_args[1].strip("[]")  # Extract the button name without brackets
+    button_url = command_args[2].replace("buttonurl:", "").strip()  # Remove the 'buttonurl:' part from the URL and any extra spaces
     
     # Validate the URL
     if not re.match(r'^https?://', button_url):
