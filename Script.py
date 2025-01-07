@@ -30,7 +30,8 @@ class script(object):
 •> **/del_suffix - ᴅᴇʟᴇᴛᴇ ʏᴏᴜʀ sᴜғғɪx.**
 </blockquote>
 """
-    
+
+
     # Updated ABOUT text
 ABOUT_TXT = """<b>╔════❰ ᴀᴜᴛᴏ ᴄᴀᴘᴛɪᴏɴ ʙᴏᴛ ❱═❍⊱❁
 ║╭━━━━━━━━━━━━━━━➣
