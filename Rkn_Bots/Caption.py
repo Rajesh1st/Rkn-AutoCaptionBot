@@ -8,6 +8,10 @@
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
 from config import Rkn_Bots
+from script import html_tags_text
+from script import command_list
+from script import placeholders_text
+from script import HELP_TXT
 from Script import script
 import Script
 import os
@@ -35,7 +39,7 @@ async def all_db_users_here(client, message):
         f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: {total_chnls}\n"
         "</pre>"
     )
-    await rkn.edit(text=text, parse_mode="html")
+    await rkn.edit(text=text, parse_mode="HTML")
 
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["broadcast"]))
 async def broadcast(bot, message):
