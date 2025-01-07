@@ -383,10 +383,8 @@ def extract_quality(title):
     # Return the first found quality term (assuming a title would only have one quality descriptor)
     return found_quality[0]
 
-# Store the global button (you can store this in a database if needed)
-global_button = None
+global_button = None  # Global variable to store the button
 
-# Command to add a button globally
 @Client.on_message(filters.command("add_button"))
 async def add_button(bot, message):
     global global_button
@@ -394,37 +392,31 @@ async def add_button(bot, message):
     # Get the command arguments (button name and URL)
     command_args = message.text.split(" ", 2)
     
+    # If there are not enough arguments, ask for the correct format
     if len(command_args) < 3:
-        await message.reply("Please provide the button title and URL. Example: /add_button [testing] [buttonurl:https://t.me/Silicon_Bot_Update]")
+        await message.reply("Please provide the button title and URL. Example: /add_button [testing] [https://t.me/Silicon_Bot_Update]")
         return
     
+    # Extract button name and URL from the arguments
     button_name = command_args[1].strip("[]")  # Extract the button name without brackets
-    button_url = command_args[2].replace("buttonurl:", "").strip()  # Remove the 'buttonurl:' part from the URL and any extra spaces
+    button_url = command_args[2].strip()  # Remove any spaces around the URL
     
-    # Validate the URL
+    # Validate the URL format
     if not re.match(r'^https?://', button_url):
         await message.reply("Invalid URL. Please provide a valid URL starting with 'http://' or 'https://'.")
         return
     
-    # Create the inline keyboard with the button
+    # Create the inline keyboard button
     button = InlineKeyboardButton(button_name, url=button_url)
     global_button = InlineKeyboardMarkup([[button]])  # Store the button globally
     
     await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
 
-# Command to remove the global button
-@Client.on_message(filters.command("del_button"))
-async def del_button(bot, message):
-    global global_button
-    
-    # Clear the global button
-    global_button = None
-    
-    await message.reply("The global button has been removed. It will no longer be applied to media in the channel.")
-
 # Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
+    global global_button  # Use the global button
+
     chnl_id = message.chat.id
     if message.media:
         for file_type in ("video", "audio", "document", "voice"):
@@ -511,12 +503,12 @@ async def auto_edit_caption(bot, message):
                         subtitles=subtitles,  # Include subtitles (ESub or MSub)
                         duration=duration_text  # Add the duration placeholder
                     )
-                    # Edit the message caption with the updated caption
                     await message.edit(replaced_caption)
-                    
-                    # Apply the global button if it exists
+
+                    # Add the button if it's set globally
                     if global_button:
                         await message.edit(reply_markup=global_button)
+
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
