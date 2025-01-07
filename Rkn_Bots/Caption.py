@@ -122,11 +122,8 @@ async def close_html_tags_callback(bot, callback_query):
 # Handle the "ABOUT" button callback
 @Client.on_callback_query(filters.regex('about_button'))
 async def about_callback(bot, callback_query):
-    bot_username = (await bot.get_me()).username  # Fetch bot username
-    ABOUT_TXT = get_about_text(bot_username)     # Use refactored function for about text
-    
     await callback_query.message.edit_text(
-        ABOUT_TXT,
+        ABOUT_TXT,  # Use the updated ABOUT text from script.py
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
             InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url='https://t.me/RxBotz')
