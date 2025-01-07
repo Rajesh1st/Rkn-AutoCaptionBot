@@ -8,10 +8,10 @@
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
 from config import Rkn_Bots
-from script import html_tags_text
-from script import command_list
-from script import placeholders_text
-from script import HELP_TXT
+from Script import html_tags_text
+from Script import command_list
+from Script import placeholders_text
+from Script import HELP_TXT
 from Script import script
 import Script
 import os
