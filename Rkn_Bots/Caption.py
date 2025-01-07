@@ -73,17 +73,20 @@ async def start_cmd(bot, message):
     await insert(user_id)
 
     # Assuming Rkn_Bots.RKN_PIC is a valid photo URL or file ID
-    await message.reply_photo(
-        photo=Rkn_Bots.RKN_PIC,
-        caption=f"ʜᴇʏ, {message.from_user.mention}\n\nI ᴀᴍ ᴀ ᴀᴅᴠᴀɴᴄᴇᴅ ᴀᴜᴛᴏᴄᴀᴘᴛɪᴏɴʙᴏᴛ. ᴠᴇʀʏ sɪᴍᴘʟᴇ ᴛᴏ ᴜsᴇ ᴍᴇ. ᴊᴜsᴛ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴍᴀᴋᴇ ᴍᴇ ᴀɴ ᴀᴅᴍɪɴ ᴏᴠᴇʀ ᴛʜᴇʀᴇ. ᴛʜᴇɴ sᴇᴛ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ Bʏ Usɪɴɢ <mono>/set</mono> & <mono>/setCaption</mono> Cᴏᴍᴍᴀɴᴅ ғᴏʀ ᴇɴᴀʙʟɪɴɢ ᴀᴜᴛᴏᴄᴀᴘᴛɪᴏɴ.\n\n"
-                f"<blockquote>ɴᴏᴛᴇ: Mᴀᴋᴇ sᴜʀᴇ I ᴀᴍ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴡɪᴛʜ ᴀᴅᴍɪɴ ʀɪɡʜᴛs.</blockquote>",
-        reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton('➕ ADD TO CHANNEL ➕', url=f"https://t.me/{bot.me.username}?startchannel&admin=change_info+post_messages+edit_messages+delete_messages+restrict_members+invite_users+pin_messages+manage_topics+manage_video_chats+anonymous+manage_chat+post_stories+edit_stories+delete_stories")
-        ], [
-            InlineKeyboardButton('🍃 HELP', callback_data='help_button'),
-            InlineKeyboardButton('🍁 ABOUT', callback_data='about_button')
-        ]])
-    )
+await message.reply_photo(
+    photo=Rkn_Bots.RKN_PIC,
+    caption=f"ʜᴇʏ, {message.from_user.mention}\n\nI ᴀᴍ ᴀ ᴀᴅᴠᴀɴᴄᴇᴅ ᴀᴜᴛᴏᴄᴀᴘᴛɪᴏɴʙᴏᴛ. ᴠᴇʀʏ sɪᴍᴘʟᴇ ᴛᴏ ᴜsᴇ ᴍᴇ. ᴊᴜsᴛ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴍᴀᴋᴇ ᴍᴇ ᴀɴ ᴀᴅᴍɪɴ ᴏᴠᴇʀ ᴛʜᴇʀᴇ. ᴛʜᴇɴ sᴇᴛ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ Bʏ Usɪɴɢ <mono>/set</mono> & <mono>/setCaption</mono> Cᴏᴍᴍᴀɴᴅ ғᴏʀ ᴇɴᴀʙʟɪɴɢ ᴀᴜᴛᴏᴄᴀᴘᴛɪᴏɴ.\n\n"
+            f"<blockquote>ɴᴏᴛᴇ: Mᴀᴋᴇ sᴜʀᴇ I ᴀᴍ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴡɪᴛʜ ᴀᴅᴍɪɴ ʀɪɢʜᴛs.</blockquote>",
+    reply_markup=InlineKeyboardMarkup([[
+        InlineKeyboardButton('➕️ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ➕️', url=f"https://t.me/{bot.me.username}?startchannel&admin=change_info+post_messages+edit_messages+delete_messages+restrict_members+invite_users+pin_messages+manage_topics+manage_video_chats+anonymous+manage_chat+post_stories+edit_stories+delete_stories")
+    ], [
+        InlineKeyboardButton('Hᴇʟᴘ', callback_data='help_button'),
+        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about_button')
+    ], [
+        InlineKeyboardButton("🌐 Uᴘᴅᴀᴛᴇ", url=f"https://t.me/Silicon_Bot_Update"),
+        InlineKeyboardButton("📜 Sᴜᴘᴘᴏʀᴛ", url=r"https://t.me/Silicon_Botz")
+    ]])
+)
 
 # Handle the "HELP" button callback
 @Client.on_callback_query(filters.regex('help_button'))
@@ -92,8 +95,8 @@ async def help_callback(bot, callback_query):
         script.HELP_TXT,  # Use the help text from script.py
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton('🏷️ HTML TAGS', callback_data='html_tags_button'),
-            InlineKeyboardButton('🔙 Back', callback_data='start')
+            InlineKeyboardButton('Hᴛᴍʟ ᴛᴀɢ', callback_data='html_tags_button'),
+            InlineKeyboardButton('↩ ʙᴀᴄᴋ', callback_data='start')
         ], [
             InlineKeyboardButton('❌ Close', callback_data='close_help')
         ]])
@@ -106,7 +109,7 @@ async def html_tags_callback(bot, callback_query):
         script.HTML_TAGS_TXT,  # Use the HTML tags text from script.py
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton('🔙 Back', callback_data='help_button'),
+            InlineKeyboardButton('↩ ʙᴀᴄᴋ', callback_data='help_button'),
             InlineKeyboardButton('❌ Close', callback_data='close_html_tags')
         ]])
     )
@@ -127,15 +130,13 @@ async def about_callback(bot, callback_query):
         ABOUT_TXT,  # Use the updated ABOUT text from script.py
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url='https://t.me/RxBotz')
-        ], [
-            InlineKeyboardButton('🔙 Back', callback_data='start'),
+            InlineKeyboardButton('↩ ʙᴀᴄᴋ', callback_data='start'),
             InlineKeyboardButton('❌ Close', callback_data='close_about')
         ]])
     )
 
 # Handle "CLOSE" action for ABOUT button
-@Client.on_callback_query(filters.regex('close_about_text'))
+@Client.on_callback_query(filters.regex('close_about'))
 async def close_about_callback(bot, callback_query):
     await callback_query.message.delete()
 
@@ -147,10 +148,13 @@ async def back_to_start_callback(bot, callback_query):
         caption=f"ʜᴇʏ, {callback_query.from_user.mention}\n\nI ᴀᴍ ᴀ ᴀᴅᴠᴀɴᴄᴇᴅ ᴀᴜᴛᴏᴄᴀᴘᴛɪᴏɴʙᴏᴛ. ᴠᴇʀʏ sɪᴍᴘʟᴇ ᴛᴏ ᴜsᴇ ᴍᴇ. ᴊᴜsᴛ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴍᴀᴋᴇ ᴍᴇ ᴀɴ ᴀᴅᴍɪɴ ᴏᴠᴇʀ ᴛʜᴇʀᴇ. ᴛʜᴇɴ sᴇᴛ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ Bʏ Usɪɴɢ <mono>/set</mono> & <mono>/setCaption</mono> Cᴏᴍᴍᴀɴᴅ ғᴏʀ ᴇɴᴀʙʟɪɴɢ ᴀᴜᴛᴏᴄᴀᴘᴛɪᴏɴ.\n\n"
                 f"<blockquote>ɴᴏᴛᴇ: Mᴀᴋᴇ sᴜʀᴇ I ᴀᴍ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ ᴡɪᴛʜ ᴀᴅᴍɪɴ ʀɪɢʜᴛs.</blockquote>",
         reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton('➕ ADD TO CHANNEL ➕', url=f"https://t.me/{bot_username}?startchannel&admin=change_info+post_messages+edit_messages+delete_messages+restrict_members+invite_users+pin_messages+manage_topics+manage_video_chats+anonymous+manage_chat+post_stories+edit_stories+delete_stories")
+            InlineKeyboardButton('➕️ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ➕️', url=f"https://t.me/{bot_username}?startchannel&admin=change_info+post_messages+edit_messages+delete_messages+restrict_members+invite_users+pin_messages+manage_topics+manage_video_chats+anonymous+manage_chat+post_stories+edit_stories+delete_stories")
         ], [
-            InlineKeyboardButton('🍃 HELP', callback_data='help_button'),
-            InlineKeyboardButton('🍁 ABOUT', callback_data='about_button')
+            InlineKeyboardButton('Hᴇʟᴘ', callback_data='help_button'),
+            InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about_button')
+        ], [
+        InlineKeyboardButton("🌐 Uᴘᴅᴀᴛᴇ", url=f"https://t.me/Silicon_Bot_Update"),
+        InlineKeyboardButton("📜 Sᴜᴘᴘᴏʀᴛ", url=r"https://t.me/Silicon_Botz")
         ]]))
     
 
