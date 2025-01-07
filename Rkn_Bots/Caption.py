@@ -104,36 +104,37 @@ async def help_callback(bot, callback_query):
     await callback_query.message.edit_text(
         script.HELP_TXT,  # Help text from script.py
         disable_web_page_preview=True,
-        reply_markup = InlineKeyboardMarkup([
-    [
-        InlineKeyboardButton('• ᴄᴀᴘᴛɪᴏɴ', callback_data='caption_button'),
-        InlineKeyboardButton('• ʙᴜᴛᴛᴏɴ', callback_data='button_button')
-    ],
-    [
-        InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴍᴏᴠᴇ', callback_data='remove_word_button')
-    ],
-    [
-        InlineKeyboardButton('• ᴜsᴇʀɴᴀᴍᴇ', callback_data='username_button'),
-        InlineKeyboardButton('• ᴜʀʟ', callback_data='url_button')
-    ],
-    [
-        InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴘʟᴀᴄᴇ', callback_data='replace_word_button')
-    ],
-    [
-        InlineKeyboardButton('• ʀᴇsᴇᴛ', callback_data='reset_button'),
-        InlineKeyboardButton('• ᴅᴇᴛᴀɪʟ', callback_data='detail_button')
-    ],
-    [
-        InlineKeyboardButton('• ʜᴛᴍʟ ᴛᴀɢ ᴏʀ ғᴏɴᴛs', callback_data='html_tag_or_fonts_button')
-    ],
-    [
-        InlineKeyboardButton('• Pʀᴇғɪx', callback_data='prefix_button'),
-        InlineKeyboardButton('• sᴜғғɪx', callback_data='suffix_button')
-    ],
-    [
-        InlineKeyboardButton('🔙 Back', callback_data='start')
-    ]
-])
+        reply_markup=InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton('• ᴄᴀᴘᴛɪᴏɴ', callback_data='caption_button'),
+                InlineKeyboardButton('• ʙᴜᴛᴛᴏɴ', callback_data='button_button')
+            ],
+            [
+                InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴍᴏᴠᴇ', callback_data='remove_word_button')
+            ],
+            [
+                InlineKeyboardButton('• ᴜsᴇʀɴᴀᴍᴇ', callback_data='username_button'),
+                InlineKeyboardButton('• ᴜʀʟ', callback_data='url_button')
+            ],
+            [
+                InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴘʟᴀᴄᴇ', callback_data='replace_word_button')
+            ],
+            [
+                InlineKeyboardButton('• ʀᴇsᴇᴛ', callback_data='reset_button'),
+                InlineKeyboardButton('• ᴅᴇᴛᴀɪʟ', callback_data='detail_button')
+            ],
+            [
+                InlineKeyboardButton('• ʜᴛᴍʟ ᴛᴀɢ ᴏʀ ғᴏɴᴛs', callback_data='html_tag_or_fonts_button')
+            ],
+            [
+                InlineKeyboardButton('• Pʀᴇғɪx', callback_data='prefix_button'),
+                InlineKeyboardButton('• sᴜғғɪx', callback_data='suffix_button')
+            ],
+            [
+                InlineKeyboardButton('🔙 Back', callback_data='start')
+            ]
+        ])  # Missing closing parenthesis added here
+    )
 
 # Handle the "ABOUT" button callback
 @Client.on_callback_query(filters.regex('about_button'))
