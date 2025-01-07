@@ -9,6 +9,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
 from config import Rkn_Bots
 from Script import script
+import asyncio
 import os
 from datetime import datetime
 import asyncio, re, time, sys
@@ -382,6 +383,45 @@ def extract_quality(title):
     # Return the first found quality term (assuming a title would only have one quality descriptor)
     return found_quality[0]
 
+# Store the global button (you can store this in a database if needed)
+global_button = None
+
+# Command to add a button globally
+@Client.on_message(filters.command("add_button"))
+async def add_button(bot, message):
+    global global_button
+    
+    # Get the command arguments (button name and URL)
+    command_args = message.text.split(" ", 2)
+    
+    if len(command_args) < 3:
+        await message.reply("Please provide the button title and URL. Example: /add_button [Button Name] [buttonurl:https://t.me/RxBotz]")
+        return
+    
+    button_name = command_args[1]
+    button_url = command_args[2].replace("buttonurl:", "")  # Remove the 'buttonurl:' part from the URL
+    
+    # Validate the URL
+    if not re.match(r'^https?://', button_url):
+        await message.reply("Invalid URL. Please provide a valid URL starting with 'http://' or 'https://'.")
+        return
+    
+    # Create the inline keyboard with the button
+    button = InlineKeyboardButton(button_name, url=button_url)
+    global_button = InlineKeyboardMarkup([[button]])  # Store the button globally
+    
+    await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
+
+# Command to remove the global button
+@Client.on_message(filters.command("del_button"))
+async def del_button(bot, message):
+    global global_button
+    
+    # Clear the global button
+    global_button = None
+    
+    await message.reply("The global button has been removed. It will no longer be applied to media in the channel.")
+
 # Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
@@ -471,9 +511,13 @@ async def auto_edit_caption(bot, message):
                         subtitles=subtitles,  # Include subtitles (ESub or MSub)
                         duration=duration_text  # Add the duration placeholder
                     )
+                    # Edit the message caption with the updated caption
                     await message.edit(replaced_caption)
+                    
+                    # Apply the global button if it exists
+                    if global_button:
+                        await message.edit(reply_markup=global_button)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
     return
-                
