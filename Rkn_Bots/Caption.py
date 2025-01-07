@@ -120,7 +120,7 @@ async def close_html_tags_callback(bot, callback_query):
     await callback_query.message.delete()
 
 # Handle the "ABOUT" button callback
-@Client.on_callback_query(filters.regex('about_text_button'))
+@Client.on_callback_query(filters.regex('about_button'))
 async def about_callback(bot, callback_query):
     await callback_query.message.edit_text(
         script.ABOUT_TEXT,  # Use the updated ABOUT text from script.py
