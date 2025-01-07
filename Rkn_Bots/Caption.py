@@ -120,10 +120,10 @@ async def close_html_tags_callback(bot, callback_query):
     await callback_query.message.delete()
 
 # Handle the "ABOUT" button callback
-@Client.on_callback_query(filters.regex('about_button'))
+@Client.on_callback_query(filters.regex('about_text_button'))
 async def about_callback(bot, callback_query):
     await callback_query.message.edit_text(
-        ABOUT_TXT,  # Use the updated ABOUT text from script.py
+        script.ABOUT_TEXT,  # Use the updated ABOUT text from script.py
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
             InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url='https://t.me/RxBotz')
@@ -134,7 +134,7 @@ async def about_callback(bot, callback_query):
     )
 
 # Handle "CLOSE" action for ABOUT button
-@Client.on_callback_query(filters.regex('close_about'))
+@Client.on_callback_query(filters.regex('close_about_text'))
 async def close_about_callback(bot, callback_query):
     await callback_query.message.delete()
 
