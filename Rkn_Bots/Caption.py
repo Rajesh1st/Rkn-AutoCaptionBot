@@ -9,21 +9,23 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
 from config import Rkn_Bots
 from Script import script
+import Script
 import os
 from datetime import datetime
 import asyncio, re, time, sys
 from .database import total_user, getid, delete, addCap, updateCap, insert, chnl_ids
 from pyrogram.errors import FloodWait
 
-@Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN)  & filters.command(["rknusers"]))
+@Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["rknusers"]))
 async def all_db_users_here(client, message):
     start_t = time.time()
     rkn = await message.reply_text("Processing...")
     uptime = time.strftime("%Hh%Mm%Ss", time.gmtime(time.time() - client.uptime))    
     total_users = await total_user()
+    total_chnls = await total_channels()  # Get the total number of channels
     end_t = time.time()
     time_taken_s = (end_t - start_t) * 1000
-    await rkn.edit(text=f"**--Bot Processed--** \n\n**Bot Started UpTime:** {uptime} \n**Bot Current Ping:** `{time_taken_s:.3f} ᴍꜱ` \n**All Bot Users:** `{total_users}`")
+    await rkn.edit(text=f"**--Bot Processed--** \n\n**Bot Started UpTime:** {uptime} \n**Bot Current Ping:** `{time_taken_s:.3f} ᴍꜱ` \n**All Bot Users:** `{total_users}` \n**Total Channels:** `{total_chnls}`")
 
 
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["broadcast"]))
