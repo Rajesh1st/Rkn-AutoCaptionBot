@@ -8,12 +8,7 @@
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
 from config import Rkn_Bots
-from Script import html_tags_text
-from Script import command_list
-from Script import placeholders_text
-from Script import HELP_TXT
-from Script import script
-import Script
+from Script import script, html_tags_text, command_list, placeholders_text, HELP_TXT
 import os
 from datetime import datetime
 import asyncio, re, time, sys
