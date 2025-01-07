@@ -9,7 +9,6 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
 from config import Rkn_Bots
 from Script import script
-from Script import ABOUT_TXT  # Import updated ABOUT text
 import os
 from datetime import datetime
 import asyncio, re, time, sys
@@ -353,7 +352,22 @@ def format_duration(duration_seconds):
     # Return the formatted duration
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-# Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, and {duration}
+# Function to extract quality from the media title
+def extract_quality(title):
+    # Define possible quality terms
+    quality_terms = ["480p", "720p", "1080p", "1440p", "2K", "4K", "8K", "HD", "HDR", "SD"]
+    
+    # Search for any of these terms in the title
+    found_quality = [quality for quality in quality_terms if quality in title.upper()]
+
+    # If no quality is found, return "Unknown"
+    if not found_quality:
+        return "Unknown"
+    
+    # Return the first found quality term (assuming a title would only have one quality descriptor)
+    return found_quality[0]
+
+# Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
     chnl_id = message.chat.id
@@ -401,9 +415,10 @@ async def auto_edit_caption(bot, message):
                 if suffix:
                     file_name = f"{file_name} {suffix}"
 
-                # Extract language and year from the file name
+                # Extract language, year, and quality from the file name
                 language = extract_language(file_name)  # Extract language from file name
                 year = extract_year(file_name)  # Extract year from file name
+                quality = extract_quality(file_name)  # Extract quality from file name
 
                 # Process word replacements in the caption as well (for {file_caption})
                 caption_text = message.caption or "No caption"
@@ -436,6 +451,7 @@ async def auto_edit_caption(bot, message):
                         file_caption=caption_text,  # Updated caption with replacements and removals
                         language=language,
                         year=year,
+                        quality=quality,  # Include quality
                         wish=wish,
                         subtitles=subtitles,  # Include subtitles (ESub or MSub)
                         duration=duration_text  # Add the duration placeholder
