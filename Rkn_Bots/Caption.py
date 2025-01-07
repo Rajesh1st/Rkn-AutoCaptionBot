@@ -25,7 +25,17 @@ async def all_db_users_here(client, message):
     total_chnls = await total_channels()  # Get the total number of channels
     end_t = time.time()
     time_taken_s = (end_t - start_t) * 1000
-    await rkn.edit(text=f"**--Bot Processed--** \n\n**Bot Started UpTime:** {uptime} \n**Bot Current Ping:** `{time_taken_s:.3f} ᴍꜱ` \n**All Bot Users:** `{total_users}` \n**Total Channels:** `{total_chnls}`")
+
+    text = (
+        "<blockquote>𝙼𝚢 𝚂𝚝𝚊𝚝𝚜</blockquote>\n"
+        "<pre>\n"
+        f"‣ Bot ᴜᴘᴛɪᴍᴇ: {uptime}\n"
+        f"‣ Bot ᴘɪɴɢ: {time_taken_s:.3f} ᴍꜱ\n"
+        f"‣ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\n"
+        f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: {total_chnls}\n"
+        "</pre>"
+    )
+    await rkn.edit(text=text, parse_mode="html")
 
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["broadcast"]))
 async def broadcast(bot, message):
@@ -94,28 +104,36 @@ async def help_callback(bot, callback_query):
     await callback_query.message.edit_text(
         script.HELP_TXT,  # Help text from script.py
         disable_web_page_preview=True,
-        reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton('• ᴄᴀᴘᴛɪᴏɴ', callback_data='caption_button'),
-            InlineKeyboardButton('• ʙᴜᴛᴛᴏɴ', callback_data='button_button')
-        ], [
-            InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴍᴏᴠᴇ', callback_data='remove_word_button'),
-            InlineKeyboardButton('• ᴜsᴇʀɴᴀᴍᴇ', callback_data='username_button')
-        ], [
-            InlineKeyboardButton('• ᴜʀʟ', callback_data='url_button'),
-            InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴘʟᴀᴄᴇ', callback_data='replace_word_button')
-        ], [
-            InlineKeyboardButton('• ʀᴇsᴇᴛ', callback_data='reset_button'),
-            InlineKeyboardButton('• ᴅᴇᴛᴀɪʟ', callback_data='detail_button')
-        ], [
-            InlineKeyboardButton('• ʜᴛᴍʟ ᴛᴀɢ', callback_data='html_tag_button'),
-            InlineKeyboardButton('• ғᴏɴᴛs', callback_data='fonts_button')
-        ], [
-            InlineKeyboardButton('• Pʀᴇғɪx', callback_data='prefix_button'),
-            InlineKeyboardButton('• sᴜғғɪx', callback_data='suffix_button')
-        ], [
-            InlineKeyboardButton('🔙 Back', callback_data='start')
-        ]])
-    )
+        reply_markup = InlineKeyboardMarkup([
+    [
+        InlineKeyboardButton('• ᴄᴀᴘᴛɪᴏɴ', callback_data='caption_button'),
+        InlineKeyboardButton('• ʙᴜᴛᴛᴏɴ', callback_data='button_button')
+    ],
+    [
+        InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴍᴏᴠᴇ', callback_data='remove_word_button')
+    ],
+    [
+        InlineKeyboardButton('• ᴜsᴇʀɴᴀᴍᴇ', callback_data='username_button'),
+        InlineKeyboardButton('• ᴜʀʟ', callback_data='url_button')
+    ],
+    [
+        InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴘʟᴀᴄᴇ', callback_data='replace_word_button')
+    ],
+    [
+        InlineKeyboardButton('• ʀᴇsᴇᴛ', callback_data='reset_button'),
+        InlineKeyboardButton('• ᴅᴇᴛᴀɪʟ', callback_data='detail_button')
+    ],
+    [
+        InlineKeyboardButton('• ʜᴛᴍʟ ᴛᴀɢ ᴏʀ ғᴏɴᴛs', callback_data='html_tag_or_fonts_button')
+    ],
+    [
+        InlineKeyboardButton('• Pʀᴇғɪx', callback_data='prefix_button'),
+        InlineKeyboardButton('• sᴜғғɪx', callback_data='suffix_button')
+    ],
+    [
+        InlineKeyboardButton('🔙 Back', callback_data='start')
+    ]
+])
 
 # Handle the "ABOUT" button callback
 @Client.on_callback_query(filters.regex('about_button'))
