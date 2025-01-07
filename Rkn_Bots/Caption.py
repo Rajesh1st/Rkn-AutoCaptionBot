@@ -24,17 +24,13 @@ async def all_db_users_here(client, message):
     total_chnls = await total_channels()  # Get the total number of channels
     end_t = time.time()
     time_taken_s = (end_t - start_t) * 1000
-
-    text = (
-        "<blockquote>𝙼𝚢 𝚂𝚝𝚊𝚝𝚜</blockquote>\n"
-        "<pre>\n"
-        f"‣ Bot ᴜᴘᴛɪᴍᴇ: {uptime}\n"
-        f"‣ Bot ᴘɪɴɢ: {time_taken_s:.3f} ᴍꜱ\n"
-        f"‣ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\n"
-        f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: {total_chnls}\n"
-        "</pre>"
-    )
-    await rkn.edit(text=text, parse_mode="HTML")
+    await rkn.edit(text=f"**--Bot Processed--** \n\n**> 𝙼𝚢 𝚂𝚝𝚊𝚝𝚜**\n\n"
+                        "```text\n"
+                        f"‣ Bot ᴜᴘᴛɪᴍᴇ: {uptime}\n"
+                        f"‣ Bot ᴘɪɴɢ: `{time_taken_s:.3f} ᴍꜱ`\n"
+                        f"‣ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: `{total_users}`\n"
+                        f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: `{total_chnls}`\n"
+                        "```")
 
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["broadcast"]))
 async def broadcast(bot, message):
@@ -227,17 +223,17 @@ def generate_wish():
 # Command to display HTML tags example
 @Client.on_message(filters.command("tags") & filters.channel)
 async def tags(bot, message):
-    await message.reply(html_tags_text)
+    await message.reply(HTML_TAGS_TEXT)
 
 # Command to list all available caption placeholders
 @Client.on_message(filters.command("placeholders") & filters.channel)
 async def list_placeholders(bot, message):
-    await message.reply(placeholders_text)
+    await message.reply(PLACEHOLDERS_TEXT)
 
 # Command to list all available bot commands and their usage
 @Client.on_message(filters.command("Cmd") & filters.channel)
 async def list_commands(bot, message):
-    await message.reply(command_list)
+    await message.reply(COMMAND_LIST)
 
 # Command to set words replacement (original word -> replacement word)
 @Client.on_message(filters.command("replace_words") & filters.channel)
