@@ -25,6 +25,11 @@ async def total_user():
     user = await users.count_documents({})
     return user
 
+# Total Channels
+async def total_channels():
+    channels = await chnl_ids.count_documents({})
+    return channels
+
 async def getid():
     all_users = users.find({})
     return all_users
