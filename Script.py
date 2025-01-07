@@ -1,9 +1,7 @@
 import os
 
 class script(object):
-    HELP_TXT = """ •••[( 𝘎𝘦𝘵 𝘏𝘦𝘭𝘱 )]•••
-
-<blockquote>❗ ᴀʟᴇʀᴛ ❗</blockquote>
+    HELP_TXT = """<blockquote>❗ ᴀʟᴇʀᴛ ❗</blockquote>
 
         • ᴀᴅᴅ ᴛʜɪs ʙᴏᴛ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴡɪᴛʜ ғᴜʟʟ ᴀᴅᴍɪɴ ʀɪɢʜᴛs.
         • ᴜsᴇ ᴄᴏᴍᴍᴀɴᴅ ɢɪᴠᴇ ʙᴇʟᴏᴡ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.
