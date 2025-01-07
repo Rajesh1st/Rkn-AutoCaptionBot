@@ -3,70 +3,34 @@ import os
 class script(object):
     HELP_TXT = """ •••[( 𝘎𝘦𝘵 𝘏𝘦𝘭𝘱 )]•••
 
-    ❗ 𝗔𝗹𝗲𝗿𝘁 ❗
-    • Aᴅᴅ ᴛʜɪs ʙᴏᴛ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴡɪᴛʜ ғᴜʟʟ ᴀᴅᴍɪɴ ʀɪɢʜᴛs.
-    • Usᴇ ᴄᴏᴍᴍᴀɴᴅ ɢɪᴠᴇ ʙᴇʟᴏᴡ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.
-    • Tʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ ᴏɴʟʏ ᴡᴏʀᴋ ɪɴ ᴄʜᴀɴɴᴇʟ.
-    • Kᴇᴇᴘ ғɪʟᴇ ᴡɪᴛʜᴏᴜᴛ ғᴏʀᴡᴀʀᴅ ᴛᴀɢ.
+<blockquote>❗ ᴀʟᴇʀᴛ ❗</blockquote>
 
-     » cᴏᴍᴍᴀɴᴅ
-     
-    •> /set - Sᴇᴛ Nᴇᴡ Cᴀᴘᴛɪᴏɴ Iɴ ʏᴏᴜʀ Cʜᴀɴɴᴇʟ
-    •> /del - Dᴇʟᴇᴛᴇ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ
-    •> /view - Vɪᴇᴡ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ
-    •> /cmd - ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴄʜᴀɴɴᴇʟ ᴛᴏ Gᴇᴛ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs
-    •> /placeholder - ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴄʜᴀɴɴᴇʟ ᴛᴏ Vɪᴇᴡ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ᴘʟᴀᴄᴇʜᴏʟᴅᴇʀs ᴀɴᴅ ᴛʜᴇɪʀ ᴜsᴀɢᴇ ɪɴ ᴄᴀᴘᴛɪᴏɴs
+        • ᴀᴅᴅ ᴛʜɪs ʙᴏᴛ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴡɪᴛʜ ғᴜʟʟ ᴀᴅᴍɪɴ ʀɪɢʜᴛs.
+        • ᴜsᴇ ᴄᴏᴍᴍᴀɴᴅ ɢɪᴠᴇ ʙᴇʟᴏᴡ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.
+        • ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅs ᴏɴʟʏ ᴡᴏʀᴋ ɪɴ ᴄʜᴀɴɴᴇʟ.
+        • ᴋᴇᴇᴘ ғɪʟᴇ ᴡɪᴛʜᴏᴜᴛ ғᴏʀᴡᴀʀᴅ ᴛᴀɢ.
 
- » vᴀʀɪᴀʙʟᴇs
-
-`{file_name}` = Oʀɪɢɪɴᴀʟ Fɪʟᴇ Nᴀᴍᴇ.
-`{file_caption}` = Rᴇᴀʟ Cᴀᴘᴛɪᴏɴ Oғ Fɪʟᴇ.
-`{file_size}` = Oʀɪɢɪɴᴀʟ Fɪʟᴇ Sɪᴢᴇ.
-`{language}` = Lᴀɴɢᴜᴀɢᴇ Oғ Fɪʟᴇ Nᴀᴍᴇ.
-`{subtitle}` = Sᴜʙᴛɪᴛʟᴇ ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
-`{duration}` = ᴅᴜʀᴀᴛɪᴏɴ ғʀᴏᴍ ᴠɪᴅᴇᴏ.
-`{year}` = ʏᴇᴀʀ ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
-`{wish}` = ᴀᴅᴅ ᴡɪsʜ ᴛᴏ ᴠɪᴅᴇᴏ.
-
-Eg:- <code>/set
-{file_name}
-
-⚙️ Size » {file_size}
-
-╔═════ ᴊᴏɪɴ ᴡɪᴛʜ ᴜs ════╗
-💥 𝙅𝙊𝙄𝙉 :- ᴄʜᴀɴɴᴇʟ ʟɪɴᴋ 
-💥 𝙅𝙊𝙄𝙉 :- ᴄʜᴀɴɴᴇʟ ʟɪɴᴋ
-╚═════ ᴊᴏɪɴ ᴡɪᴛʜ ᴜs ════╝
-"""
-    
-    HTML_TAGS_TXT = """🔰 ᴀʙᴏᴜᴛ ᴄᴀᴘᴛɪᴏɴ ғᴏɴᴛ
-
-    ➢ Bold Text
-    ☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
-
-    ➢ Spoiler Text
-    ☞ <code>&lt;spoiler&gt;{filename}&lt;/spoiler&gt;</code>
-
-    ➢ Block Quote Text
-    ☞ <code>&lt;blockquote&gt;{filename}&lt;/blockquote&gt;</code>
-
-    ➢ Italic Text
-    ☞ <code>&lt;i&gt;{filename}&lt;/i&gt;</code>
-
-    ➢ Underline Text
-    ☞ <code>&lt;u&gt;{filename}&lt;/u&gt;</code>
-
-    ➢ Strike Text
-    ☞ <code>&lt;s&gt;{filename}&lt;/s&gt;</code>
-
-    ➢ Mono Text
-    ☞ <code>&lt;code&gt;{filename}&lt;/code&gt;</code>
-
-    ➢ Pre Text
-    ☞ <code>&lt;pre&gt;{filename}&lt;/pre&gt;</code>
-
-    ➢ Hyperlink Text
-    ☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{filename}&lt;/a&gt;</code>"""
+        <blockquote>
+        » cᴏᴍᴍᴀɴᴅ
+        •> /set - Sᴇᴛ Nᴇᴡ Cᴀᴘᴛɪᴏɴ Iɴ ʏᴏᴜʀ Cʜᴀɴɴᴇʟ
+        •> /del - Dᴇʟᴇᴛᴇ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ
+        •> /view - Vɪᴇᴡ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ
+        •> /cmd - ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴄʜᴀɴɴᴇʟ ᴛᴏ Gᴇᴛ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs
+        •> /placeholder - ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴄʜᴀɴɴᴇʟ ᴛᴏ Vɪᴇᴡ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ᴘʟᴀᴄᴇʜᴏʟᴅᴇʀs ᴀɴᴅ ᴛʜᴇɪʀ ᴜsᴀɢᴇ ɪɴ ᴄᴀᴘᴛɪᴏɴs
+        •> /add_button - ᴀᴅᴅ ʙᴜᴛᴛᴏɴs ᴛᴏ ᴍᴇssᴀɢᴇ.
+        •> /del_button - ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴛʜᴇ ʙᴜᴛᴛᴏɴs.
+        •> /replace_word - ʀᴇᴘʟᴀᴄᴇ ᴍᴜʟᴛɪᴘʟᴇ ᴡᴏʀᴅs ᴡɪᴛʜ ʏᴏᴜʀ ᴏᴡɴ ᴡᴏʀᴅs.
+        •> /del_replace_word - ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴛʜᴇ ʀᴇᴘʟᴀᴄᴇ ᴡᴏʀᴅs.
+        •> /rem_words - ʀᴇᴍᴏᴠᴇ ᴍᴜʟᴛɪᴘʟᴇ ᴡᴏʀᴅs ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
+        •> /del_rem_word - ʀᴇᴍᴏᴠᴇ ᴀʟʟ ᴛʜᴇ ᴅᴇʟᴇᴛᴇ ᴡᴏʀᴅs.
+        •> /rem_mention - ʀᴇᴍᴏᴠᴇ ᴀʟʟ ᴛʜᴇ ᴜɴᴡᴀɴᴛᴇᴅ ᴜsᴇʀɴᴀᴍᴇ.
+        •> /rem_url - ʀᴇᴍᴏᴠᴇ ᴀʟʟ ᴛʜᴇ ᴜɴᴡᴀɴᴛᴇᴅ ᴜʀʟs.
+        •> /set_preflix - sᴇᴛ ʏᴏᴜʀ ᴘʀᴇғʟɪx.
+        •> /set_suffix - sᴇᴛ ʏᴏᴜʀ sᴜғғɪx.
+        •> /del_preflix - ᴅᴇʟᴇᴛᴇ ʏᴏᴜʀ ᴘʀᴇғʟɪx.
+        •> /del_suffix - ᴅᴇʟᴇᴛᴇ ʏᴏᴜʀ sᴜғғɪx.
+        </blockquote>
+        """
 
     # Updated ABOUT text
 ABOUT_TXT = """<b>╔════❰ ᴀᴜᴛᴏ ᴄᴀᴘᴛɪᴏɴ ʙᴏᴛ ❱═❍⊱❁
