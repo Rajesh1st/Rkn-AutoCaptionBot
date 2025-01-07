@@ -1,35 +1,45 @@
 import os
 
 class script(object):
-    HELP_TXT = """ •••[( Get Help )]•••
+    HELP_TXT = """ •••[( 𝘎𝘦𝘵 𝘏𝘦𝘭𝘱 )]•••
 
-    ⚠️ ALTER ⚠️
-    • Add this bot to your channel with all admin permissions.
-    • Use this command in your channel.
-    • These commands work only in the channel.
-    • Keep the file without the forward tag.
+    ❗ 𝗔𝗹𝗲𝗿𝘁 ❗
+    • Aᴅᴅ ᴛʜɪs ʙᴏᴛ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴡɪᴛʜ ғᴜʟʟ ᴀᴅᴍɪɴ ʀɪɢʜᴛs.
+    • Usᴇ ᴄᴏᴍᴍᴀɴᴅ ɢɪᴠᴇ ʙᴇʟᴏᴡ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.
+    • Tʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅ ᴏɴʟʏ ᴡᴏʀᴋ ɪɴ ᴄʜᴀɴɴᴇʟ.
+    • Kᴇᴇᴘ ғɪʟᴇ ᴡɪᴛʜᴏᴜᴛ ғᴏʀᴡᴀʀᴅ ᴛᴀɢ.
 
-    •> /set - set a new caption in your channel
-    •> /del - delete your caption
-    •> /view - view your caption
+     » cᴏᴍᴍᴀɴᴅ
+     
+    •> /set - Sᴇᴛ Nᴇᴡ Cᴀᴘᴛɪᴏɴ Iɴ ʏᴏᴜʀ Cʜᴀɴɴᴇʟ
+    •> /del - Dᴇʟᴇᴛᴇ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ
+    •> /view - Vɪᴇᴡ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ
+    •> /cmd - ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴄʜᴀɴɴᴇʟ ᴛᴏ Gᴇᴛ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs
+    •> /placeholder - ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴄʜᴀɴɴᴇʟ ᴛᴏ Vɪᴇᴡ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ᴘʟᴀᴄᴇʜᴏʟᴅᴇʀs ᴀɴᴅ ᴛʜᴇɪʀ ᴜsᴀɢᴇ ɪɴ ᴄᴀᴘᴛɪᴏɴs
 
-    Format:
-    {file_name} = original file name
-    {file_caption} = original file caption 
-    {file_size} = file original size       
+ » vᴀʀɪᴀʙʟᴇs
 
-    Eg:- <code>/set
-    {file_name} or {file_caption}
+`{file_name}` = Oʀɪɢɪɴᴀʟ Fɪʟᴇ Nᴀᴍᴇ.
+`{file_caption}` = Rᴇᴀʟ Cᴀᴘᴛɪᴏɴ Oғ Fɪʟᴇ.
+`{file_size}` = Oʀɪɢɪɴᴀʟ Fɪʟᴇ Sɪᴢᴇ.
+`{language}` = Lᴀɴɢᴜᴀɢᴇ Oғ Fɪʟᴇ Nᴀᴍᴇ.
+`{subtitle}` = Sᴜʙᴛɪᴛʟᴇ ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
+`{duration}` = ᴅᴜʀᴀᴛɪᴏɴ ғʀᴏᴍ ᴠɪᴅᴇᴏ.
+`{year}` = ʏᴇᴀʀ ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
+`{wish}` = ᴀᴅᴅ ᴡɪsʜ ᴛᴏ ᴠɪᴅᴇᴏ.
 
-    ⚙️ Size » {file_size}
+Eg:- <code>/set
+{file_name}
 
-    ╔═════ ᴊᴏɪɴ ᴡɪᴛʜ ᴜs ════╗
-    💥 𝙅𝙊𝙄𝙉 :- channel link 
-    💥 𝙅𝙊𝙄𝙉 :- channel link
-    ╚═════ ᴊᴏɪɴ ᴡɪᴛʜ ᴜs ════╝
-    </code>"""
+⚙️ Size » {file_size}
 
-    HTML_TAGS_TXT = """🔰 About Caption Font
+╔═════ ᴊᴏɪɴ ᴡɪᴛʜ ᴜs ════╗
+💥 𝙅𝙊𝙄𝙉 :- ᴄʜᴀɴɴᴇʟ ʟɪɴᴋ 
+💥 𝙅𝙊𝙄𝙉 :- ᴄʜᴀɴɴᴇʟ ʟɪɴᴋ
+╚═════ ᴊᴏɪɴ ᴡɪᴛʜ ᴜs ════╝
+"""</code>
+    
+    HTML_TAGS_TXT = """🔰 ᴀʙᴏᴜᴛ ᴄᴀᴘᴛɪᴏɴ ғᴏɴᴛ
 
     ➢ Bold Text
     ☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
@@ -102,27 +112,27 @@ html_tags_text = """🔰 Usᴇ ᴛʜɪs ʜᴛᴍʟ ᴛᴀɢs
 
 # Static Text for Placeholders
 placeholders_text = """
-<b>Available Caption Placeholders:</b>
+<b>Aᴠᴀɪʟᴀʙʟᴇ Cᴀᴘᴛɪᴏɴ Pʟᴀᴄᴇʜᴏʟᴅᴇʀs:</b>
 
-➢ <code>{file_name}</code> - The name of the file (e.g., movie name, song title, etc.)
+➢ <code>{file_name}</code> - Tʜᴇ ɴᴀᴍᴇ ᴏғ ᴛʜᴇ ғɪʟᴇ (ᴇ.ɢ., ᴍᴏᴠɪᴇ ɴᴀᴍᴇ, sᴏɴɢ ᴛɪᴛʟᴇ, ᴇᴛᴄ.)
 
-➢ <code>{file_size}</code> - The size of the file in human-readable format (e.g., 2.5 MB, 3 GB, etc.)
+➢ <code>{file_size}</code> - Tʜᴇ sɪᴢᴇ ᴏғ ᴛʜᴇ ғɪʟᴇ ɪɴ ʜᴜᴍᴀɴ-ʀᴇᴀᴅᴀʙʟᴇ ғᴏʀᴍᴀᴛ (ᴇ.ɢ., 2.5 MB, 3 GB, ᴇᴛᴄ.)
 
-➢ <code>{file_caption}</code> - The caption of the file (may include word replacements and removals)
+➢ <code>{file_caption}</code> - Tʜᴇ ᴄᴀᴘᴛɪᴏɴ ᴏғ ᴛʜᴇ ғɪʟᴇ (ᴍᴀʏ ɪɴᴄʟᴜᴅᴇ ᴡᴏʀᴅ ʀᴇᴘʟᴀᴄᴇᴍᴇɴᴛs ᴀɴᴅ ʀᴇᴍᴏᴠᴀʟs)
 
-➢ <code>{language}</code> - The language(s) extracted from the file name or caption (e.g., English, Hindi, etc.)
+➢ <code>{language}</code> - Tʜᴇ ʟᴀɴɢᴜᴀɢᴇ(s) ᴇxᴛʀᴀᴄᴛᴇᴅ ғʀᴏᴍ ᴛʜᴇ ғɪʟᴇ ɴᴀᴍᴇ ᴏʀ ᴄᴀᴘᴛɪᴏɴ (ᴇ.ɢ., Eɴɢʟɪsʜ, Hɪɴᴅɪ, ᴇᴛᴄ.)
 
-➢ <code>{year}</code> - The year extracted from the file name or caption (e.g., 2021, 2019, etc.)
+➢ <code>{year}</code> - Tʜᴇ ʏᴇᴀʀ ᴇxᴛʀᴀᴄᴛᴇᴅ ғʀᴏᴍ ᴛʜᴇ ғɪʟᴇ ɴᴀᴍᴇ ᴏʀ ᴄᴀᴘᴛɪᴏɴ (ᴇ.ɢ., 2021, 2019, ᴇᴛᴄ.)
 
-➢ <code>{subtitles}</code> - Display "ESub" or "MSub" based on the presence of subtitles in the file name or caption. If neither is found, it will show nothing.
+➢ <code>{subtitles}</code> - Dɪsᴘʟᴀʏ "ESᴜʙ" ᴏʀ "MSᴜʙ" ʙᴀsᴇᴅ ᴏɴ ᴛʜᴇ ᴘʀᴇsᴇɴᴄᴇ ᴏғ sᴜʙᴛɪᴛʟᴇs ɪɴ ᴛʜᴇ ғɪʟᴇ ɴᴀᴍᴇ ᴏʀ ᴄᴀᴘᴛɪᴏɴ. Iғ ɴᴇɪᴛʜᴇʀ ɪs ғᴏᴜɴᴅ, ɪᴛ ᴡɪʟʟ sʜᴏᴡ ɴᴏᴛʜɪɴɢ.
 
-➢ <code>{wish}</code> - A time-based greeting (e.g., Good Morning, Good Afternoon, Good Evening).
+➢ <code>{wish}</code> - A ᴛɪᴍᴇ-ʙᴀsᴇᴅ ɢʀᴇᴇᴛɪɴɢ (ᴇ.ɢ., Gᴏᴏᴅ Mᴏʀɴɪɴɢ, Gᴏᴏᴅ Aғᴛᴇʀɴᴏᴏɴ, Gᴏᴏᴅ Eᴠᴇɴɪɴɢ).
 
-➢ <code>{duration}</code> - The total duration of the media in HH:MM:SS format (e.g., 01:50:34).
+➢ <code>{duration}</code> - Tʜᴇ ᴛᴏᴛᴀʟ ᴅᴜʀᴀᴛɪᴏɴ ᴏғ ᴛʜᴇ ᴍᴇᴅɪᴀ ɪɴ HH:MM:SS ғᴏʀᴍᴀᴛ (ᴇ.ɢ., 01:50:34).
 
-➢ <code>{prefix}</code> - The custom prefix set for the channel.
+➢ <code>{prefix}</code> - Tʜᴇ ᴄᴜsᴛᴏᴍ ᴘʀᴇғɪx sᴇᴛ ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.
 
-➢ <code>{suffix}</code> - The custom suffix set for the channel.
+➢ <code>{suffix}</code> - Tʜᴇ ᴄᴜsᴛᴏᴍ sᴜғғɪx sᴇᴛ ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.
 
 <b>Note:</b> Yᴏᴜ ᴄᴀɴ ᴄᴜsᴛᴏᴍɪᴢᴇ ʏᴏᴜʀ ᴄᴀᴘᴛɪᴏɴ ᴛᴇᴍᴘʟᴀᴛᴇ ʙʏ ᴜsɪɴɢ ᴛʜᴇsᴇ ᴘʟᴀᴄᴇʜᴏʟᴅᴇʀs ᴛᴏ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ғɪʟʟ ɪɴ ᴅᴇᴛᴀɪʟs ᴀʙᴏᴜᴛ ᴛʜᴇ ғɪʟᴇ.
 For example: <code>{prefix} {file_name} {year} {language} {subtitles} {suffix}</code>
@@ -130,29 +140,29 @@ For example: <code>{prefix} {file_name} {year} {language} {subtitles} {suffix}</
 
 # Static Text for Commands
 command_list = """
-<b>Available Bot Commands:</b>
+<b>ᴀᴠᴀɪʟᴀʙʟᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅ:</b>
 
-<code>/set_prefix</code> - This command is used to set the prefix for the channel's caption.
+<code>/set_prefix</code> - ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴜsᴇᴅ ᴛᴏ sᴇᴛ ᴛʜᴇ ᴘʀᴇғɪx ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ's ᴄᴀᴘᴛɪᴏɴ.
 
-<code>/clear_prefix</code> - Clears the set prefix.
+<code>/clear_prefix</code> - ᴄʟᴇᴀʀs ᴛʜᴇ sᴇᴛ ᴘʀᴇғɪx.
 
-<code>/set_suffix</code> - This command is used to set the suffix for the channel's caption.
+<code>/set_suffix</code> - ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴜsᴇᴅ ᴛᴏ sᴇᴛ ᴛʜᴇ sᴜғғɪx ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ's ᴄᴀᴘᴛɪᴏɴ.
 
-<code>/clear_suffix</code> - Clears the set suffix.
+<code>/clear_suffix</code> - ᴄʟᴇᴀʀs ᴛʜᴇ sᴇᴛ sᴜғғɪx.
 
-<code>/rem_words</code> - Set a list of words to be removed from the caption.
+<code>/rem_words</code> - sᴇᴛ ᴀ ʟɪsᴛ ᴏғ ᴡᴏʀᴅs ᴛᴏ ʙᴇ ʀᴇᴍᴏᴠᴇᴅ ғʀᴏᴍ ᴛʜᴇ ᴄᴀᴘᴛɪᴏɴ.
 
-<code>/rem_words_off</code> - Turns off the removable words feature for the channel.
+<code>/rem_words_off</code> - ᴛᴜʀɴs ᴏғғ ᴛʜᴇ ʀᴇᴍᴏᴠᴀʙʟᴇ ᴡᴏʀᴅs ғᴇᴀᴛᴜʀᴇ ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.
 
-<code>/replace_words</code> - Replace a word with another in the channel caption.
+<code>/replace_words</code> - ʀᴇᴘʟᴀᴄᴇ ᴀ ᴡᴏʀᴅ ᴡɪᴛʜ ᴀɴᴏᴛʜᴇʀ ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ᴄᴀᴘᴛɪᴏɴ.
 
-<code>/del_replace_word</code> - Disable the word replacement feature.
+<code>/del_replace_word</code> - ᴅɪsᴀʙʟᴇ ᴛʜᴇ ᴡᴏʀᴅ ʀᴇᴘʟᴀᴄᴇᴍᴇɴᴛ ғᴇᴀᴛᴜʀᴇ.
 
-<code>/view</code> - View the current caption, prefix, suffix, removable words, replace words, and more.
+<code>/view</code> - ᴠɪᴇᴡ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴄᴀᴘᴛɪᴏɴ, ᴘʀᴇғɪx, sᴜғғɪx, ʀᴇᴍᴏᴠᴀʙʟᴇ ᴡᴏʀᴅs, ʀᴇᴘʟᴀᴄᴇ ᴡᴏʀᴅs, ᴀɴᴅ ᴍᴏʀᴇ.
 
-<code>/tags</code> - View a list of HTML tags for text formatting (e.g., Bold, Italic, etc.).
+<code>/tags</code> - ᴠɪᴇᴡ ᴀ ʟɪsᴛ ᴏғ ʜᴛᴍʟ ᴛᴀɢs ғᴏʀ ᴛᴇxᴛ ғᴏʀᴍᴀᴛᴛɪɴɢ (ᴇ.ɢ., ʙᴏʟᴅ, ɪᴛᴀʟɪᴄ, ᴇᴛᴄ.).
 
-<code>/Cmd</code> - Get a list of available bot commands with descriptions.
+<code>/Cmd</code> - ɢᴇᴛ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs ᴡɪᴛʜ ᴅᴇsᴄʀɪᴘᴛɪᴏɴs.
 
-<code>/placeholders</code> - View a list of available placeholders and their usage in captions. 
+<code>/placeholders</code> - ᴠɪᴇᴡ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ᴘʟᴀᴄᴇʜᴏʟᴅᴇʀs ᴀɴᴅ ᴛʜᴇɪʀ ᴜsᴀɢᴇ ɪɴ ᴄᴀᴘᴛɪᴏɴs.
 """
