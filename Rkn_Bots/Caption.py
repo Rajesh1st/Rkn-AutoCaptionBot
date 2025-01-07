@@ -412,6 +412,15 @@ async def add_button(bot, message):
     
     await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
 
+@Client.on_message(filters.channel)
+async def auto_edit_caption(bot, message):
+    global global_button  # Use the global button
+
+    if message.media:
+        # Apply the button to the media message
+        if global_button:
+            await message.edit(reply_markup=global_button)
+            
 # Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
