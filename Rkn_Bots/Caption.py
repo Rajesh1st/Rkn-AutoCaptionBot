@@ -92,36 +92,30 @@ async def start_cmd(bot, message):
 @Client.on_callback_query(filters.regex('help_button'))
 async def help_callback(bot, callback_query):
     await callback_query.message.edit_text(
-        script.HELP_TXT,  # Use the help text from script.py
+        script.HELP_TXT,  # Help text from script.py
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton('Hᴛᴍʟ ᴛᴀɢ', callback_data='html_tags_button'),
-            InlineKeyboardButton('↩ ʙᴀᴄᴋ', callback_data='start')
+            InlineKeyboardButton('• ᴄᴀᴘᴛɪᴏɴ', callback_data='caption_button'),
+            InlineKeyboardButton('• ʙᴜᴛᴛᴏɴ', callback_data='button_button')
         ], [
-            InlineKeyboardButton('❌ Close', callback_data='close_help')
+            InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴍᴏᴠᴇ', callback_data='remove_word_button'),
+            InlineKeyboardButton('• ᴜsᴇʀɴᴀᴍᴇ', callback_data='username_button')
+        ], [
+            InlineKeyboardButton('• ᴜʀʟ', callback_data='url_button'),
+            InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴘʟᴀᴄᴇ', callback_data='replace_word_button')
+        ], [
+            InlineKeyboardButton('• ʀᴇsᴇᴛ', callback_data='reset_button'),
+            InlineKeyboardButton('• ᴅᴇᴛᴀɪʟ', callback_data='detail_button')
+        ], [
+            InlineKeyboardButton('• ʜᴛᴍʟ ᴛᴀɢ', callback_data='html_tag_button'),
+            InlineKeyboardButton('• ғᴏɴᴛs', callback_data='fonts_button')
+        ], [
+            InlineKeyboardButton('• Pʀᴇғɪx', callback_data='prefix_button'),
+            InlineKeyboardButton('• sᴜғғɪx', callback_data='suffix_button')
+        ], [
+            InlineKeyboardButton('🔙 Back', callback_data='start')
         ]])
     )
-
-# Handle the "HTML TAGS" button callback
-@Client.on_callback_query(filters.regex('html_tags_button'))
-async def html_tags_callback(bot, callback_query):
-    await callback_query.message.edit_text(
-        script.HTML_TAGS_TXT,  # Use the HTML tags text from script.py
-        disable_web_page_preview=True,
-        reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton('↩ ʙᴀᴄᴋ', callback_data='help_button'),
-            InlineKeyboardButton('❌ Close', callback_data='close_html_tags')
-        ]])
-    )
-
-# Handle "CLOSE" action
-@Client.on_callback_query(filters.regex('close_help'))
-async def close_help_callback(bot, callback_query):
-    await callback_query.message.delete()
-
-@Client.on_callback_query(filters.regex('close_html_tags'))
-async def close_html_tags_callback(bot, callback_query):
-    await callback_query.message.delete()
 
 # Handle the "ABOUT" button callback
 @Client.on_callback_query(filters.regex('about_button'))
