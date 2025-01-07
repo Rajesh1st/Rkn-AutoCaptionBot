@@ -1,6 +1,6 @@
 import os
 
-class Script(object):
+class script(object):
     HELP_TXT = """ •••[( Get Help )]•••
 
     ⚠️ ALTER ⚠️
