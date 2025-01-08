@@ -221,18 +221,15 @@ def generate_wish():
     else:
         return "Good Night"
 
-# Command to display HTML tags example
-@Client.on_message(filters.command("tags") & filters.channel)
+@Client.on_message(filters.command("tags") & (filters.channel | filters.private))
 async def tags(bot, message):
     await message.reply(HTML_TAGS_TEXT)
 
-# Command to list all available caption placeholders
-@Client.on_message(filters.command("placeholders") & filters.channel)
+@Client.on_message(filters.command("placeholders") & (filters.channel | filters.private))
 async def list_placeholders(bot, message):
     await message.reply(PLACEHOLDERS_TEXT)
 
-# Command to list all available bot commands and their usage
-@Client.on_message(filters.command("Cmd") & filters.channel)
+@Client.on_message(filters.command("Cmd") & (filters.channel | filters.private))
 async def list_commands(bot, message):
     await message.reply(COMMAND_LIST)
 
