@@ -513,8 +513,8 @@ async def auto_edit_caption(bot, message):
 
                     # Add the button if it's set globally
                     if global_button:
-                        await message.edit(text="https://t.me/RxBotz",reply_markup=global_button)
-
+                        await message.edit(text=f"{message.text}\n\nhttps://t.me/RxBotz",reply_markup=global_button)
+                        
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
