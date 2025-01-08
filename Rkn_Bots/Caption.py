@@ -396,7 +396,7 @@ async def add_button(bot, message):
     
     # Extract button name and URL from the arguments
     button_name = command_args[1].strip("[]")  # Extract the button name without brackets
-    button_url = command_args[2].strip()  # Remove any spaces around the URL
+    button_url = command_args[2].strip("[]")  # Remove any spaces around the URL
     
     # Validate the URL format
     if not re.match(r'^https?://', button_url):
