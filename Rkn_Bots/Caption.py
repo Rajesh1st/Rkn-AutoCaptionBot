@@ -99,7 +99,7 @@ async def start_cmd(bot, message):
 @Client.on_callback_query(filters.regex('help_button'))
 async def help_callback(bot, callback_query):
     await callback_query.message.edit_text(
-        script.HELP_TXT,  # Help text from script.py
+        script.HELP_TXT,  # Accessing HELP_TXT from script.py correctly
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([
             [
@@ -130,15 +130,14 @@ async def help_callback(bot, callback_query):
             [
                 InlineKeyboardButton('🔙 Back', callback_data='start')
             ]
-        ])  # Inline keyboard with all options
+        ])
     )
 
 # Handle the "CAPTION" button callback
 @Client.on_callback_query(filters.regex('caption_button'))
 async def caption_callback(bot, callback_query):
-    # Send the caption details as a message with a back button to the help section
     await callback_query.message.edit_text(
-        HELP_CAPTION_TEXT,  # The detailed caption text from script.py
+        script.HELP_CAPTION_TEXT,  # Accessing HELP_CAPTION_TEXT from script.py
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([
             [
@@ -146,7 +145,6 @@ async def caption_callback(bot, callback_query):
             ]
         ])
     )
-
 
 # Handle the "ABOUT" button callback
 @Client.on_callback_query(filters.regex('about_button'))
