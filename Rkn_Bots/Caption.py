@@ -92,7 +92,8 @@ async def start_cmd(bot, message):
         InlineKeyboardButton("🌐 Uᴘᴅᴀᴛᴇ", url=f"https://t.me/Silicon_Bot_Update"),
         InlineKeyboardButton("📜 Sᴜᴘᴘᴏʀᴛ", url=r"https://t.me/Silicon_Botz")
     ]])
-)
+ 
+    )
 
 # Handle the "HELP" button callback
 @Client.on_callback_query(filters.regex('help_button'))
@@ -129,8 +130,23 @@ async def help_callback(bot, callback_query):
             [
                 InlineKeyboardButton('🔙 Back', callback_data='start')
             ]
-        ])  # Missing closing parenthesis added here
+        ])  # Inline keyboard with all options
     )
+
+# Handle the "CAPTION" button callback
+@Client.on_callback_query(filters.regex('caption_button'))
+async def caption_callback(bot, callback_query):
+    # Send the caption details as a message with a back button to the help section
+    await callback_query.message.edit_text(
+        HELP_CAPTION_TEXT,  # The detailed caption text from script.py
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')  # Back button to help section
+            ]
+        ])
+    )
+
 
 # Handle the "ABOUT" button callback
 @Client.on_callback_query(filters.regex('about_button'))
