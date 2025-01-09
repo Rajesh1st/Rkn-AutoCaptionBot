@@ -380,43 +380,110 @@ def extract_quality(title):
     # Return the first found quality term (assuming a title would only have one quality descriptor)
     return found_quality[0]
 
-global_button = None  # Global variable to store the button
+# Global variables to store global button and user-specific buttons
+global_button = None
+user_buttons = {}  # Dictionary to store user-specific buttons (key = user_id)
 
-@Client.on_message(filters.command("add_button"))
-async def add_button(bot, message):
+# Admin check function using the loaded ADMIN list from config
+def is_admin(user_id):
+    return str(user_id) in config.ADMIN
+
+# Command to add global button (for admins only)
+@Client.on_message(filters.private & filters.user(lambda user: is_admin(user.id)) & filters.command("add_gbutton"))
+async def add_global_button(bot, message):
     global global_button
     
-    # Get the command arguments (button name and URL) using regex
-    command_args = re.findall(r'\[([^\]]+)\]', message.text)  # Find everything inside square brackets
+    # Get the command arguments (button name and URL)
+    command_args = re.findall(r'\[([^\]]+)\]', message.text)
 
-    # If there are not enough arguments, ask for the correct format
+    if len(command_args) < 2:
+        await message.reply("Please provide the button title and URL. Example: /add_gbutton [testing] [https://t.me/Silicon_Bot_Update]")
+        return
+    
+    button_name = command_args[0].strip()
+    button_url = command_args[1].strip()
+
+    if not re.match(r'^https?://', button_url):
+        await message.reply("Invalid URL. Please provide a valid URL starting with 'http://' or 'https://'.")
+        return
+
+    # Create the inline keyboard button and store globally
+    button = InlineKeyboardButton(button_name, url=button_url)
+    global_button = InlineKeyboardMarkup([[button]])
+
+    await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
+
+# Command to delete global button (for admins only)
+@Client.on_message(filters.private & filters.user(lambda user: is_admin(user.id)) & filters.command("del_gbutton"))
+async def delete_global_button(bot, message):
+    global global_button
+
+    global_button = None
+    await message.reply("Global button deleted successfully.")
+
+# Command to add user-specific button (for normal users)
+@Client.on_message(filters.private & filters.command("add_button"))
+async def add_user_button(bot, message):
+    global user_buttons
+
+    # Get the command arguments (button name and URL)
+    command_args = re.findall(r'\[([^\]]+)\]', message.text)
+
     if len(command_args) < 2:
         await message.reply("Please provide the button title and URL. Example: /add_button [testing] [https://t.me/Silicon_Bot_Update]")
         return
     
-    # Extract button name and URL from the arguments
-    button_name = command_args[0].strip()  # Extract the button name (first argument)
-    button_url = command_args[1].strip()  # Extract the URL (second argument)
-    
-    # Validate the URL format
+    button_name = command_args[0].strip()
+    button_url = command_args[1].strip()
+
     if not re.match(r'^https?://', button_url):
         await message.reply("Invalid URL. Please provide a valid URL starting with 'http://' or 'https://'.")
         return
-    
-    # Create the inline keyboard button
-    button = InlineKeyboardButton(button_name, url=button_url)
-    global_button = InlineKeyboardMarkup([[button]])  # Store the button globally
-    
-    await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
 
+    # Store the user-specific button in the dictionary
+    button = InlineKeyboardButton(button_name, url=button_url)
+    user_buttons[message.from_user.id] = InlineKeyboardMarkup([[button]])
+
+    await message.reply(f"Button '{button_name}' set for your channel.")
+
+# Command to delete user-specific button (for normal users)
+@Client.on_message(filters.private & filters.command("del_button"))
+async def delete_user_button(bot, message):
+    global user_buttons
+
+    # Remove the user's button if it exists
+    if message.from_user.id in user_buttons:
+        del user_buttons[message.from_user.id]
+        await message.reply("Your button has been deleted successfully.")
+    else:
+        await message.reply("You don't have a button set.")
+
+# Command to handle `/del` for deleting the user-specific button
+@Client.on_message(filters.private & filters.command("del"))
+async def delete_user_button_alternate(bot, message):
+    global user_buttons
+
+    # This is an alias command for deleting a user-specific button
+    if message.from_user.id in user_buttons:
+        del user_buttons[message.from_user.id]
+        await message.reply("Your button has been deleted successfully.")
+    else:
+        await message.reply("You don't have a button set.")
+
+# Auto add global or user-specific buttons to media messages
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
-    global global_button  # Use the global button
+    global global_button
+    user_specific_button = user_buttons.get(message.from_user.id, None)
 
-    if message.media:
-        # Apply the button to the media message
-        if global_button:
-            await message.edit(reply_markup=global_button)
+    # Prepare the replaced caption (use your custom logic for the caption)
+    replaced_caption = message.caption if message.caption else "No Caption"
+
+    # Conditionally add global button if set, else None
+    await message.edit(
+        replaced_caption, 
+        reply_markup=global_button if global_button else None
+    )
             
 # Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
 @Client.on_message(filters.channel)
@@ -509,8 +576,12 @@ async def auto_edit_caption(bot, message):
                         subtitles=subtitles,  # Include subtitles (ESub or MSub)
                         duration=duration_text  # Add the duration placeholder
                     )
-                    await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
-     
+                    # Then, check if the message has a user-specific button (if exists)
+    if user_specific_button:
+        await message.edit(
+            replaced_caption,
+            reply_markup=user_specific_button
+        )
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
