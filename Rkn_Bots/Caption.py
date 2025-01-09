@@ -380,13 +380,13 @@ def extract_quality(title):
     # Return the first found quality term (assuming a title would only have one quality descriptor)
     return found_quality[0]
 
-# Global dictionary to store user-specific buttons (key = user_id)
-user_buttons = {}
+# Global dictionary to store channel-specific buttons (key = channel_id)
+channel_buttons = {}
 
-# Command to add user-specific button (for normal users)
+# Command to add channel-specific button
 @Client.on_message(filters.private & filters.command("add_button"))
 async def add_button(bot, message):
-    global user_buttons
+    global channel_buttons
 
     # Get the command arguments (button name and URL) using regex
     command_args = re.findall(r'\[([^\]]+)\]', message.text)
@@ -402,42 +402,42 @@ async def add_button(bot, message):
         await message.reply("Invalid URL. Please provide a valid URL starting with 'http://' or 'https://'.")
         return
 
-    # Store the user-specific button in the dictionary
+    # Store the channel-specific button in the dictionary
     button = InlineKeyboardButton(button_name, url=button_url)
-    user_buttons[message.from_user.id] = InlineKeyboardMarkup([[button]])
+    channel_buttons[message.chat.id] = InlineKeyboardMarkup([[button]])
 
     await message.reply(f"Button '{button_name}' set for your channel.")
 
-# Command to delete user-specific button (for normal users)
+# Command to delete channel-specific button
 @Client.on_message(filters.private & filters.command("del_button"))
 async def delete_button(bot, message):
-    global user_buttons
+    global channel_buttons
 
-    # Remove the user's button if it exists
-    if message.from_user.id in user_buttons:
-        del user_buttons[message.from_user.id]
-        await message.reply("Your button has been deleted successfully.")
+    # Remove the channel's button if it exists
+    if message.chat.id in channel_buttons:
+        del channel_buttons[message.chat.id]
+        await message.reply("The button has been deleted successfully.")
     else:
-        await message.reply("You don't have a button set.")
+        await message.reply("No button set for this channel.")
 
-# Auto add user-specific button to media messages
+# Auto add channel-specific button to media messages
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
-    global user_buttons
+    global channel_buttons
 
-    # Get the user-specific button for the user who sent the message
-    user_specific_button = user_buttons.get(message.from_user.id, None)
+    # Get the channel-specific button for the current channel
+    channel_specific_button = channel_buttons.get(message.chat.id, None)
 
     # Prepare the replaced caption (use your custom logic for the caption)
     replaced_caption = message.caption if message.caption else "No Caption"
 
-    # Conditionally add user-specific button if set, else None
-    if user_specific_button:
+    # Conditionally add the channel-specific button if set, else None
+    if channel_specific_button:
         await message.edit(
             replaced_caption,
-            reply_markup=user_specific_button
+            reply_markup=channel_specific_button
         )
-    
+
     # Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
     chnl_id = message.chat.id
     if message.media:
@@ -526,10 +526,9 @@ async def auto_edit_caption(bot, message):
                         duration=duration_text  # Add the duration placeholder
                     )
                     
-                    await message.edit(replaced_caption, reply_markup=user_specific_button if user_specific_button else None)
+                    await message.edit(replaced_caption, reply_markup=channel_specific_button if channel_specific_button else None)
                 
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
     return
-    
