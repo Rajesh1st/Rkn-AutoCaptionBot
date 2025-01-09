@@ -9,6 +9,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
 from config import Rkn_Bots
 from Script import script
+from Script import HELP_CAPTION_TEXT
 import asyncio
 import os
 from datetime import datetime
