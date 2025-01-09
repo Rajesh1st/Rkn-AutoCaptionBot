@@ -1,29 +1,17 @@
 import os
 
 class script(object):
-    HELP_CAPTION_TEXT = """<b>You can add custom caption to your channel by the following :-
-
-» command
-
-•> /set {file_name}
-•> /del & /del_caption
-
-<blockquote expendable>
-» variables 
-
-• {file_name} = file name.
-• {file_size} = original file size.
-• {file_caption} = default file name.
-• {language} = languages from file name.
-• {year} = year from file name.
-• {quality} = quality from file name.
-• {duration} = duration from video.
-• {subtitles} = Display "ESub" or "MSub"
-• {wish} = add wish to video.
- </blockquote>
-
-for further support ask in our support group.</b>
-"""   
+    ABOUT_TXT = """<b>╔════❰ ᴀᴜᴛᴏ ᴄᴀᴘᴛɪᴏɴ ʙᴏᴛ ❱═❍⊱❁
+║╭━━━━━━━━━━━━━━━➣
+║┣⪼📃ʙᴏᴛ : <a href='https://t.me/RxAutoCaptionBot'>ᴀᴜᴛᴏ Cᴀᴘᴛɪᴏɴ ✨</a>
+║┣⪼👦Cʀᴇᴀᴛᴏʀ : <a href='https://t.me/RxBotz'>ʀ'x ʙᴏᴛᴢ ⚠️</a>
+║┣⪼🤖Uᴘᴅᴀᴛᴇ : <a href='https://t.me/RxBotz'>ʀ'x ʙᴏᴛᴢ™</a>
+║┣⪼📡Hᴏsᴛᴇᴅ ᴏɴ : ʜᴇʀᴏᴋᴜ 
+║┣⪼🗣️Lᴀɴɢᴜᴀɢᴇ : Pʏᴛʜᴏɴ3
+║┣⪼📚Lɪʙʀᴀʀʏ : Pʏʀᴏɢʀᴀᴍ 2.11.6
+║┣⪼🗒️Vᴇʀsɪᴏɴ : 2.0.8 [ᴍᴏsᴛ sᴛᴀʙʟᴇ]
+║╰━━━━━━━━━━━━━━━➣
+╚══════════════════❍⊱❁</b>"""
     
     HELP_TXT = """<blockquote>❗ alert ❗</blockquote>
 • **add this bot in your channel with full admin rights.**
