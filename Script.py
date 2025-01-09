@@ -26,15 +26,12 @@ class script(object):
 """   
     
   HELP_TXT = """<blockquote>❗ ᴀʟᴇʀᴛ ❗</blockquote>
-
 • **ᴀᴅᴅ ᴛʜɪs ʙᴏᴛ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴡɪᴛʜ ғᴜʟʟ ᴀᴅᴍɪɴ ʀɪɢʜᴛs.**
 • **ᴜsᴇ ᴄᴏᴍᴍᴀɴᴅ ɢɪᴠᴇ ʙᴇʟᴏᴡ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.**
 • **ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅs ᴏɴʟʏ ᴡᴏʀᴋ ɪɴ ᴄʜᴀɴɴᴇʟ.**
 • **ᴋᴇᴇᴘ ғɪʟᴇ ᴡɪᴛʜᴏᴜᴛ ғᴏʀᴡᴀʀᴅ ᴛᴀɢ.**
-
 <blockquote expandable> 
 » **cᴏᴍᴍᴀɴᴅ**
-
 •> **/set - Sᴇᴛ Nᴇᴡ Cᴀᴘᴛɪᴏɴ Iɴ ʏᴏᴜʀ Cʜᴀɴɴᴇʟ**
 •> **/del - Dᴇʟᴇᴛᴇ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ**
 •> **/view - Vɪᴇᴡ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ**
@@ -52,8 +49,7 @@ class script(object):
 •> **/set_suffix - sᴇᴛ ʏᴏᴜʀ sᴜғғɪx.**
 •> **/del_preflix - ᴅᴇʟᴇᴛᴇ ʏᴏᴜʀ ᴘʀᴇғʟɪx.**
 •> **/del_suffix - ᴅᴇʟᴇᴛᴇ ʏᴏᴜʀ sᴜғғɪx.**
-</blockquote>
-"""
+</blockquote>"""
 
 # Static Text for HTML Tags
     HTML_TAGS_TEXT = """🔰 Usᴇ ᴛʜɪs ʜᴛᴍʟ ᴛᴀɢs
