@@ -386,17 +386,17 @@ global_button = None  # Global variable to store the button
 async def add_button(bot, message):
     global global_button
     
-    # Get the command arguments (button name and URL)
-    command_args = message.text.split(" ", 2)
-    
+    # Get the command arguments (button name and URL) using regex
+    command_args = re.findall(r'\[([^\]]+)\]', message.text)  # Find everything inside square brackets
+
     # If there are not enough arguments, ask for the correct format
-    if len(command_args) < 3:
+    if len(command_args) < 2:
         await message.reply("Please provide the button title and URL. Example: /add_button [testing] [https://t.me/Silicon_Bot_Update]")
         return
     
     # Extract button name and URL from the arguments
-    button_name = command_args[1].strip("[]")  # Extract the button name without brackets
-    button_url = command_args[2].strip("[]")  # Remove any spaces around the URL
+    button_name = command_args[0].strip()  # Extract the button name (first argument)
+    button_url = command_args[1].strip()  # Extract the URL (second argument)
     
     # Validate the URL format
     if not re.match(r'^https?://', button_url):
