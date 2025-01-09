@@ -12,11 +12,11 @@ class script(object):
 ║┣⪼🗒️Vᴇʀsɪᴏɴ : 2.0.8 [ᴍᴏsᴛ sᴛᴀʙʟᴇ]
 ║╰━━━━━━━━━━━━━━━➣
 ╚══════════════════❍⊱❁</b>"""
-    
+
     HELP_TXT = """<blockquote>❗ alert ❗</blockquote>
 • **add this bot in your channel with full admin rights.**
-• **use command give below in your channel.**
-• **these commands only work in channel.**
+• **use the commands given below in your channel.**
+• **these commands only work in a channel.**
 • **keep file without forward tag.**
 <blockquote expandable> 
 » **command**
@@ -39,8 +39,33 @@ class script(object):
 •> **/del_suffix - delete your suffix.**
 </blockquote>"""
 
-    # Static Text for HTML Tags
-    HTML_TAGS_TEXT = """🔰 Use this html tags
+    # Updated Caption Button Text
+    HELP_CAPTION_TEXT = """
+<b>ʏᴏᴜ ᴄᴀɴ ᴀᴅᴅ ᴄᴜsᴛᴏᴍ ᴄᴀᴘᴛɪᴏɴ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ʙʏ ᴛʜᴇ ғᴏʟʟᴏᴡɪɴɢ :-
+
+» cᴏᴍᴍᴀɴᴅ
+
+•> /set {file_name}
+•> /del & /del_caption
+
+<blockquote expandable>
+» vᴀʀɪᴀʙʟᴇs 
+
+• {file_name} = ғɪʟᴇ ɴᴀᴍᴇ.
+• {file_size} = ᴏʀɪɢɪɴᴀʟ ғɪʟᴇ sɪᴢᴇ.
+• {file_caption} = ᴅᴇғᴀᴜʟᴛ ғɪʟᴇ ɴᴀᴍᴇ.
+• {language} = ʟᴀɴɢᴜᴀɢᴇs ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
+• {year} = ʏᴇᴀʀ ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
+• {quality} = ǫᴜᴀʟɪᴛʏ ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
+• {duration} = ᴅᴜʀᴀᴛɪᴏɴ ғʀᴏᴍ ᴠɪᴅᴇᴏ.
+• {subtitles} = Dɪsᴘʟᴀʏ "ESᴜʙ" ᴏʀ "MSᴜʙ"
+• {wish} = ᴀᴅᴅ ᴡɪsʜ ᴛᴏ ᴠɪᴅᴇᴏ.
+ </blockquote>
+
+ғᴏʀ ғᴜʀᴛʜᴇʀ sᴜᴘᴘᴏʀᴛ ᴀsᴋ ɪɴ ᴏᴜʀ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ.</b>
+    """
+    
+    HTML_TAGS_TEXT = """🔰 Use these HTML tags
 ➢ Bold Text
 ☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
 
@@ -68,7 +93,6 @@ class script(object):
 ➢ Hyperlink Text
 ☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{filename}&lt;/a&gt;</code>"""
 
-    # Static Text for Placeholders
     PLACEHOLDERS_TEXT = """
 <b>Available Caption Placeholders:</b>
 
@@ -96,7 +120,6 @@ class script(object):
 For example: <code>{prefix} {file_name} {year} {language} {subtitles} {suffix}</code>
 """
 
-    # Static Text for Commands
     COMMAND_LIST = """
 <b>Available bot commands:</b>
 
@@ -120,4 +143,4 @@ For example: <code>{prefix} {file_name} {year} {language} {subtitles} {suffix}</
 
 <code>/tags</code> - View a list of available HTML tags to format your caption.
 """
-      
+    
