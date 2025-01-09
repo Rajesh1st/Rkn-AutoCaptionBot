@@ -43,6 +43,31 @@ class script(object):
 </blockquote>
 """
 
+HELP_CAPTION_TEXT = """
+<b>ʏᴏᴜ ᴄᴀɴ ᴀᴅᴅ ᴄᴜsᴛᴏᴍ ᴄᴀᴘᴛɪᴏɴ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ʙʏ ᴛʜᴇ ғᴏʟʟᴏᴡɪɴɢ :-
+
+» cᴏᴍᴍᴀɴᴅ
+
+•> /set {file_name}
+•> /del & /del_caption
+
+<blockquote expendable>
+» vᴀʀɪᴀʙʟᴇs 
+
+• {file_name} = ғɪʟᴇ ɴᴀᴍᴇ.
+• {file_size} = ᴏʀɪɢɪɴᴀʟ ғɪʟᴇ sɪᴢᴇ.
+• {file_caption} = ᴅᴇғᴀᴜʟᴛ ғɪʟᴇ ɴᴀᴍᴇ.
+• {language} = ʟᴀɴɢᴜᴀɢᴇs ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
+• {year} = ʏᴇᴀʀ ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
+• {quality} = ǫᴜᴀʟɪᴛʏ ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
+• {duration} = ᴅᴜʀᴀᴛɪᴏɴ ғʀᴏᴍ ᴠɪᴅᴇᴏ.
+•{subtitles} = Dɪsᴘʟᴀʏ "ESᴜʙ" ᴏʀ "MSᴜʙ"
+• {wish} = ᴀᴅᴅ ᴡɪsʜ ᴛᴏ ᴠɪᴅᴇᴏ.
+ </blockquote>
+
+ғᴏʀ ғᴜʀᴛʜᴇʀ sᴜᴘᴘᴏʀᴛ ᴀsᴋ ɪɴ ᴏᴜʀ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ.</b>
+"""
+
 # Static Text for HTML Tags
 HTML_TAGS_TEXT = """🔰 Usᴇ ᴛʜɪs ʜᴛᴍʟ ᴛᴀɢs
 ➢ Bold Text
