@@ -380,65 +380,49 @@ def extract_quality(title):
     # Return the first found quality term (assuming a title would only have one quality descriptor)
     return found_quality[0]
 
-# Global dictionary to store channel-specific buttons (key = channel_id)
-channel_buttons = {}
+global_button = None  # Global variable to store the button
 
-# Command to add channel-specific button
-@Client.on_message(filters.private & filters.command("add_button"))
+@Client.on_message(filters.command("add_button"))
 async def add_button(bot, message):
-    global channel_buttons
-
-    # Get the command arguments (button name and URL) using regex
-    command_args = re.findall(r'\[([^\]]+)\]', message.text)
-
-    if len(command_args) < 2:
-        await message.reply("Please provide the button title and URL. Example: /add_button [testing] [https://t.me/Silicon_Bot_Update]")
+    global global_button
+    
+    # Get the command arguments (button name and URL)
+    command_args = message.text.split(" ", 2)
+    
+    # If there are not enough arguments, ask for the correct format
+    if len(command_args) < 3:
+        await message.reply("Please provide the button title and URL. Example: /add_button [testing] [https://t.me/RxBotz]")
         return
     
-    button_name = command_args[0].strip()
-    button_url = command_args[1].strip()
-
+    # Extract button name and URL from the arguments
+    button_name = command_args[1].strip("[]")  # Extract the button name without brackets
+    button_url = command_args[2].strip("[]")  # Remove any spaces around the URL
+    
+    # Validate the URL format
     if not re.match(r'^https?://', button_url):
         await message.reply("Invalid URL. Please provide a valid URL starting with 'http://' or 'https://'.")
         return
-
-    # Store the channel-specific button in the dictionary
+    
+    # Create the inline keyboard button
     button = InlineKeyboardButton(button_name, url=button_url)
-    channel_buttons[message.chat.id] = InlineKeyboardMarkup([[button]])
+    global_button = InlineKeyboardMarkup([[button]])  # Store the button globally
+    
+    await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
 
-    await message.reply(f"Button '{button_name}' set for your channel.")
-
-# Command to delete channel-specific button
-@Client.on_message(filters.private & filters.command("del_button"))
-async def delete_button(bot, message):
-    global channel_buttons
-
-    # Remove the channel's button if it exists
-    if message.chat.id in channel_buttons:
-        del channel_buttons[message.chat.id]
-        await message.reply("The button has been deleted successfully.")
-    else:
-        await message.reply("No button set for this channel.")
-
-# Auto add channel-specific button to media messages
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
-    global channel_buttons
+    global global_button  # Use the global button
+    
+    if message.media:
+        # Apply the button to the media message
+        if global_button:
+            await message.edit(reply_markup=global_button)
 
-    # Get the channel-specific button for the current channel
-    channel_specific_button = channel_buttons.get(message.chat.id, None)
+# Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
+@Client.on_message(filters.channel)
+async def auto_edit_caption(bot, message):
+    global global_button  # Use the global button
 
-    # Prepare the replaced caption (use your custom logic for the caption)
-    replaced_caption = message.caption if message.caption else "No Caption"
-
-    # Conditionally add the channel-specific button if set, else None
-    if channel_specific_button:
-        await message.edit(
-            replaced_caption,
-            reply_markup=channel_specific_button
-        )
-
-    # Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
     chnl_id = message.chat.id
     if message.media:
         for file_type in ("video", "audio", "document", "voice"):
@@ -507,7 +491,7 @@ async def auto_edit_caption(bot, message):
                     subtitles = "ESub"
                 elif "MSub" in file_name or "MSub" in caption_text:
                     subtitles = "MSub"
-                
+
                 # Get the duration in HH:MM:SS format if available
                 duration_text = ""
                 if duration_seconds:
@@ -525,9 +509,9 @@ async def auto_edit_caption(bot, message):
                         subtitles=subtitles,  # Include subtitles (ESub or MSub)
                         duration=duration_text  # Add the duration placeholder
                     )
-                    
-                    await message.edit(replaced_caption, reply_markup=channel_specific_button if channel_specific_button else None)
-                
+
+                    await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
+
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
