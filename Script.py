@@ -1,58 +1,58 @@
 import os
 
 class script(object):
-      HELP_CAPTION_TEXT = """<b>ʏᴏᴜ ᴄᴀɴ ᴀᴅᴅ ᴄᴜsᴛᴏᴍ ᴄᴀᴘᴛɪᴏɴ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ʙʏ ᴛʜᴇ ғᴏʟʟᴏᴡɪɴɢ :-
+    HELP_CAPTION_TEXT = """<b>You can add custom caption to your channel by the following :-
 
-» cᴏᴍᴍᴀɴᴅ
+» command
 
 •> /set {file_name}
 •> /del & /del_caption
 
 <blockquote expendable>
-» vᴀʀɪᴀʙʟᴇs 
+» variables 
 
-• {file_name} = ғɪʟᴇ ɴᴀᴍᴇ.
-• {file_size} = ᴏʀɪɢɪɴᴀʟ ғɪʟᴇ sɪᴢᴇ.
-• {file_caption} = ᴅᴇғᴀᴜʟᴛ ғɪʟᴇ ɴᴀᴍᴇ.
-• {language} = ʟᴀɴɢᴜᴀɢᴇs ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
-• {year} = ʏᴇᴀʀ ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
-• {quality} = ǫᴜᴀʟɪᴛʏ ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.
-• {duration} = ᴅᴜʀᴀᴛɪᴏɴ ғʀᴏᴍ ᴠɪᴅᴇᴏ.
-•{subtitles} = Dɪsᴘʟᴀʏ "ESᴜʙ" ᴏʀ "MSᴜʙ"
-• {wish} = ᴀᴅᴅ ᴡɪsʜ ᴛᴏ ᴠɪᴅᴇᴏ.
+• {file_name} = file name.
+• {file_size} = original file size.
+• {file_caption} = default file name.
+• {language} = languages from file name.
+• {year} = year from file name.
+• {quality} = quality from file name.
+• {duration} = duration from video.
+• {subtitles} = Display "ESub" or "MSub"
+• {wish} = add wish to video.
  </blockquote>
 
-ғᴏʀ ғᴜʀᴛʜᴇʀ sᴜᴘᴘᴏʀᴛ ᴀsᴋ ɪɴ ᴏᴜʀ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ.</b>
+for further support ask in our support group.</b>
 """   
     
-  HELP_TXT = """<blockquote>❗ ᴀʟᴇʀᴛ ❗</blockquote>
-• **ᴀᴅᴅ ᴛʜɪs ʙᴏᴛ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴡɪᴛʜ ғᴜʟʟ ᴀᴅᴍɪɴ ʀɪɢʜᴛs.**
-• **ᴜsᴇ ᴄᴏᴍᴍᴀɴᴅ ɢɪᴠᴇ ʙᴇʟᴏᴡ ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.**
-• **ᴛʜᴇsᴇ ᴄᴏᴍᴍᴀɴᴅs ᴏɴʟʏ ᴡᴏʀᴋ ɪɴ ᴄʜᴀɴɴᴇʟ.**
-• **ᴋᴇᴇᴘ ғɪʟᴇ ᴡɪᴛʜᴏᴜᴛ ғᴏʀᴡᴀʀᴅ ᴛᴀɢ.**
+    HELP_TXT = """<blockquote>❗ alert ❗</blockquote>
+• **add this bot in your channel with full admin rights.**
+• **use command give below in your channel.**
+• **these commands only work in channel.**
+• **keep file without forward tag.**
 <blockquote expandable> 
-» **cᴏᴍᴍᴀɴᴅ**
-•> **/set - Sᴇᴛ Nᴇᴡ Cᴀᴘᴛɪᴏɴ Iɴ ʏᴏᴜʀ Cʜᴀɴɴᴇʟ**
-•> **/del - Dᴇʟᴇᴛᴇ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ**
-•> **/view - Vɪᴇᴡ Yᴏᴜʀ Cᴀᴘᴛɪᴏɴ**
-•> **/cmd - ᴛᴏ Gᴇᴛ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs**
-•> **/placeholder - ᴛᴏ Vɪᴇᴡ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ᴘʟᴀᴄᴇʜᴏʟᴅᴇʀs ᴀɴᴅ ᴛʜᴇɪʀ ᴜsᴀɢᴇ ɪɴ ᴄᴀᴘᴛɪᴏɴs**
-•> **/add_button - ᴀᴅᴅ ʙᴜᴛᴛᴏɴs ᴛᴏ ᴍᴇssᴀɢᴇ.**
-•> **/del_button - ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴛʜᴇ ʙᴜᴛᴛᴏɴs.**
-•> **/replace_word - ʀᴇᴘʟᴀᴄᴇ ᴍᴜʟᴛɪᴘʟᴇ ᴡᴏʀᴅs ᴡɪᴛʜ ʏᴏᴜʀ ᴏᴡɴ ᴡᴏʀᴅs.**
-•> **/del_replace_word - ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴛʜᴇ ʀᴇᴘʟᴀᴄᴇ ᴡᴏʀᴅs.**
-•> **/rem_words - ʀᴇᴍᴏᴠᴇ ᴍᴜʟᴛɪᴘʟᴇ ᴡᴏʀᴅs ғʀᴏᴍ ғɪʟᴇ ɴᴀᴍᴇ.**
-•> **/del_rem_word - ʀᴇᴍᴏᴠᴇ ᴀʟʟ ᴛʜᴇ ᴅᴇʟᴇᴛᴇ ᴡᴏʀᴅs.**
-•> **/rem_mention - ʀᴇᴍᴏᴠᴇ ᴀʟʟ ᴛʜᴇ ᴜɴᴡᴀɴᴛᴇᴅ ᴜsᴇʀɴᴀᴍᴇ.**
-•> **/rem_url - ʀᴇᴍᴏᴠᴇ ᴀʟʟ ᴛʜᴇ ᴜɴᴡᴀɴᴛᴇᴅ ᴜʀʟs.**
-•> **/set_preflix - sᴇᴛ ʏᴏᴜʀ ᴘʀᴇғʟɪx.**
-•> **/set_suffix - sᴇᴛ ʏᴏᴜʀ sᴜғғɪx.**
-•> **/del_preflix - ᴅᴇʟᴇᴛᴇ ʏᴏᴜʀ ᴘʀᴇғʟɪx.**
-•> **/del_suffix - ᴅᴇʟᴇᴛᴇ ʏᴏᴜʀ sᴜғғɪx.**
+» **command**
+•> **/set - Set New Caption In your Channel**
+•> **/del - Delete Your Caption**
+•> **/view - View Your Caption**
+•> **/cmd - to Get a list of available bot commands**
+•> **/placeholder - to View a list of available placeholders and their usage in captions**
+•> **/add_button - add buttons to message.**
+•> **/del_button - to delete all the buttons.**
+•> **/replace_word - replace multiple words with your own words.**
+•> **/del_replace_word - delete all the replace words.**
+•> **/rem_words - remove multiple words from file name.**
+•> **/del_rem_word - remove all the delete words.**
+•> **/rem_mention - remove all the unwanted username.**
+•> **/rem_url - remove all the unwanted urls.**
+•> **/set_preflix - set your prefix.**
+•> **/set_suffix - set your suffix.**
+•> **/del_preflix - delete your prefix.**
+•> **/del_suffix - delete your suffix.**
 </blockquote>"""
 
-# Static Text for HTML Tags
-    HTML_TAGS_TEXT = """🔰 Usᴇ ᴛʜɪs ʜᴛᴍʟ ᴛᴀɢs
+    # Static Text for HTML Tags
+    HTML_TAGS_TEXT = """🔰 Use this html tags
 ➢ Bold Text
 ☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
 
@@ -80,59 +80,56 @@ class script(object):
 ➢ Hyperlink Text
 ☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{filename}&lt;/a&gt;</code>"""
 
-# Static Text for Placeholders
+    # Static Text for Placeholders
     PLACEHOLDERS_TEXT = """
-<b>Aᴠᴀɪʟᴀʙʟᴇ Cᴀᴘᴛɪᴏɴ Pʟᴀᴄᴇʜᴏʟᴅᴇʀs:</b>
+<b>Available Caption Placeholders:</b>
 
-➢ <code>{file_name}</code> - Tʜᴇ ɴᴀᴍᴇ ᴏғ ᴛʜᴇ ғɪʟᴇ (ᴇ.ɢ., ᴍᴏᴠɪᴇ ɴᴀᴍᴇ, sᴏɴɢ ᴛɪᴛʟᴇ, ᴇᴛᴄ.)
+➢ <code>{file_name}</code> - The name of the file (e.g., movie name, song title, etc.)
 
-➢ <code>{file_size}</code> - Tʜᴇ sɪᴢᴇ ᴏғ ᴛʜᴇ ғɪʟᴇ ɪɴ ʜᴜᴍᴀɴ-ʀᴇᴀᴅᴀʙʟᴇ ғᴏʀᴍᴀᴛ (ᴇ.ɢ., 2.5 MB, 3 GB, ᴇᴛᴄ.)
+➢ <code>{file_size}</code> - The size of the file in human-readable format (e.g., 2.5 MB, 3 GB, etc.)
 
-➢ <code>{file_caption}</code> - Tʜᴇ ᴄᴀᴘᴛɪᴏɴ ᴏғ ᴛʜᴇ ғɪʟᴇ (ᴍᴀʏ ɪɴᴄʟᴜᴅᴇ ᴡᴏʀᴅ ʀᴇᴘʟᴀᴄᴇᴍᴇɴᴛs ᴀɴᴅ ʀᴇᴍᴏᴠᴀʟs)
+➢ <code>{file_caption}</code> - The caption of the file (may include word replacements and removals)
 
-➢ <code>{language}</code> - Tʜᴇ ʟᴀɴɢᴜᴀɢᴇ(s) ᴇxᴛʀᴀᴄᴛᴇᴅ ғʀᴏᴍ ᴛʜᴇ ғɪʟᴇ ɴᴀᴍᴇ ᴏʀ ᴄᴀᴘᴛɪᴏɴ (ᴇ.ɢ., Eɴɢʟɪsʜ, Hɪɴᴅɪ, ᴇᴛᴄ.)
+➢ <code>{language}</code> - The language(s) extracted from the file name or caption (e.g., English, Hindi, etc.)
 
-➢ <code>{year}</code> - Tʜᴇ ʏᴇᴀʀ ᴇxᴛʀᴀᴄᴛᴇᴅ ғʀᴏᴍ ᴛʜᴇ ғɪʟᴇ ɴᴀᴍᴇ ᴏʀ ᴄᴀᴘᴛɪᴏɴ (ᴇ.ɢ., 2021, 2019, ᴇᴛᴄ.)
+➢ <code>{year}</code> - The year extracted from the file name or caption (e.g., 2021, 2019, etc.)
 
-➢ <code>{subtitles}</code> - Dɪsᴘʟᴀʏ "ESᴜʙ" ᴏʀ "MSᴜʙ" ʙᴀsᴇᴅ ᴏɴ ᴛʜᴇ ᴘʀᴇsᴇɴᴄᴇ ᴏғ sᴜʙᴛɪᴛʟᴇs ɪɴ ᴛʜᴇ ғɪʟᴇ ɴᴀᴍᴇ ᴏʀ ᴄᴀᴘᴛɪᴏɴ. Iғ ɴᴇɪᴛʜᴇʀ ɪs ғᴏᴜɴᴅ, ɪᴛ ᴡɪʟʟ sʜᴏᴡ ɴᴏᴛʜɪɴɢ.
+➢ <code>{subtitles}</code> - Display "ESub" or "MSub" based on the presence of subtitles in the file name or caption. If neither is found, it will show nothing.
 
-➢ <code>{wish}</code> - A ᴛɪᴍᴇ-ʙᴀsᴇᴅ ɢʀᴇᴇᴛɪɴɢ (ᴇ.ɢ., Gᴏᴏᴅ Mᴏʀɴɪɴɢ, Gᴏᴏᴅ Aғᴛᴇʀɴᴏᴏɴ, Gᴏᴏᴅ Eᴠᴇɴɪɴɢ).
+➢ <code>{wish}</code> - A time-based greeting (e.g., Good Morning, Good Afternoon, Good Evening).
 
-➢ <code>{duration}</code> - Tʜᴇ ᴛᴏᴛᴀʟ ᴅᴜʀᴀᴛɪᴏɴ ᴏғ ᴛʜᴇ ᴍᴇᴅɪᴀ ɪɴ HH:MM:SS ғᴏʀᴍᴀᴛ (ᴇ.ɢ., 01:50:34).
+➢ <code>{duration}</code> - The total duration of the media in HH:MM:SS format (e.g., 01:50:34).
 
-➢ <code>{prefix}</code> - Tʜᴇ ᴄᴜsᴛᴏᴍ ᴘʀᴇғɪx sᴇᴛ ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.
+➢ <code>{prefix}</code> - The custom prefix set for the channel.
 
-➢ <code>{suffix}</code> - Tʜᴇ ᴄᴜsᴛᴏᴍ sᴜғғɪx sᴇᴛ ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.
+➢ <code>{suffix}</code> - The custom suffix set for the channel.
 
-<b>Note:</b> Yᴏᴜ ᴄᴀɴ ᴄᴜsᴛᴏᴍɪᴢᴇ ʏᴏᴜʀ ᴄᴀᴘᴛɪᴏɴ ᴛᴇᴍᴘʟᴀᴛᴇ ʙʏ ᴜsɪɴɢ ᴛʜᴇsᴇ ᴘʟᴀᴄᴇʜᴏʟᴅᴇʀs ᴛᴏ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ғɪʟʟ ɪɴ ᴅᴇᴛᴀɪʟs ᴀʙᴏᴜᴛ ᴛʜᴇ ғɪʟᴇ.
+<b>Note:</b> You can customize your caption template by using these placeholders to automatically fill in details about the file.
 For example: <code>{prefix} {file_name} {year} {language} {subtitles} {suffix}</code>
 """
 
-# Static Text for Commands
+    # Static Text for Commands
     COMMAND_LIST = """
-<b>ᴀᴠᴀɪʟᴀʙʟᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅ:</b>
+<b>Available bot commands:</b>
 
-<code>/set_prefix</code> - ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴜsᴇᴅ ᴛᴏ sᴇᴛ ᴛʜᴇ ᴘʀᴇғɪx ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ's ᴄᴀᴘᴛɪᴏɴ.
+<code>/set_prefix</code> - This command is used to set the prefix for the channel's caption.
 
-<code>/clear_prefix</code> - ᴄʟᴇᴀʀs ᴛʜᴇ sᴇᴛ ᴘʀᴇғɪx.
+<code>/clear_prefix</code> - Clears the set prefix.
 
-<code>/set_suffix</code> - ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴜsᴇᴅ ᴛᴏ sᴇᴛ ᴛʜᴇ sᴜғғɪx ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ's ᴄᴀᴘᴛɪᴏɴ.
+<code>/set_suffix</code> - This command is used to set the suffix for the channel's caption.
 
-<code>/clear_suffix</code> - ᴄʟᴇᴀʀs ᴛʜᴇ sᴇᴛ sᴜғғɪx.
+<code>/clear_suffix</code> - Clears the set suffix.
 
-<code>/rem_words</code> - sᴇᴛ ᴀ ʟɪsᴛ ᴏғ ᴡᴏʀᴅs ᴛᴏ ʙᴇ ʀᴇᴍᴏᴠᴇᴅ ғʀᴏᴍ ᴛʜᴇ ᴄᴀᴘᴛɪᴏɴ.
+<code>/rem_words</code> - Set a list of words to be removed from the caption.
 
-<code>/rem_words_off</code> - ᴛᴜʀɴs ᴏғғ ᴛʜᴇ ʀᴇᴍᴏᴠᴀʙʟᴇ ᴡᴏʀᴅs ғᴇᴀᴛᴜʀᴇ ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.
+<code>/rem_words_off</code> - Turns off the removable words feature for the channel.
 
-<code>/replace_words</code> - ʀᴇᴘʟᴀᴄᴇ ᴀ ᴡᴏʀᴅ ᴡɪᴛʜ ᴀɴᴏᴛʜᴇʀ ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ᴄᴀᴘᴛɪᴏɴ.
+<code>/replace_words</code> - Replace a word with another in the channel's caption.
 
-<code>/del_replace_word</code> - ᴅɪsᴀʙʟᴇ ᴛʜᴇ ᴡᴏʀᴅ ʀᴇᴘʟᴀᴄᴇᴍᴇɴᴛ ғᴇᴀᴛᴜʀᴇ.
+<code>/del_replace_word</code> - Disable the word replacement feature.
 
-<code>/view</code> - ᴠɪᴇᴡ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴄᴀᴘᴛɪᴏɴ, ᴘʀᴇғɪx, sᴜғғɪx, ʀᴇᴍᴏᴠᴀʙʟᴇ ᴡᴏʀᴅs, ʀᴇᴘʟᴀᴄᴇ ᴡᴏʀᴅs, ᴀɴᴅ ᴍᴏʀᴇ.
+<code>/view</code> - View the current caption, prefix, suffix, removable words, replace words, and more.
 
-<code>/tags</code> - ᴠɪᴇᴡ ᴀ ʟɪsᴛ ᴏғ ʜᴛᴍʟ ᴛᴀɢs ғᴏʀ ᴛᴇxᴛ ғᴏʀᴍᴀᴛᴛɪɴɢ (ᴇ.ɢ., ʙᴏʟᴅ, ɪᴛᴀʟɪᴄ, ᴇᴛᴄ.).
-
-<code>/Cmd</code> - ɢᴇᴛ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs ᴡɪᴛʜ ᴅᴇsᴄʀɪᴘᴛɪᴏɴs.
-
-<code>/placeholders</code> - ᴠɪᴇᴡ ᴀ ʟɪsᴛ ᴏғ ᴀᴠᴀɪʟᴀʙʟᴇ ᴘʟᴀᴄᴇʜᴏʟᴅᴇʀs ᴀɴᴅ ᴛʜᴇɪʀ ᴜsᴀɢᴇ ɪɴ ᴄᴀᴘᴛɪᴏɴs.
+<code>/tags</code> - View a list of available HTML tags to format your caption.
 """
+      
