@@ -43,7 +43,7 @@ class script(object):
 </blockquote>
 """
 
-HELP_CAPTION_TEXT = """
+    HELP_CAPTION_TEXT = """
 <b>ʏᴏᴜ ᴄᴀɴ ᴀᴅᴅ ᴄᴜsᴛᴏᴍ ᴄᴀᴘᴛɪᴏɴ ᴛᴏ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ʙʏ ᴛʜᴇ ғᴏʟʟᴏᴡɪɴɢ :-
 
 » cᴏᴍᴍᴀɴᴅ
@@ -69,7 +69,7 @@ HELP_CAPTION_TEXT = """
 """
 
 # Static Text for HTML Tags
-HTML_TAGS_TEXT = """🔰 Usᴇ ᴛʜɪs ʜᴛᴍʟ ᴛᴀɢs
+    HTML_TAGS_TEXT = """🔰 Usᴇ ᴛʜɪs ʜᴛᴍʟ ᴛᴀɢs
 ➢ Bold Text
 ☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
 
@@ -98,7 +98,7 @@ HTML_TAGS_TEXT = """🔰 Usᴇ ᴛʜɪs ʜᴛᴍʟ ᴛᴀɢs
 ☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{filename}&lt;/a&gt;</code>"""
 
 # Static Text for Placeholders
-PLACEHOLDERS_TEXT = """
+    PLACEHOLDERS_TEXT = """
 <b>Aᴠᴀɪʟᴀʙʟᴇ Cᴀᴘᴛɪᴏɴ Pʟᴀᴄᴇʜᴏʟᴅᴇʀs:</b>
 
 ➢ <code>{file_name}</code> - Tʜᴇ ɴᴀᴍᴇ ᴏғ ᴛʜᴇ ғɪʟᴇ (ᴇ.ɢ., ᴍᴏᴠɪᴇ ɴᴀᴍᴇ, sᴏɴɢ ᴛɪᴛʟᴇ, ᴇᴛᴄ.)
@@ -126,7 +126,7 @@ For example: <code>{prefix} {file_name} {year} {language} {subtitles} {suffix}</
 """
 
 # Static Text for Commands
-COMMAND_LIST = """
+    COMMAND_LIST = """
 <b>ᴀᴠᴀɪʟᴀʙʟᴇ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅ:</b>
 
 <code>/set_prefix</code> - ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪs ᴜsᴇᴅ ᴛᴏ sᴇᴛ ᴛʜᴇ ᴘʀᴇғɪx ғᴏʀ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ's ᴄᴀᴘᴛɪᴏɴ.
