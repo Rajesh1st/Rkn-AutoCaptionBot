@@ -53,7 +53,6 @@ async def all_db_users_here(client, message):
              "```"
     )
 
-# Handler for media (photos, videos, documents)
 @Client.on_message(filters.document | filters.photo | filters.video)
 async def handle_media_edit(client, message):
     channel_id = message.chat.id  # Get the channel ID
@@ -62,9 +61,21 @@ async def handle_media_edit(client, message):
     # Retrieve the custom caption for this channel
     custom_caption = await get_caption(channel_id)
     if custom_caption:
+        # Replace placeholders with actual values
+        file_name = None
+        if message.document:
+            file_name = message.document.file_name
+        elif message.video:
+            file_name = message.video.file_name
+        elif message.photo:
+            file_name = "Photo"  # For photos, a generic label (no filename)
+        
+        file_caption = message.caption or ""
+        replaced_caption = custom_caption.replace("{file_caption}", file_caption).replace("{file_name}", file_name or "Unknown")
+
         try:
-            # Edit the media caption if a custom caption is found
-            await message.edit_caption(custom_caption)
+            # Edit the media caption with the replaced values
+            await message.edit_caption(replaced_caption)
         except FloodWait as e:
             # Handle FloodWait errors
             await asyncio.sleep(e.x)
