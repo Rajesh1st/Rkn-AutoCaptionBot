@@ -392,66 +392,55 @@ def format_duration(duration_seconds):
     # Return the formatted duration
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-# Function to extract quality from the media title
+# List of quality terms as provided
+quality_terms = [
+    "WEB-DL", "BluRay", "HDRip", "HD", "SD", "HDTV", "Blu-ray", "WEBRip", "DVDRip",
+    "BRRip", "DVDScr", "CAM", "TC", "TS", "Theater Print", "HDCAM", "CAMRip", "TSRip",
+    "DVD", "VHS", "Blu-Ray Remux", "Remux", "HDCAM", "BluRay Remux", "FullHD", "4K UHD",
+    "HDDVD", "VCD", "4K Remux", "HDTC", "Theatrical"
+]
+
+# Add video codec terms like x265, h265, x264, 10bit
+codec_terms = [
+    "x265", "h265", "x264", "h264", "10bit", "HEVC", "H.265", "H.264"
+]
+
+# Function to extract quality from the title
 def extract_quality(title):
-    # Define possible quality terms
-    quality_terms = ["480p", "720p", "1080p", "1440p", "2K", "4K", "8K", "HD", "HDR", "SD"]
-    
-    # Search for any of these terms in the title
-    found_quality = [quality for quality in quality_terms if quality in title.upper()]
+    # Search for the quality number (e.g., 480p, 720p, etc.)
+    quality_numbers = ["480p", "720p", "1080p", "1440p", "2K", "4K", "8K", "HD", "HDR", "SD"]
+    quality_number = next((quality for quality in quality_numbers if quality in title.upper()), None)
 
-    # If no quality is found, return "Unknown"
-    if not found_quality:
-        return "Unknown"
-    
-    # Return the first found quality term (assuming a title would only have one quality descriptor)
-    return found_quality[0]
+    # Search for any of the quality descriptors (e.g., WEB-DL, HDRip, BluRay)
+    quality_term = next((term for term in quality_terms if term in title.upper()), None)
 
-global_button = None  # Global variable to store the button
+    # If both are found, return them in the desired order: quality number first, then the term
+    if quality_number and quality_term:
+        return f"{quality_number} {quality_term}"
 
-@Client.on_message(filters.command("add_button"))
-async def add_button(bot, message):
-    global global_button
-    
-    # Get the command arguments (button name and URL)
-    command_args = message.text.split(" ", 2)
-    
-    # If there are not enough arguments, ask for the correct format
-    if len(command_args) < 3:
-        await message.reply("Please provide the button title and URL. Example: /add_button [testing] [https://t.me/RxBotz]")
-        return
-    
-    # Extract button name and URL from the arguments
-    button_name = command_args[1].strip("[]")  # Extract the button name without brackets
-    button_url = command_args[2].strip("[]")  # Remove any spaces around the URL
-    
-    # Validate the URL format
-    if not re.match(r'^https?://', button_url):
-        await message.reply("Invalid URL. Please provide a valid URL starting with 'http://' or 'https://'.")
-        return
-    
-    # Create the inline keyboard button
-    button = InlineKeyboardButton(button_name, url=button_url)
-    global_button = InlineKeyboardMarkup([[button]])  # Store the button globally
-    
-    await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
+    # If only the quality number is found, return it
+    if quality_number:
+        return quality_number
 
+    # If only the quality term is found, return it
+    if quality_term:
+        return quality_term
+
+    # If no quality number or term is found, return "Unknown"
+    return "Unknown"
+
+# Function to extract codec (like x265, h265, etc.)
+def extract_codec(title):
+    found_codecs = [codec for codec in codec_terms if codec.lower() in title.lower()]
+    return ", ".join(found_codecs) if found_codecs else "Unknown"
+
+# Update the main message handling function to include codec extraction
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
     global global_button  # Use the global button
     
     if message.media:
-        # Apply the button to the media message
-        if global_button:
-            await message.edit(reply_markup=global_button)
-
-# Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
-@Client.on_message(filters.channel)
-async def auto_edit_caption(bot, message):
-    global global_button  # Use the global button
-
-    chnl_id = message.chat.id
-    if message.media:
+        chnl_id = message.chat.id
         for file_type in ("video", "audio", "document", "voice"):
             obj = getattr(message, file_type, None)
             if obj and hasattr(obj, "file_name"):
@@ -460,6 +449,7 @@ async def auto_edit_caption(bot, message):
 
                 # Get duration (in seconds) for video or audio
                 duration_seconds = getattr(obj, "duration", None)
+                duration_text = f"{duration_seconds // 60}m {duration_seconds % 60}s" if duration_seconds else "Unknown"
 
                 # Convert file size to human-readable format
                 if file_size < 1024:
@@ -471,6 +461,7 @@ async def auto_edit_caption(bot, message):
                 else:
                     file_size_text = f"{file_size / 1024**3:.2f} GB"
 
+                # Clean file name for caption
                 file_name = re.sub(r"@\w+\s*", "", file_name).replace("_", " ").replace(".", " ")
 
                 cap_dets = await chnl_ids.find_one({"chnl_id": chnl_id})
@@ -495,10 +486,11 @@ async def auto_edit_caption(bot, message):
                 if suffix:
                     file_name = f"{file_name} {suffix}"
 
-                # Extract language, year, and quality from the file name
+                # Extract language, year, quality, and codec from the file name
                 language = extract_language(file_name)  # Extract language from file name
                 year = extract_year(file_name)  # Extract year from file name
                 quality = extract_quality(file_name)  # Extract quality from file name
+                codec = extract_codec(file_name)  # Extract codec (x265, h265, etc.)
 
                 # Process word replacements in the caption as well (for {file_caption})
                 caption_text = message.caption or "No caption"
@@ -519,11 +511,6 @@ async def auto_edit_caption(bot, message):
                 elif "MSub" in file_name or "MSub" in caption_text:
                     subtitles = "MSub"
 
-                # Get the duration in HH:MM:SS format if available
-                duration_text = ""
-                if duration_seconds:
-                    duration_text = format_duration(duration_seconds)
-
                 try:
                     replaced_caption = current_caption.format(
                         file_name=file_name,
@@ -532,6 +519,7 @@ async def auto_edit_caption(bot, message):
                         language=language,
                         year=year,
                         quality=quality,  # Include quality
+                        codec=codec,  # Include codec (x265, h265, etc.)
                         wish=wish,
                         subtitles=subtitles,  # Include subtitles (ESub or MSub)
                         duration=duration_text  # Add the duration placeholder
