@@ -468,7 +468,7 @@ async def auto_edit_caption(bot, message):
         if global_button:
             await message.edit(reply_markup=global_button)
 
-# Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, {quality}, and {codec}
+# Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
     global global_button  # Use the global button
@@ -522,7 +522,6 @@ async def auto_edit_caption(bot, message):
                 language = extract_language(file_name)  # Extract language from file name
                 year = extract_year(file_name)  # Extract year from file name
                 quality = extract_quality(file_name)  # Extract quality from file name
-                codec = "H.264"  # Assuming a placeholder for codec (adjust extraction method if needed)
 
                 # Process word replacements in the caption as well (for {file_caption})
                 caption_text = message.caption or "No caption"
@@ -542,22 +541,21 @@ async def auto_edit_caption(bot, message):
                     subtitles = "ESub"
                 elif "MSub" in file_name or "MSub" in caption_text:
                     subtitles = "MSub"
+                
+                # Format the caption with all placeholders
+                replaced_caption = current_caption.format(
+                    file_name=file_name,
+                    file_size=file_size_text,
+                    file_caption=caption_text,  # Updated caption with replacements and removals
+                    language=language,
+                    year=year,
+                    quality=quality,  # Include quality
+                    wish=wish,
+                    subtitles=subtitles,  # Include subtitles (ESub or MSub)
+                    duration=duration_seconds  # Pass the duration placeholder directly
+                )
 
-                try:
-                    replaced_caption = current_caption.format(
-                        file_name=file_name,
-                        file_size=file_size_text,
-                        file_caption=caption_text,  # Updated caption with replacements and removals
-                        language=language,
-                        year=year,
-                        quality=quality,  # Include quality
-                        codec=codec,  # Include codec placeholder
-                        wish=wish,
-                        subtitles=subtitles,  # Include subtitles (ESub or MSub)
-                        duration=duration_text  # Add the duration placeholder
-                    )
-
-                    await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
+                await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
 
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
