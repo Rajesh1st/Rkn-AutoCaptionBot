@@ -146,6 +146,19 @@ async def caption_callback(bot, callback_query):
         ])
     )
 
+# Handle the "remove_word_button" button callback
+@Client.on_callback_query(filters.regex('remove_word_button'))
+async def caption_callback(bot, callback_query):
+    await callback_query.message.edit_text(
+        script.REMOVE_WORD_BUTTON_TEXT,  # Accessing REMOVE_WORD_BUTTON_TEXT from script.py
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')  # Back button to help section
+            ]
+        ])
+    )
+    
 # Handle the "ABOUT" button callback
 @Client.on_callback_query(filters.regex('about_button'))
 async def about_callback(bot, callback_query):
