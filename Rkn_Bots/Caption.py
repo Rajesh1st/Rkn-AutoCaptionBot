@@ -13,9 +13,23 @@ import asyncio
 import os
 from datetime import datetime
 import asyncio, re, time, sys
-from .database import total_user, getid, delete, addCap, updateCap, insert, chnl_ids, total_channels, increment_media_edit_count, get_total_media_edits
+from .database import (
+    total_user,
+    getid,
+    delete,
+    addCap,
+    updateCap,
+    insert,
+    chnl_ids,
+    total_channels,
+    increment_media_edit_count,
+    get_total_media_edits,
+    get_caption,
+)
+
 from pyrogram.errors import FloodWait
 
+# Command to show bot stats
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["rknusers"]))
 async def all_db_users_here(client, message):
     start_t = time.time()
@@ -24,26 +38,42 @@ async def all_db_users_here(client, message):
     uptime = time.strftime("%Hh%Mm%Ss", time.gmtime(time.time() - client.uptime))    
     total_users = await total_user()
     total_chnls = await total_channels()
-    
-    # Get the total media edits count
-    total_edits = await get_total_media_edits()
+    total_edits = await get_total_media_edits()  # Get the total media edits count
 
     end_t = time.time()
     time_taken_s = (end_t - start_t) * 1000  # Time in ms
-    await rkn.edit(text=f"**--Bot Processed--** \n\n**> 𝙼𝚢 𝚂𝚝𝚊𝚝𝚜**\n\n"
-                        "```text\n"
-                        f"‣ Bot ᴜᴘᴛɪᴍᴇ: {uptime}\n"
-                        f"‣ Bot ᴘɪɴɢ: `{time_taken_s:.3f} ᴍꜱ`\n"
-                        f"‣ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: `{total_users}`\n"
-                        f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: `{total_chnls}`\n"
-                        f"‣ ᴛᴏᴛᴀʟ ꜰɪʟᴇꜱ ᴇᴅɪᴛᴇᴅ: `{total_edits}`\n"
-                        "```")
+    await rkn.edit(
+        text=f"**--Bot Processed--** \n\n**> 𝙼𝚢 𝚂𝚝𝚊𝚝𝚜**\n\n"
+             "```text\n"
+             f"‣ Bot ᴜᴘᴛɪᴍᴇ: {uptime}\n"
+             f"‣ Bot ᴘɪɴɢ: `{time_taken_s:.3f} ᴍꜱ`\n"
+             f"‣ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: `{total_users}`\n"
+             f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: `{total_chnls}`\n"
+             f"‣ ᴛᴏᴛᴀʟ ꜰɪʟᴇꜱ ᴇᴅɪᴛᴇᴅ: `{total_edits}`\n"
+             "```"
+    )
 
 # Handler for media (photos, videos, documents)
 @Client.on_message(filters.document | filters.photo | filters.video)
 async def handle_media_edit(client, message):
     channel_id = message.chat.id  # Get the channel ID
     await increment_media_edit_count(channel_id)  # Increment media edit count
+
+    # Retrieve the custom caption for this channel
+    custom_caption = await get_caption(channel_id)
+    if custom_caption:
+        try:
+            # Edit the media caption if a custom caption is found
+            await message.edit_caption(custom_caption)
+        except FloodWait as e:
+            # Handle FloodWait errors
+            await asyncio.sleep(e.x)
+        except Exception as err:
+            print(f"Failed to edit caption: {err}")
+    else:
+        # Add a new caption to the database if none exists
+        default_caption = message.caption or ""
+        await addCap(channel_id, default_caption)
     
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["broadcast"]))
 async def broadcast(bot, message):
