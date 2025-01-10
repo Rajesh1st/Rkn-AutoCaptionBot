@@ -535,29 +535,29 @@ async def auto_edit_caption(bot, message):
                 # Add time-based wish
                 wish = generate_wish()
 
-                # Subtitle Extraction: Check for "ESub" or "MSub"
-                subtitles = ""
-                if "ESub" in file_name or "ESub" in caption_text:
-                    subtitles = "ESub"
-                elif "MSub" in file_name or "MSub" in caption_text:
-                    subtitles = "MSub"
-                
-                # Format the caption with all placeholders
-                replaced_caption = current_caption.format(
-                    file_name=file_name,
-                    file_size=file_size_text,
-                    file_caption=caption_text,  # Updated caption with replacements and removals
-                    language=language,
-                    year=year,
-                    quality=quality,  # Include quality
-                    wish=wish,
-                    subtitles=subtitles,  # Include subtitles (ESub or MSub)
-                    duration=duration_seconds  # Pass the duration placeholder directly
-                )
+# Subtitle Extraction: Check for "ESub" or "MSub"
+subtitles = ""
+if "ESub" in file_name or "ESub" in caption_text:
+    subtitles = "ESub"
+elif "MSub" in file_name or "MSub" in caption_text:
+    subtitles = "MSub"
 
-                await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
+# Format the caption with all placeholders
+replaced_caption = current_caption.format(
+    file_name=file_name,
+    file_size=file_size_text,
+    file_caption=caption_text,  # Updated caption with replacements and removals
+    language=language,
+    year=year,
+    quality=quality,  # Include quality
+    wish=wish,
+    subtitles=subtitles,  # Include subtitles (ESub or MSub)
+    duration=duration_seconds  # Pass the duration placeholder directly
+)
 
-                except FloodWait as e:
-                    await asyncio.sleep(e.x)
-                    continue
-    return
+# This part should happen after processing the subtitle logic and formatting the caption.
+try:
+    await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
+except FloodWait as e:
+    await asyncio.sleep(e.x)
+    continue
