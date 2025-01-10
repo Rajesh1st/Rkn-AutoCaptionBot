@@ -13,7 +13,7 @@ import asyncio
 import os
 from datetime import datetime
 import asyncio, re, time, sys
-from .database import total_user, getid, delete, addCap, updateCap, insert, chnl_ids, total_channels  # <-- Added total_channels import
+from .database import total_user, getid, delete, addCap, updateCap, insert, chnl_ids, total_channels
 from pyrogram.errors import FloodWait
 
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["rknusers"]))
@@ -28,11 +28,11 @@ async def all_db_users_here(client, message):
     await rkn.edit(text=f"**--Bot Processed--** \n\n**> 𝙼𝚢 𝚂𝚝𝚊𝚝𝚜**\n\n"
                         "```text\n"
                         f"‣ Bot ᴜᴘᴛɪᴍᴇ: {uptime}\n"
-                        f"‣ Bot ᴘɪɴɢ: `{time_taken_s:.3f} ᴍꜱ`\n"
-                        f"‣ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: `{total_users}`\n"
-                        f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: `{total_chnls}`\n"
+                        f"‣ Bot ᴘɪɴɢ: {time_taken_s:.3f} ᴍꜱ\n"
+                        f"‣ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\n"
+                        f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: {total_chnls}\n"
                         "```")
-    
+                        
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["broadcast"]))
 async def broadcast(bot, message):
     if (message.reply_to_message):
@@ -228,7 +228,7 @@ def extract_language(default_caption):
     language_pattern = r'\b(Hindi|English|Tamil|Telugu|Malayalam|Gujarati|Kannada|Indonesian|Danish|Urdu|Korean|Chinese|Japanese|Hin|Tam|Tel|Ben|Guj|Mal|Mar|Kan|Eng|Kor|Chi|jap)\b'  # Extend with more languages if necessary
     languages = set(re.findall(language_pattern, default_caption, re.IGNORECASE))
     if not languages:
-        return ""  # Return empty string if no language is found
+        return "Hindi-English"
     return ", ".join(sorted(languages, key=str.lower))
 
 # Extract year from the caption
@@ -394,41 +394,18 @@ def format_duration(duration_seconds):
 
 # Function to extract quality from the media title
 def extract_quality(title):
-    # Define possible quality numbers and formats
-    quality_numbers = [
-        "480p", "720p", "1080p", "1440p", "2K", "4K", "8K", "SD", "HD", "HDR",
-        "2160p", "5K", "6K", "10K", "12K", "144p", "240p", "360p", "480p",
-        "720", "1080", "2K", "4K", "1080i", "1440p", "2160p"
-    ]
-
-    # Define possible quality descriptors (formats like WEB-DL, BluRay, etc.)
-    quality_terms = [
-        "WEB-DL", "BluRay", "HDRip", "HD", "SD", "HDTV", "Blu-ray", "WEBRip", "DVDRip",
-        "BRRip", "DVDScr", "CAM", "TC", "TS", "Theater Print", "HDCAM", "CAMRip", "TSRip",
-        "DVD", "VHS", "Blu-Ray Remux", "Remux", "HDCAM", "BluRay Remux", "FullHD", "4K UHD",
-        "HDDVD", "VCD", "4K Remux", "HDTC", "Theatrical"
-    ]
+    # Define possible quality terms
+    quality_terms = ["480p", "720p", "1080p", "1440p", "2K", "4K", "8K", "HD", "HDR", "SD"]
     
-    # Search for the quality number (e.g., 480p, 720p, etc.)
-    quality_number = next((quality for quality in quality_numbers if quality in title.upper()), None)
+    # Search for any of these terms in the title
+    found_quality = [quality for quality in quality_terms if quality in title.upper()]
 
-    # Search for any of the quality descriptors (e.g., WEB-DL, HDRip, BluRay)
-    quality_term = next((term for term in quality_terms if term in title.upper()), None)
-
-    # If both are found, return them in the desired order: quality number first, then the term
-    if quality_number and quality_term:
-        return f"{quality_number} {quality_term}"
-
-    # If only the quality number is found, return it
-    if quality_number:
-        return quality_number
-
-    # If only the quality term is found, return it
-    if quality_term:
-        return quality_term
-
-    # If no quality number or term is found, return "Unknown"
-    return "Unknown"
+    # If no quality is found, return "Unknown"
+    if not found_quality:
+        return "Unknown"
+    
+    # Return the first found quality term (assuming a title would only have one quality descriptor)
+    return found_quality[0]
 
 global_button = None  # Global variable to store the button
 
@@ -535,30 +512,34 @@ async def auto_edit_caption(bot, message):
                 # Add time-based wish
                 wish = generate_wish()
 
-# Subtitle Extraction: Check for "ESub" or "MSub"
-subtitles = ""
-if "ESub" in file_name or "ESub" in caption_text:
-    subtitles = "ESub"
-elif "MSub" in file_name or "MSub" in caption_text:
-    subtitles = "MSub"
+                # Subtitle Extraction: Check for "ESub" or "MSub"
+                subtitles = ""
+                if "ESub" in file_name or "ESub" in caption_text:
+                    subtitles = "ESub"
+                elif "MSub" in file_name or "MSub" in caption_text:
+                    subtitles = "MSub"
 
-# Format the caption with all placeholders
-replaced_caption = current_caption.format(
-    file_name=file_name,
-    file_size=file_size_text,
-    file_caption=caption_text,  # Updated caption with replacements and removals
-    language=language,
-    year=year,
-    quality=quality,  # Include quality
-    wish=wish,
-    subtitles=subtitles,  # Include subtitles (ESub or MSub)
-    duration=duration_seconds  # Pass the duration placeholder directly
-)
+                # Get the duration in HH:MM:SS format if available
+                duration_text = ""
+                if duration_seconds:
+                    duration_text = format_duration(duration_seconds)
 
-# This part should happen after processing the subtitle logic and formatting the caption.
-try:
-    await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
-    
-except FloodWait as e:
-    await asyncio.sleep(e.x)
-    continue
+                try:
+                    replaced_caption = current_caption.format(
+                        file_name=file_name,
+                        file_size=file_size_text,
+                        file_caption=caption_text,  # Updated caption with replacements and removals
+                        language=language,
+                        year=year,
+                        quality=quality,  # Include quality
+                        wish=wish,
+                        subtitles=subtitles,  # Include subtitles (ESub or MSub)
+                        duration=duration_text  # Add the duration placeholder
+                    )
+
+                    await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
+
+                except FloodWait as e:
+                    await asyncio.sleep(e.x)
+                    continue
+    return
