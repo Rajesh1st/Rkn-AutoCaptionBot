@@ -99,7 +99,7 @@ async def start_cmd(bot, message):
 @Client.on_callback_query(filters.regex('help_button'))
 async def help_callback(bot, callback_query):
     await callback_query.message.edit_text(
-        script.HELP_TXT,  # Accessing HELP_TXT from script.py correctly
+        script.HELP_TXT,
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([
             [
@@ -137,24 +137,24 @@ async def help_callback(bot, callback_query):
 @Client.on_callback_query(filters.regex('caption_button'))
 async def caption_callback(bot, callback_query):
     await callback_query.message.edit_text(
-        script.HELP_CAPTION_TEXT,  # Accessing HELP_CAPTION_TEXT from script.py
+        script.HELP_CAPTION_TEXT,
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([
             [
-                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')  # Back button to help section
+                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')
             ]
         ])
     )
 
 # Handle the "remove_word_button" button callback
 @Client.on_callback_query(filters.regex('remove_word_button'))
-async def caption_callback(bot, callback_query):
+async def remove_word_callback(bot, callback_query):  # Renamed function
     await callback_query.message.edit_text(
-        script.REMOVE_WORD_BUTTON_TEXT,  # Accessing REMOVE_WORD_BUTTON_TEXT from script.py
+        script.REMOVE_WORD_BUTTON_TEXT,
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([
             [
-                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')  # Back button to help section
+                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')
             ]
         ])
     )
