@@ -13,38 +13,26 @@ import asyncio
 import os
 from datetime import datetime
 import asyncio, re, time, sys
-from .database import total_user, getid, delete, addCap, updateCap, insert, chnl_ids, total_channels, increment_media_edit_count, get_total_media_edits
+from .database import total_user, getid, delete, addCap, updateCap, insert, chnl_ids, total_channels
 from pyrogram.errors import FloodWait
 
-@Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["rknusers"]))
+Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["rknusers"]))
 async def all_db_users_here(client, message):
     start_t = time.time()
     rkn = await message.reply_text("Processing...")
-    
     uptime = time.strftime("%Hh%Mm%Ss", time.gmtime(time.time() - client.uptime))    
     total_users = await total_user()
-    total_chnls = await total_channels()
-    
-    # Get the total media edits count
-    total_edits = await get_total_media_edits()
-
+    total_chnls = await total_channels()  # Get the total number of channels
     end_t = time.time()
-    time_taken_s = (end_t - start_t) * 1000  # Time in ms
+    time_taken_s = (end_t - start_t) * 1000
     await rkn.edit(text=f"**--Bot Processed--** \n\n**> 𝙼𝚢 𝚂𝚝𝚊𝚝𝚜**\n\n"
                         "```text\n"
                         f"‣ Bot ᴜᴘᴛɪᴍᴇ: {uptime}\n"
                         f"‣ Bot ᴘɪɴɢ: `{time_taken_s:.3f} ᴍꜱ`\n"
                         f"‣ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: `{total_users}`\n"
                         f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: `{total_chnls}`\n"
-                        f"‣ ᴛᴏᴛᴀʟ ꜰɪʟᴇꜱ ᴇᴅɪᴛᴇᴅ: `{total_edits}`\n"
                         "```")
-
-# Handler for media (photos, videos, documents)
-@Client.on_message(filters.document | filters.photo | filters.video)
-async def handle_media_edit(client, message):
-    channel_id = message.chat.id  # Get the channel ID where the media was sent
-    await increment_media_edit_count(channel_id)  # Increment media edit count for this channel
-
+    
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["broadcast"]))
 async def broadcast(bot, message):
     if (message.reply_to_message):
