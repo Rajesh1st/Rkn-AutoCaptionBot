@@ -558,6 +558,7 @@ replaced_caption = current_caption.format(
 # This part should happen after processing the subtitle logic and formatting the caption.
 try:
     await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
+    
 except FloodWait as e:
     await asyncio.sleep(e.x)
     continue
