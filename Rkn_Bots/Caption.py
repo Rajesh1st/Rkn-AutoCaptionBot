@@ -42,8 +42,8 @@ async def all_db_users_here(client, message):
 # Handler for media (photos, videos, documents)
 @Client.on_message(filters.document | filters.photo | filters.video)
 async def handle_media_edit(client, message):
-    channel_id = message.chat.id  # Get the channel ID where the media was sent
-    await increment_media_edit_count(channel_id)  # Increment media edit count for this channel
+    channel_id = message.chat.id  # Get the channel ID
+    await increment_media_edit_count(channel_id)  # Increment media edit count
     
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["broadcast"]))
 async def broadcast(bot, message):
