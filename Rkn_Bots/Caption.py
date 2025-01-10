@@ -303,6 +303,56 @@ async def del_replace_word(bot, message):
         await asyncio.sleep(5)
         await rkn.delete()
 
+# Command to toggle URL removal in captions
+@client.on_message(filters.command("rm_url") & filters.channel)
+async def remove_url(bot, message):
+    chnl_id = message.chat.id
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    
+    if chk_data:
+        # Toggle the 'rm_url' setting (on/off)
+        rm_url_status = chk_data.get("rm_url", False)
+        
+        if rm_url_status:
+            # If it's already enabled, turn it off
+            updated_caption = chk_data.get("caption", "")
+            updated_caption = re.sub(r'http[s]?://\S+', '', updated_caption)  # Remove URLs
+            
+            # Disable the feature
+            await chnl_ids.update_one({"chnl_id": chnl_id}, {"$set": {"rm_url": False, "caption": updated_caption}})
+            await message.reply("URLs have been removed from the caption. URL removal is now <b>OFF</b>.")
+        else:
+            # If it's not enabled, turn it on
+            await chnl_ids.update_one({"chnl_id": chnl_id}, {"$set": {"rm_url": True}})
+            await message.reply("URL removal is now <b>ON</b>.")
+    else:
+        await message.reply("No caption data found for this channel.")
+
+# Command to toggle mention removal in captions
+@client.on_message(filters.command("rm_metion") & filters.channel)
+async def remove_mentions(bot, message):
+    chnl_id = message.chat.id
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    
+    if chk_data:
+        # Toggle the 'rm_metion' setting (on/off)
+        rm_metion_status = chk_data.get("rm_metion", False)
+        
+        if rm_metion_status:
+            # If it's already enabled, turn it off
+            updated_caption = chk_data.get("caption", "")
+            updated_caption = re.sub(r'@\w+', '', updated_caption)  # Remove mentions
+            
+            # Disable the feature
+            await chnl_ids.update_one({"chnl_id": chnl_id}, {"$set": {"rm_metion": False, "caption": updated_caption}})
+            await message.reply("Mentions have been removed from the caption. Mention removal is now <b>OFF</b>.")
+        else:
+            # If it's not enabled, turn it on
+            await chnl_ids.update_one({"chnl_id": chnl_id}, {"$set": {"rm_metion": True}})
+            await message.reply("Mention removal is now <b>ON</b>.")
+    else:
+        await message.reply("No caption data found for this channel.")
+
 # Command to view current caption settings
 @Client.on_message(filters.command("view") & filters.channel)
 async def view_caption(bot, message):
@@ -341,65 +391,111 @@ async def view_caption(bot, message):
     else:
         return await message.reply("<b>No custom caption set. Using the default caption.</b>")
 
-
-# Command to turn on/off removing URLs
-@Client.on_message(filters.command("rem_url") & filters.channel)
-async def rem_url(bot, message):
+# Command to set removable words
+@Client.on_message(filters.command("rem_words") & filters.channel)
+async def rem_words(bot, message):
     chnl_id = message.chat.id
-    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if len(message.command) < 2:
+        return await message.reply(
+            "<b>Provide words to remove</b>\n<u>Example:</u> ⬇️\n\n<code>/rem_words test mkv</code>"
+        )
     
+    words_to_remove = message.text.split(" ", 1)[1]
+    words_list = re.findall(r'\S+', words_to_remove)
+    
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
     if chk_data:
-        rem_url_status = chk_data.get("rem_url", "Off")
-        if rem_url_status == "Off":
-            await chnl_ids.update_one(
-                {"chnl_id": chnl_id},
-                {"$set": {"rem_url": "On"}}
-            )
-            await message.reply("Removing URLs from media titles is now <b>ON</b>.")
-        else:
-            await chnl_ids.update_one(
-                {"chnl_id": chnl_id},
-                {"$set": {"rem_url": "Off"}}
-            )
-            await message.reply("Removing URLs from media titles is now <b>OFF</b>.")
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$set": {"removable_words": words_list}}
+        )
+        return await message.reply(f"Words to remove set for this channel ✅: {', '.join(words_list)}")
     else:
-        await chnl_ids.insert_one({"chnl_id": chnl_id, "rem_url": "On"})
-        await message.reply("Removing URLs from media titles is now <b>ON</b>.")
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "removable_words": words_list})
+        return await message.reply(f"Words to remove set for this channel ✅: {', '.join(words_list)}")
 
 
-# Command to turn on/off removing mentions
-@Client.on_message(filters.command("rem_mention") & filters.channel)
-async def rem_mention(bot, message):
+# Command to turn off removable words
+@Client.on_message(filters.command("rem_words_off") & filters.channel)
+async def rem_words_off(bot, message):
     chnl_id = message.chat.id
-    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
     
-    if chk_data:
-        rem_mention_status = chk_data.get("rem_mention", "Off")
-        if rem_mention_status == "Off":
-            await chnl_ids.update_one(
-                {"chnl_id": chnl_id},
-                {"$set": {"rem_mention": "On"}}
-            )
-            await message.reply("Removing mentions from media titles is now <b>ON</b>.")
-        else:
-            await chnl_ids.update_one(
-                {"chnl_id": chnl_id},
-                {"$set": {"rem_mention": "Off"}}
-            )
-            await message.reply("Removing mentions from media titles is now <b>OFF</b>.")
-    else:
-        await chnl_ids.insert_one({"chnl_id": chnl_id, "rem_mention": "On"})
-        await message.reply("Removing mentions from media titles is now <b>ON</b>.")
-
-# Function to remove mentions from the title
-def remove_mentions(title):
-    return re.sub(r'@\w+', '', title)
+    try:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$unset": {"removable_words": ""}}
+        )
+        return await message.reply("Removable words list has been reset for this channel.")
+    except Exception as e:
+        rkn = await message.reply(f"Error: {e}")
+        await asyncio.sleep(5)
+        await rkn.delete()
 
 
-# Function to remove URLs from the title
-def remove_urls(title):
-    return re.sub(r'http[s]?://\S+', '', title)
+# Function to format duration in HH:MM:SS
+def format_duration(duration_seconds):
+    # Ensure that duration is an integer and not a floating-point number
+    duration_seconds = int(duration_seconds)  # Cast to integer to discard decimals
+    
+    hours = duration_seconds // 3600
+    minutes = (duration_seconds % 3600) // 60
+    seconds = duration_seconds % 60
+    
+    # Return the formatted duration
+    return f"{hours:02}:{minutes:02}:{seconds:02}"
 
+# Function to extract quality from the media title
+def extract_quality(title):
+    # Define possible quality terms
+    quality_terms = ["480p", "720p", "1080p", "1440p", "2K", "4K", "8K", "HD", "HDR", "SD"]
+    
+    # Search for any of these terms in the title
+    found_quality = [quality for quality in quality_terms if quality in title.upper()]
+
+    # If no quality is found, return "Unknown"
+    if not found_quality:
+        return "Unknown"
+    
+    # Return the first found quality term (assuming a title would only have one quality descriptor)
+    return found_quality[0]
+
+global_button = None  # Global variable to store the button
+
+@Client.on_message(filters.command("add_button"))
+async def add_button(bot, message):
+    global global_button
+    
+    # Get the command arguments (button name and URL)
+    command_args = message.text.split(" ", 2)
+    
+    # If there are not enough arguments, ask for the correct format
+    if len(command_args) < 3:
+        await message.reply("Please provide the button title and URL. Example: /add_button [testing] [https://t.me/RxBotz]")
+        return
+    
+    # Extract button name and URL from the arguments
+    button_name = command_args[1].strip("[]")  # Extract the button name without brackets
+    button_url = command_args[2].strip("[]")  # Remove any spaces around the URL
+    
+    # Validate the URL format
+    if not re.match(r'^https?://', button_url):
+        await message.reply("Invalid URL. Please provide a valid URL starting with 'http://' or 'https://'.")
+        return
+    
+    # Create the inline keyboard button
+    button = InlineKeyboardButton(button_name, url=button_url)
+    global_button = InlineKeyboardMarkup([[button]])  # Store the button globally
+    
+    await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
+
+@Client.on_message(filters.channel)
+async def auto_edit_caption(bot, message):
+    global global_button  # Use the global button
+    
+    if message.media:
+        # Apply the button to the media message
+        if global_button:
+            await message.edit(reply_markup=global_button)
 
 # Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
 @Client.on_message(filters.channel)
@@ -435,16 +531,6 @@ async def auto_edit_caption(bot, message):
                 removable_words = cap_dets.get("removable_words", [])
                 replace_words = cap_dets.get("replace_words", [])
                 current_caption = cap_dets.get("caption", "")
-                rem_url = cap_dets.get("rem_url", "Off")
-                rem_mention = cap_dets.get("rem_mention", "Off")
-
-                # Apply URL removal if enabled
-                if rem_url == "On":
-                    file_name = remove_urls(file_name)
-
-                # Apply mention removal if enabled
-                if rem_mention == "On":
-                    file_name = remove_mentions(file_name)
 
                 # Process word replacements
                 for original, replacement in replace_words:
@@ -503,9 +589,7 @@ async def auto_edit_caption(bot, message):
                         duration=duration_text  # Add the duration placeholder
                     )
 
-                    # Only edit if the caption has changed
-                    if replaced_caption != message.caption:
-                        await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
+                    await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
 
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
