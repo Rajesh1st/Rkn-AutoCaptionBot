@@ -391,7 +391,6 @@ async def rem_mention(bot, message):
         await chnl_ids.insert_one({"chnl_id": chnl_id, "rem_mention": "On"})
         await message.reply("Removing mentions from media titles is now <b>ON</b>.")
 
-
 # Function to remove mentions from the title
 def remove_mentions(title):
     return re.sub(r'@\w+', '', title)
@@ -504,7 +503,9 @@ async def auto_edit_caption(bot, message):
                         duration=duration_text  # Add the duration placeholder
                     )
 
-                    await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
+                    # Only edit if the caption has changed
+                    if replaced_caption != message.caption:
+                        await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
 
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
