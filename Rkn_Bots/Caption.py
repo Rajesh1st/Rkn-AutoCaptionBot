@@ -556,12 +556,12 @@ def extract_quality(title):
     if not found_quality:
         return "Unknown"
     
-    # Return the first found quality term (assuming a title would only have one quality descriptor)
+    # Return the first found quality term
     return found_quality[0]
 
 # Function to extract quality terms (Webdl, Bluray, etc.)
 def extract_quality_term(title):
-    quality_terms = ["Webdl", "Bluray", "HDRip", "HDCAM", "DVDRip", "BluRay"]
+    quality_terms = ["WEB-DL", "WEBRip", "BluRay", "HDRip", "HDCAM", "DVDRip", "BluRay"]
     
     # Search for any of these terms in the title
     found_quality_term = [term for term in quality_terms if term in title.upper()]
@@ -662,13 +662,13 @@ async def auto_edit_caption(bot, message):
 
                 # Remove URLs from file name if enabled
                 if remove_url:
-                    file_name = re.sub(r'http[s]?://\S+', '', file_name)
+                    file_name = re.sub(r'https?://\S+', '', file_name)  # Remove all URLs starting with http or https
 
                 # Remove mentions from file name if enabled
                 if remove_mentions:
-                    file_name = re.sub(r"@\w+", "", file_name)
-
-                file_name = re.sub(r"@\w+\s*", "", file_name).replace("_", " ").replace(".", " ")
+                    file_name = re.sub(r"@\w+", "", file_name)  # Remove mentions like @username
+                    file_name = re.sub(r'\s+', ' ', file_name)  # Replace multiple spaces with a single space
+                    file_name = file_name.strip()  # Remove leading and trailing spaces
 
                 cap_dets = await chnl_ids.find_one({"chnl_id": chnl_id})
                 prefix = cap_dets.get("prefix", "")
@@ -695,8 +695,8 @@ async def auto_edit_caption(bot, message):
                 # Extract language, year, and quality from the file name
                 language = extract_language(file_name)  # Extract language from file name
                 year = extract_year(file_name)  # Extract year from file name
-                quality = extract_quality(file_name)  # Extract quality from file name
-                quality_term = extract_quality_term(file_name)  # Extract quality term (Webdl, Bluray, etc.)
+                quality = extract_quality(file_name)  # Extract quality (e.g., 1080p, 4K)
+                quality_term = extract_quality_term(file_name)  # Extract quality term (e.g., Webdl, Bluray)
 
                 # Process word replacements in the caption as well (for {file_caption})
                 caption_text = message.caption or "No caption"
@@ -741,4 +741,5 @@ async def auto_edit_caption(bot, message):
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
-    return                    
+    return
+                    
