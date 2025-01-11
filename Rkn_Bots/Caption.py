@@ -408,7 +408,14 @@ def generate_wish():
 
 @Client.on_message(filters.command("tags") & (filters.channel | filters.private))
 async def tags(bot, message):
-    await message.reply(HTML_TAGS_TEXT)
+    # Get the filename dynamically, assuming it's sent with the message
+    if message.document:
+        file_name = message.document.file_name  # Extract the filename from the document
+    else:
+        file_name = "DefaultFileName"  # If no file is sent, use a default filename
+
+    # Send the HTML_TAGS_TEXT message with {file_name} replaced by the actual filename
+    await message.reply(HTML_TAGS_TEXT.format(file_name=file_name), parse_mode="HTML")
 
 @Client.on_message(filters.command("placeholders") & (filters.channel | filters.private))
 async def list_placeholders(bot, message):
