@@ -30,13 +30,13 @@ class script(object):
 •> **/replace_word - replace multiple words with your own words.**
 •> **/del_replace_word - delete all the replace words.**
 •> **/rem_words - remove multiple words from file name.**
-•> **/del_rem_word - remove all the delete words.**
+•> **/rem_words_off - remove all the delete words.**
 •> **/rem_mention - remove all the unwanted username.**
 •> **/rem_url - remove all the unwanted urls.**
-•> **/set_preflix - set your prefix.**
+•> **/set_prefix - set your prefix.**
 •> **/set_suffix - set your suffix.**
-•> **/del_preflix - delete your prefix.**
-•> **/del_suffix - delete your suffix.**
+•> **/clear_prefix - delete your prefix.**
+•> **/clear_suffix - delete your suffix.**
 </blockquote>"""
 
     # Updated Caption Button Text
@@ -69,9 +69,9 @@ class script(object):
     REMOVE_WORD_BUTTON_TEXT = """
 <b>ʏᴏᴜ ᴀʀᴇ ɴᴏᴡ ᴀʙʟᴇ ᴛᴏ ʀᴇᴍᴏᴠᴇ sᴏᴍᴇ ᴘᴀʀᴛɪᴄᴜʟᴀʀ ᴡᴏʀᴅ ғʀᴏᴍ ғɪʟᴇɴᴀᴍᴇ ʙʏ ᴜsɪɴɢ ғᴏʟʟᴏᴡɪɴɢ :- 
 
-•> ``/rem_words Tᴇsᴛ Mᴋᴠ``
+•> `/rem_words Tᴇsᴛ Mᴋᴠ`
 
-•> ``/del_rem_word - ʀᴇᴍᴏᴠᴇ ᴀʟʟ ᴛʜᴇ ᴅᴇʟᴇᴛᴇ ᴡᴏʀᴅs.``
+•> `/rem_words_off` - ʀᴇᴍᴏᴠᴇ ᴀʟʟ ᴛʜᴇ ᴅᴇʟᴇᴛᴇ ᴡᴏʀᴅs.
 
 ɴᴏᴛᴇ : sᴇᴘʀᴀᴛᴇ ᴡᴏʀᴅs ʙʏ ᴜsɪɴɢ sᴘᴀᴄᴇ</b>
     """
@@ -90,32 +90,35 @@ class script(object):
     # Updated Caption Button Text
     HTML_TAG_OR_FONTS_BUTTON_TEXT = """<b><u>🔰 ᴀʙᴏᴜᴛ ᴄᴀᴘᴛɪᴏɴ ғᴏɴᴛ</u>
 
-➢ Bold Text
-☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
+➢ ʙᴏʟᴅ ᴛᴇxᴛ
+☞ <code>&lt;b&gt;{file_name}&lt;/b&gt;</code>
 
-➢ Spoiler Text
-☞ <code>&lt;spoiler&gt;{filename}&lt;/spoiler&gt;</code>
+➢ sᴘᴏɪʟᴇʀ ᴛᴇxᴛ
+☞ <code>&lt;spoiler&gt;{file_name}&lt;/spoiler&gt;</code>
 
-➢ Block Quote Text
-☞ <code>&lt;blockquote&gt;{filename}&lt;/blockquote&gt;</code>
+➢ ʙʟᴏᴄᴋǫᴜᴏᴛᴇ ᴛᴇxᴛ
+☞ <code>&lt;blockquote&gt;{file_name}&lt;/blockquote&gt;</code>
+
+➢ ʙʟᴏᴄᴋǫᴜᴏᴛᴇ ᴇxᴘᴇɴᴅᴀʙʟᴇ ᴛᴇxᴛ
+☞ <code>&lt;blockquote expendable&gt;{file_name}&lt;/blockquote&gt;</code>
 
 ➢ Italic Text
-☞ <code>&lt;i&gt;{filename}&lt;/i&gt;</code>
+☞ <code>&lt;i&gt;{file_name}&lt;/i&gt;</code>
 
 ➢ Underline Text
-☞ <code>&lt;u&gt;{filename}&lt;/u&gt;</code>
+☞ <code>&lt;u&gt;{file_name}&lt;/u&gt;</code>
 
 ➢ Strike Text
-☞ <code>&lt;s&gt;{filename}&lt;/s&gt;</code>
+☞ <code>&lt;s&gt;{file_name}&lt;/s&gt;</code>
 
 ➢ Mono Text
-☞ <code>&lt;code&gt;{filename}&lt;/code&gt;</code>
+☞ <code>&lt;code&gt;{file_name}&lt;/code&gt;</code>
 
 ➢ Pre Text
-☞ <code>&lt;pre&gt;{filename}&lt;/pre&gt;</code>
+☞ <code>&lt;pre&gt;{file_name}&lt;/pre&gt;</code>
 
 ➢ Hyperlink Text
-☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{filename}&lt;/a&gt;</code></b>
+☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{file_name}&lt;/a&gt;</code></b>
     """
     
     # Updated Caption Button Text
@@ -138,7 +141,7 @@ class script(object):
 
 ᴜsᴇ » `/set_preflix [@Rxbotz]`
 
-`/del_preflix` ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴛʜᴇ ᴘʀᴇғʟɪx.</b>
+`/clear_prefix` ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴛʜᴇ ᴘʀᴇғʟɪx.</b>
     """
 
     # Updated Caption Button Text
@@ -147,36 +150,36 @@ class script(object):
 
 ᴜsᴇ » `/set_suffix [@RxBotz]`
 
-`/del_suffix` - ᴛᴏ ᴅᴇʟᴇʟᴛᴇ ᴀʟʟ sᴜғғɪx.</b>
+`/clear_suffix` - ᴛᴏ ᴅᴇʟᴇʟᴛᴇ ᴀʟʟ sᴜғғɪx.</b>
     """
 
     HTML_TAGS_TEXT = """🔰 Use these HTML tags
 ➢ Bold Text
-☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
+☞ <code>&lt;b&gt;{file_name}&lt;/b&gt;</code>
 
 ➢ Spoiler Text
-☞ <code>&lt;spoiler&gt;{filename}&lt;/spoiler&gt;</code>
+☞ <code>&lt;spoiler&gt;{file_name}&lt;/spoiler&gt;</code>
 
 ➢ Block Quote Text
-☞ <code>&lt;blockquote&gt;{filename}&lt;/blockquote&gt;</code>
+☞ <code>&lt;blockquote&gt;{file_name}&lt;/blockquote&gt;</code>
 
 ➢ Italic Text
-☞ <code>&lt;i&gt;{filename}&lt;/i&gt;</code>
+☞ <code>&lt;i&gt;{file_name}&lt;/i&gt;</code>
 
 ➢ Underline Text
-☞ <code>&lt;u&gt;{filename}&lt;/u&gt;</code>
+☞ <code>&lt;u&gt;{file_name}&lt;/u&gt;</code>
 
 ➢ Strike Text
-☞ <code>&lt;s&gt;{filename}&lt;/s&gt;</code>
+☞ <code>&lt;s&gt;{file_name}&lt;/s&gt;</code>
 
 ➢ Mono Text
-☞ <code>&lt;code&gt;{filename}&lt;/code&gt;</code>
+☞ <code>&lt;code&gt;{file_name}&lt;/code&gt;</code>
 
 ➢ Pre Text
-☞ <code>&lt;pre&gt;{filename}&lt;/pre&gt;</code>
+☞ <code>&lt;pre&gt;{file_name}&lt;/pre&gt;</code>
 
 ➢ Hyperlink Text
-☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{filename}&lt;/a&gt;</code>"""
+☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{file_name}&lt;/a&gt;</code>"""
 
     PLACEHOLDERS_TEXT = """
 <b>Available Caption Placeholders:</b>
