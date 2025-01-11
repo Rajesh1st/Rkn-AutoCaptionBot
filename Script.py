@@ -77,16 +77,46 @@ class script(object):
     """
 
     # Updated Caption Button Text
-    REPLACE_WORD_BUTTON = """
+    REPLACE_WORD_BUTTON_TEXT = """
 <b>ʀᴇᴘʟᴀᴄᴇ ᴛʜᴇ ᴜɴᴡᴀɴᴛᴇᴅ ᴡᴏʀᴅ ᴡɪᴛʜ ʏᴏᴜʀ ᴏᴡɴ ᴡᴏʀᴅs 
 
-ᴜsᴇs - ``/replace_words [oʀɪɢɪɴᴀʟ_ᴡᴏʀᴅ] (ʀᴇᴘʟᴀᴄᴇ_ᴡᴏʀᴅ), [oʀɪɢɪɴᴀʟ_ᴡᴏʀᴅ_2] (ʀᴇᴘʟᴀᴄᴇ_ᴡᴏʀᴅ_2)``
+ᴜsᴇs - ``/replace_words ᴏʟᴅᴡᴏʀᴅ1 ɴᴇᴡᴡᴏʀᴅ ᴏʟᴅᴡᴏʀᴅ2 ɴᴇᴡᴡᴏʀᴅ2``
 
 ``/del_replace_word - ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴛʜᴇ ʀᴇᴘʟᴀᴄᴇ ᴡᴏʀᴅ.``
 
 ɴᴏᴛᴇ - ʏᴏᴜ ᴄᴀɴ ᴜsᴇ ᴍᴜʟᴛɪᴘʟᴇ ᴡᴏʀᴅs ʙʏ ᴜsɪɴɢ ᴀʙᴏᴠᴇ ᴍᴇᴛʜᴏᴅ.</b>
     """
     
+    # Updated Caption Button Text
+    HTML_TAG_OR_FONTS_BUTTON_TEXT = """<b>🔰 ᴀʙᴏᴜᴛ ᴄᴀᴘᴛɪᴏɴ ғᴏɴᴛ
+➢ Bold Text
+☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
+
+➢ Spoiler Text
+☞ <code>&lt;spoiler&gt;{filename}&lt;/spoiler&gt;</code>
+
+➢ Block Quote Text
+☞ <code>&lt;blockquote&gt;{filename}&lt;/blockquote&gt;</code>
+
+➢ Italic Text
+☞ <code>&lt;i&gt;{filename}&lt;/i&gt;</code>
+
+➢ Underline Text
+☞ <code>&lt;u&gt;{filename}&lt;/u&gt;</code>
+
+➢ Strike Text
+☞ <code>&lt;s&gt;{filename}&lt;/s&gt;</code>
+
+➢ Mono Text
+☞ <code>&lt;code&gt;{filename}&lt;/code&gt;</code>
+
+➢ Pre Text
+☞ <code>&lt;pre&gt;{filename}&lt;/pre&gt;</code>
+
+➢ Hyperlink Text
+☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{filename}&lt;/a&gt;</code></b>
+    """
+
     HTML_TAGS_TEXT = """🔰 Use these HTML tags
 ➢ Bold Text
 ☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
