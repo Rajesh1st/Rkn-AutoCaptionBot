@@ -89,8 +89,8 @@ async def start_cmd(bot, message):
         InlineKeyboardButton('Hᴇʟᴘ', callback_data='help_button'),
         InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about_button')
     ], [
-        InlineKeyboardButton("🌐 Uᴘᴅᴀᴛᴇ", url=f"https://t.me/Silicon_Bot_Update"),
-        InlineKeyboardButton("📜 Sᴜᴘᴘᴏʀᴛ", url=r"https://t.me/Silicon_Botz")
+        InlineKeyboardButton("🌐 Uᴘᴅᴀᴛᴇ", url=f"https://t.me/RxBotz"),
+        InlineKeyboardButton("📜 Sᴜᴘᴘᴏʀᴛ", url=r"https://t.me/+zb9_Za9m2kI4NzM1")
     ]])
  
     )
@@ -183,6 +183,58 @@ async def html_tag_or_fonts_callback(bot, callback_query):
             ]
         ])
         )
+
+
+@Client.on_callback_query(filters.regex('reset_button'))
+async def reset_button_callback(bot, callback_query):
+    await callback_query.message.edit_text(
+        script.RESET_BUTTON_TEXT,
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')
+            ]
+        ])
+    )
+
+
+@Client.on_callback_query(filters.regex('detail_button'))
+async def detail_button_callback(bot, callback_query):
+    await callback_query.message.edit_text(
+        script.DETAIL_BUTTON_TEXT,
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')
+            ]
+        ])
+    )
+
+
+@Client.on_callback_query(filters.regex('suffix_button'))
+async def suffix_button_callback(bot, callback_query):
+    await callback_query.message.edit_text(
+        script.SUFFIX_BUTTON_TEXT,
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')
+            ]
+        ])
+    )
+
+
+@Client.on_callback_query(filters.regex('prefix_button'))
+async def prefix_button_callback(bot, callback_query):
+    await callback_query.message.edit_text(
+        script.PREFIX_BUTTON_TEXT,
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')
+            ]
+        ])
+    )
     
 # Handle the "ABOUT" button callback
 @Client.on_callback_query(filters.regex('about_button'))
@@ -214,8 +266,8 @@ async def back_to_start_callback(bot, callback_query):
             InlineKeyboardButton('Hᴇʟᴘ', callback_data='help_button'),
             InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about_button')
         ], [
-            InlineKeyboardButton("🌐 Uᴘᴅᴀᴛᴇ", url=f"https://t.me/Silicon_Bot_Update"),
-            InlineKeyboardButton("📜 Sᴜᴘᴘᴏʀᴛ", url="https://t.me/Silicon_Botz")
+            InlineKeyboardButton("🌐 Uᴘᴅᴀᴛᴇ", url=f"https://t.me/RxBotz"),
+            InlineKeyboardButton("📜 Sᴜᴘᴘᴏʀᴛ", url="https://t.me/+zb9_Za9m2kI4NzM1")
         ]])
     )    
 
