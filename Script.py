@@ -88,7 +88,8 @@ class script(object):
     """
     
     # Updated Caption Button Text
-    HTML_TAG_OR_FONTS_BUTTON_TEXT = """<b>🔰 ᴀʙᴏᴜᴛ ᴄᴀᴘᴛɪᴏɴ ғᴏɴᴛ
+    HTML_TAG_OR_FONTS_BUTTON_TEXT = """<b><u>🔰 ᴀʙᴏᴜᴛ ᴄᴀᴘᴛɪᴏɴ ғᴏɴᴛ</u>
+
 ➢ Bold Text
 ☞ <code>&lt;b&gt;{filename}&lt;/b&gt;</code>
 
@@ -115,6 +116,38 @@ class script(object):
 
 ➢ Hyperlink Text
 ☞ <code>&lt;a href="https://t.me/RxBotz"&gt;{filename}&lt;/a&gt;</code></b>
+    """
+    
+    # Updated Caption Button Text
+    RESET_BUTTON_TEXT = """
+<b>ʀᴇsᴇᴛ ᴀʟʟ ᴄʜᴀɴɴᴇʟ sᴇᴛᴛɪɴɢ ɪɴ ᴏɴᴇ ᴄᴏᴍᴍᴀɴᴅ 
+
+ᴜsᴇs - `/Del` ᴇɴᴛᴇʀ ᴛʜɪs ᴄᴏᴍᴍᴀᴍᴅ ɪɴᴛᴏ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ʀᴇᴘʟʏ ᴛʜᴇ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ ʏᴇs.</b>
+    """
+
+    # Updated Caption Button Text
+    DETAIL_BUTTON_TEXT = """
+<b>ᴠɪᴇᴡ ᴀʟʟ ᴅᴇᴛᴀɪʟs ᴏғ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ɪɴ sɪɴɢʟᴇ ᴄᴏᴍᴍᴀɴᴅ
+
+ᴜsᴇs - `/view` ᴊᴜsᴛ sᴇɴᴛ ᴛʜɪs ᴛᴏ ᴄʜᴀɴɴᴇʟ</b>
+    """
+
+    # Updated Caption Button Text
+    PREFIX_BUTTON_TEXT = """
+<b>ʏᴏᴜ ᴄᴀɴ ᴀᴅᴅ ᴀɴʏ ᴡᴏʀᴅ ɪɴ sᴛᴀʀᴛɪɴɢ ᴏғ ғɪʟᴇ ɴᴀᴍᴇ
+
+ᴜsᴇ » `/set_preflix [@Rxbotz]`
+
+`/del_preflix` ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴛʜᴇ ᴘʀᴇғʟɪx.</b>
+    """
+
+    # Updated Caption Button Text
+    SUFFIX_BUTTON_TEXT = """
+<b>ʏᴏᴜ ᴄᴀɴ ᴀᴅᴅ ᴀɴʏ ᴡᴏʀᴅ ɪɴ ᴇɴᴅ ᴏғ ғɪʟᴇ ɴᴀᴍᴇ
+
+ᴜsᴇ » `/set_suffix [@RxBotz]`
+
+`/del_suffix` - ᴛᴏ ᴅᴇʟᴇʟᴛᴇ ᴀʟʟ sᴜғғɪx.</b>
     """
 
     HTML_TAGS_TEXT = """🔰 Use these HTML tags
