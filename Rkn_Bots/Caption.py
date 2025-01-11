@@ -561,7 +561,7 @@ def extract_quality(title):
 
 # Function to extract quality terms (Webdl, Bluray, etc.)
 def extract_quality_term(title):
-    quality_terms = ["WEB-DL", "WEBRip", "BluRay", "HDRip", "HDCAM", "DVDRip", "BluRay"]
+    quality_terms = ["WEB-DL", "WEBRip", "BluRay", "HDRip", "HDCAM", "DVDRip"]
     
     # Search for any of these terms in the title
     found_quality_term = [term for term in quality_terms if term in title.upper()]
@@ -583,7 +583,7 @@ remove_mentions = False
 async def remove_urls(bot, message):
     global remove_url
     remove_url = True
-    await message.reply("All URLs will now be removed from media titles.")
+    await message.reply("All URLs (http, https, t.me, etc.) will now be removed from media titles.")
 
 # Command to stop removing URLs from the media title
 @Client.on_message(filters.command("rem_url_off"))
@@ -597,7 +597,7 @@ async def stop_remove_urls(bot, message):
 async def remove_mentions(bot, message):
     global remove_mentions
     remove_mentions = True
-    await message.reply("All mentions will now be removed from media titles.")
+    await message.reply("All mentions (@username) will now be removed from media titles.")
 
 # Command to stop removing mentions from the media title
 @Client.on_message(filters.command("rem_mention_off"))
@@ -664,9 +664,9 @@ async def auto_edit_caption(bot, message):
                 if remove_url:
                     file_name = re.sub(r'https?://\S+', '', file_name)  # Remove all URLs starting with http or https
 
-                # Remove mentions from file name if enabled
+                # Remove mentions from file name if enabled (also removes the full word starting with @)
                 if remove_mentions:
-                    file_name = re.sub(r"@\w+", "", file_name)  # Remove mentions like @username
+                    file_name = re.sub(r"@\w+", "", file_name)  # Remove mentions (like @username)
                     file_name = re.sub(r'\s+', ' ', file_name)  # Replace multiple spaces with a single space
                     file_name = file_name.strip()  # Remove leading and trailing spaces
 
@@ -741,5 +741,4 @@ async def auto_edit_caption(bot, message):
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
-    return
-                    
+    return                   
