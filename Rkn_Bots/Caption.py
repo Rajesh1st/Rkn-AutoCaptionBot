@@ -95,7 +95,6 @@ async def start_cmd(bot, message):
  
     )
 
-# Handle the "HELP" button callback
 @Client.on_callback_query(filters.regex('help_button'))
 async def help_callback(bot, callback_query):
     await callback_query.message.edit_text(
@@ -114,7 +113,7 @@ async def help_callback(bot, callback_query):
                 InlineKeyboardButton('• ᴜʀʟ', callback_data='url_button')
             ],
             [
-                InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴘʟᴀᴄᴇ', callback_data='replace_word_button')
+                InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴘʟᴀᴄᴇ', callback_data='replace_word_button')  # Added here
             ],
             [
                 InlineKeyboardButton('• ʀᴇsᴇᴛ', callback_data='reset_button'),
@@ -133,7 +132,7 @@ async def help_callback(bot, callback_query):
         ])
     )
 
-# Handle the "CAPTION" button callback
+
 @Client.on_callback_query(filters.regex('caption_button'))
 async def caption_callback(bot, callback_query):
     await callback_query.message.edit_text(
@@ -146,9 +145,9 @@ async def caption_callback(bot, callback_query):
         ])
     )
 
-# Handle the "remove_word_button" button callback
+
 @Client.on_callback_query(filters.regex('remove_word_button'))
-async def remove_word_callback(bot, callback_query):  # Renamed function
+async def remove_word_callback(bot, callback_query):
     await callback_query.message.edit_text(
         script.REMOVE_WORD_BUTTON_TEXT,
         disable_web_page_preview=True,
@@ -158,12 +157,12 @@ async def remove_word_callback(bot, callback_query):  # Renamed function
             ]
         ])
     )
-    
-# Handle the "replace_word_button" button callback
-@Client.on_callback_query(filters.regex('replace_word_button'))
-async def remove_word_callback(bot, callback_query):  # Renamed function
+
+
+@Client.on_callback_query(filters.regex('replace_word_button'))  # This is the handler for the Replace Word button
+async def replace_word_callback(bot, callback_query):
     await callback_query.message.edit_text(
-        script.REPLACE_WORD_BUTTON,
+        script.REPLACE_WORD_BUTTON_TEXT,
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([
             [
