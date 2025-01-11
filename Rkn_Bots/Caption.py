@@ -279,26 +279,33 @@ async def replace_words(bot, message):
     chnl_id = message.chat.id
     if len(message.command) < 3:
         return await message.reply(
-            "<b>Provide the word to replace and the word to replace it with</b>\n<u>Example:</u> ⬇️\n\n<code>/replace_words oldword newword</code>"
+            "<b>Provide the words to replace and their replacements</b>\n<u>Example:</u> ⬇️\n\n<code>/replace_words oldword1 newword1 oldword2 newword2</code>"
         )
     
-    original_word, replacement_word = message.text.split(" ", 2)[1:]
+    # Split the message text to get the word pairs (after the command)
+    words = message.text.split(" ")[1:]
+    if len(words) % 2 != 0:
+        return await message.reply(
+            "<b>Please provide pairs of words: original -> replacement</b>\n<u>Example:</u> ⬇️\n\n<code>/replace_words oldword1 newword1 oldword2 newword2</code>"
+        )
+    
+    # Create a list of tuples for word replacements
+    word_pairs = [(words[i], words[i+1]) for i in range(0, len(words), 2)]
     
     # Fetch existing data from the database
     chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
     if chk_data:
         # Update word replacement mapping in the database
         replace_words = chk_data.get("replace_words", [])
-        replace_words.append((original_word, replacement_word))
+        replace_words.extend(word_pairs)  # Add new word pairs to the list
         await chnl_ids.update_one(
             {"chnl_id": chnl_id},
             {"$set": {"replace_words": replace_words}}
         )
-        return await message.reply(f"Word replacement set for this channel ✅: {original_word} -> {replacement_word}")
+        return await message.reply(f"Word replacements set for this channel ✅:\n" + "\n".join([f"{original} -> {replacement}" for original, replacement in word_pairs]))
     else:
-        await chnl_ids.insert_one({"chnl_id": chnl_id, "replace_words": [(original_word, replacement_word)]})
-        return await message.reply(f"Word replacement set for this channel ✅: {original_word} -> {replacement_word}")
-
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "replace_words": word_pairs})
+        return await message.reply(f"Word replacements set for this channel ✅:\n" + "\n".join([f"{original} -> {replacement}" for original, replacement in word_pairs]))
 
 # Command to turn off replace words
 @Client.on_message(filters.command("del_replace_word") & filters.channel)
