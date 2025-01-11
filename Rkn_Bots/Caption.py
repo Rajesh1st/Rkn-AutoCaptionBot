@@ -574,6 +574,13 @@ def extract_year(title):
     year_match = re.search(r"(\d{4})", title)
     return year_match.group(1) if year_match else "Unknown"
 
+# Setup MongoDB connection
+client = motor.motor_asyncio.AsyncIOMotorClient(os.environ.get("MONGO_URL"))
+db = client[Rkn_Bots.DB_NAME]  # Use DB_NAME from config
+
+# Collection for storing channel button data
+chnl_ids = db["channel_buttons"]  # Create a collection for channel button data
+
 @Client.on_message(filters.command("add_button"))
 async def add_button(bot, message):
     chnl_id = message.chat.id
@@ -608,7 +615,7 @@ async def add_button(bot, message):
         await message.reply(f"Button '{button_name}' updated for this channel.")
     else:
         # If channel doesn't exist, insert a new channel entry
-        await addCap(chnl_id, {"button": button_markup})
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "button": button_markup})
         await message.reply(f"Button '{button_name}' set for this channel.")
 
 @Client.on_message(filters.command("del_button"))
