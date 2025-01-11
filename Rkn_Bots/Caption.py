@@ -113,7 +113,7 @@ async def help_callback(bot, callback_query):
                 InlineKeyboardButton('• ᴜʀʟ', callback_data='url_button')
             ],
             [
-                InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴘʟᴀᴄᴇ', callback_data='replace_word_button')  # Added here
+                InlineKeyboardButton('• ᴡᴏʀᴅ ᴛᴏ ʀᴇᴘʟᴀᴄᴇ', callback_data='replace_word_button')
             ],
             [
                 InlineKeyboardButton('• ʀᴇsᴇᴛ', callback_data='reset_button'),
@@ -159,7 +159,7 @@ async def remove_word_callback(bot, callback_query):
     )
 
 
-@Client.on_callback_query(filters.regex('replace_word_button'))  # This is the handler for the Replace Word button
+@Client.on_callback_query(filters.regex('replace_word_button'))
 async def replace_word_callback(bot, callback_query):
     await callback_query.message.edit_text(
         script.REPLACE_WORD_BUTTON_TEXT,
@@ -170,6 +170,19 @@ async def replace_word_callback(bot, callback_query):
             ]
         ])
     )
+
+
+@Client.on_callback_query(filters.regex('html_tag_or_fonts_button'))
+async def html_tag_or_fonts_callback(bot, callback_query):
+    await callback_query.message.edit_text(
+        script.HTML_TAG_OR_FONTS_BUTTON_TEXT,
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')
+            ]
+        ])
+        )
     
 # Handle the "ABOUT" button callback
 @Client.on_callback_query(filters.regex('about_button'))
