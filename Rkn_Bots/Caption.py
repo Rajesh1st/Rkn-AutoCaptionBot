@@ -305,7 +305,7 @@ def extract_language(default_caption):
     language_pattern = r'\b(Hindi|English|Tamil|Telugu|Malayalam|Gujarati|Kannada|Indonesian|Danish|Urdu|Korean|Chinese|Japanese|Hin|Tam|Tel|Ben|Guj|Mal|Mar|Kan|Eng|Kor|Chi|jap)\b'  # Extend with more languages if necessary
     languages = set(re.findall(language_pattern, default_caption, re.IGNORECASE))
     if not languages:
-        return "Hindi-English"
+        return None  # Return None if no languages are found 
     return ", ".join(sorted(languages, key=str.lower))
 
 # Extract year from the caption
@@ -405,25 +405,6 @@ def generate_wish():
         return "Good Evening"
     else:
         return "Good Night"
-
-@Client.on_message(filters.command("tags") & (filters.channel | filters.private))
-async def tags(bot, message):
-    # Get the filename dynamically, assuming it's sent with the message
-    if message.document:
-        file_name = message.document.file_name  # Extract the filename from the document
-    else:
-        file_name = "DefaultFileName"  # If no file is sent, use a default filename
-
-    # Send the HTML_TAGS_TEXT message with {file_name} replaced by the actual filename
-    await message.reply(HTML_TAGS_TEXT.format(file_name=file_name), parse_mode="HTML")
-
-@Client.on_message(filters.command("placeholders") & (filters.channel | filters.private))
-async def list_placeholders(bot, message):
-    await message.reply(PLACEHOLDERS_TEXT)
-
-@Client.on_message(filters.command("Cmd") & (filters.channel | filters.private))
-async def list_commands(bot, message):
-    await message.reply(COMMAND_LIST)
 
 # Command to set words replacement (original word -> replacement word)
 @Client.on_message(filters.command("replace_words") & filters.channel)
@@ -578,8 +559,54 @@ def extract_quality(title):
     # Return the first found quality term (assuming a title would only have one quality descriptor)
     return found_quality[0]
 
-global_button = None  # Global variable to store the button
+# Function to extract quality terms (Webdl, Bluray, etc.)
+def extract_quality_term(title):
+    quality_terms = ["Webdl", "Bluray", "HDRip", "HDCAM", "DVDRip", "BluRay"]
+    
+    # Search for any of these terms in the title
+    found_quality_term = [term for term in quality_terms if term in title.upper()]
 
+    # If no quality term is found, return "Unknown"
+    if not found_quality_term:
+        return "Unknown"
+    
+    # Return the first found quality term
+    return found_quality_term[0]
+
+# Global variable to store the button and URL-related settings
+global_button = None
+remove_url = False
+remove_mentions = False
+
+# Command to remove all URLs from the media title
+@Client.on_message(filters.command("rem_url"))
+async def remove_urls(bot, message):
+    global remove_url
+    remove_url = True
+    await message.reply("All URLs will now be removed from media titles.")
+
+# Command to stop removing URLs from the media title
+@Client.on_message(filters.command("rem_url_off"))
+async def stop_remove_urls(bot, message):
+    global remove_url
+    remove_url = False
+    await message.reply("URL removal has been disabled.")
+
+# Command to remove all mentions from the media title
+@Client.on_message(filters.command("rem_mention"))
+async def remove_mentions(bot, message):
+    global remove_mentions
+    remove_mentions = True
+    await message.reply("All mentions will now be removed from media titles.")
+
+# Command to stop removing mentions from the media title
+@Client.on_message(filters.command("rem_mention_off"))
+async def stop_remove_mentions(bot, message):
+    global remove_mentions
+    remove_mentions = False
+    await message.reply("Mention removal has been disabled.")
+
+# Command to add a button with URL
 @Client.on_message(filters.command("add_button"))
 async def add_button(bot, message):
     global global_button
@@ -607,20 +634,11 @@ async def add_button(bot, message):
     
     await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
 
-@Client.on_message(filters.channel)
-async def auto_edit_caption(bot, message):
-    global global_button  # Use the global button
-    
-    if message.media:
-        # Apply the button to the media message
-        if global_button:
-            await message.edit(reply_markup=global_button)
-
 # Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
-    global global_button  # Use the global button
-
+    global global_button, remove_url, remove_mentions  # Use the global button
+    
     chnl_id = message.chat.id
     if message.media:
         for file_type in ("video", "audio", "document", "voice"):
@@ -641,6 +659,14 @@ async def auto_edit_caption(bot, message):
                     file_size_text = f"{file_size / 1024**2:.2f} MB"
                 else:
                     file_size_text = f"{file_size / 1024**3:.2f} GB"
+
+                # Remove URLs from file name if enabled
+                if remove_url:
+                    file_name = re.sub(r'http[s]?://\S+', '', file_name)
+
+                # Remove mentions from file name if enabled
+                if remove_mentions:
+                    file_name = re.sub(r"@\w+", "", file_name)
 
                 file_name = re.sub(r"@\w+\s*", "", file_name).replace("_", " ").replace(".", " ")
 
@@ -670,6 +696,7 @@ async def auto_edit_caption(bot, message):
                 language = extract_language(file_name)  # Extract language from file name
                 year = extract_year(file_name)  # Extract year from file name
                 quality = extract_quality(file_name)  # Extract quality from file name
+                quality_term = extract_quality_term(file_name)  # Extract quality term (Webdl, Bluray, etc.)
 
                 # Process word replacements in the caption as well (for {file_caption})
                 caption_text = message.caption or "No caption"
@@ -703,6 +730,7 @@ async def auto_edit_caption(bot, message):
                         language=language,
                         year=year,
                         quality=quality,  # Include quality
+                        quality_term=quality_term,  # Include quality term (Webdl, Bluray)
                         wish=wish,
                         subtitles=subtitles,  # Include subtitles (ESub or MSub)
                         duration=duration_text  # Add the duration placeholder
@@ -713,4 +741,4 @@ async def auto_edit_caption(bot, message):
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
-    return
+    return                    
