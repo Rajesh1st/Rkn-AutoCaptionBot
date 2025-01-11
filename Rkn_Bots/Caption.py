@@ -548,7 +548,7 @@ def format_duration(duration_seconds):
 def extract_quality(title):
     # Define possible quality numbers and terms
     quality_numbers = ["480p", "720p", "1080p", "1440p", "2K", "4K", "8K"]
-    quality_terms = ["Blu-ray", "WEB-DL", "HDRip", "DVDRip", "CAM", "SD", "HD", "HDR"]
+    quality_terms = ["Blu-ray", "WEB-DL", "HDRip", "DVDRip", "CAM", "SD", "HD", "HDR", "Bluray", "BluRay", "bluray", "bluRay", "WEBDL", "Webdl", "WEBRip", "WebRip", "CAMRIP", "HDTS"]
 
     # Search for quality numbers in the title
     found_quality_number = [quality for quality in quality_numbers if quality in title]
