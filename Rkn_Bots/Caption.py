@@ -546,67 +546,26 @@ def format_duration(duration_seconds):
 
 # Function to extract quality from the media title
 def extract_quality(title):
-    # Define possible quality terms
-    quality_terms = ["480p", "720p", "1080p", "1440p", "2K", "4K", "8K", "HD", "HDR", "SD"]
-    
-    # Search for any of these terms in the title
-    found_quality = [quality for quality in quality_terms if quality in title.upper()]
+    # Define possible quality numbers and terms
+    quality_numbers = ["480p", "720p", "1080p", "1440p", "2K", "4K", "8K"]
+    quality_terms = ["Blu-ray", "WEB-DL", "HDRip", "DVDRip", "CAM", "SD", "HD", "HDR"]
 
-    # If no quality is found, return "Unknown"
-    if not found_quality:
-        return "Unknown"
-    
-    # Return the first found quality term
-    return found_quality[0]
+    # Search for quality numbers in the title
+    found_quality_number = [quality for quality in quality_numbers if quality.upper() in title.upper()]
 
-# Function to extract quality terms (Webdl, Bluray, etc.)
-def extract_quality_term(title):
-    quality_terms = ["WEB-DL", "WEBRip", "BluRay", "HDRip", "HDCAM", "DVDRip"]
-    
-    # Search for any of these terms in the title
-    found_quality_term = [term for term in quality_terms if term in title.upper()]
+    # Search for quality terms in the title
+    found_quality_terms = [term for term in quality_terms if term.upper() in title.upper()]
 
-    # If no quality term is found, return "Unknown"
-    if not found_quality_term:
-        return "Unknown"
-    
-    # Return the first found quality term
-    return found_quality_term[0]
+    # Combine the first found quality number and terms
+    quality_number = found_quality_number[0] if found_quality_number else "Unknown"
+    quality_terms_str = ", ".join(found_quality_terms) if found_quality_terms else "Unknown"
 
-# Global variable to store the button and URL-related settings
-global_button = None
-remove_url = False
-remove_mentions = False
+    # Return combined quality string
+    return f"{quality_number} ({quality_terms_str})"
 
-# Command to remove all URLs from the media title
-@Client.on_message(filters.command("rem_url"))
-async def remove_urls(bot, message):
-    global remove_url
-    remove_url = True
-    await message.reply("All URLs (http, https, t.me, etc.) will now be removed from media titles.")
 
-# Command to stop removing URLs from the media title
-@Client.on_message(filters.command("rem_url_off"))
-async def stop_remove_urls(bot, message):
-    global remove_url
-    remove_url = False
-    await message.reply("URL removal has been disabled.")
+global_button = None  # Global variable to store the button
 
-# Command to remove all mentions from the media title
-@Client.on_message(filters.command("rem_mention"))
-async def remove_mentions(bot, message):
-    global remove_mentions
-    remove_mentions = True
-    await message.reply("All mentions (@username) will now be removed from media titles.")
-
-# Command to stop removing mentions from the media title
-@Client.on_message(filters.command("rem_mention_off"))
-async def stop_remove_mentions(bot, message):
-    global remove_mentions
-    remove_mentions = False
-    await message.reply("Mention removal has been disabled.")
-
-# Command to add a button with URL
 @Client.on_message(filters.command("add_button"))
 async def add_button(bot, message):
     global global_button
@@ -634,10 +593,9 @@ async def add_button(bot, message):
     
     await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
 
-# Automatically edit captions for files by removing words, applying replacements, and adding {year}, {language}, {subtitles}, {duration}, and {quality}
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
-    global global_button, remove_url, remove_mentions  # Use the global button
+    global global_button  # Use the global button
     
     chnl_id = message.chat.id
     if message.media:
@@ -660,15 +618,7 @@ async def auto_edit_caption(bot, message):
                 else:
                     file_size_text = f"{file_size / 1024**3:.2f} GB"
 
-                # Remove URLs from file name if enabled
-                if remove_url:
-                    file_name = re.sub(r'https?://\S+', '', file_name)  # Remove all URLs starting with http or https
-
-                # Remove mentions from file name if enabled (also removes the full word starting with @)
-                if remove_mentions:
-                    file_name = re.sub(r"@\w+", "", file_name)  # Remove mentions (like @username)
-                    file_name = re.sub(r'\s+', ' ', file_name)  # Replace multiple spaces with a single space
-                    file_name = file_name.strip()  # Remove leading and trailing spaces
+                file_name = re.sub(r"@\w+\s*", "", file_name).replace("_", " ").replace(".", " ")
 
                 cap_dets = await chnl_ids.find_one({"chnl_id": chnl_id})
                 prefix = cap_dets.get("prefix", "")
@@ -695,8 +645,7 @@ async def auto_edit_caption(bot, message):
                 # Extract language, year, and quality from the file name
                 language = extract_language(file_name)  # Extract language from file name
                 year = extract_year(file_name)  # Extract year from file name
-                quality = extract_quality(file_name)  # Extract quality (e.g., 1080p, 4K)
-                quality_term = extract_quality_term(file_name)  # Extract quality term (e.g., Webdl, Bluray)
+                quality = extract_quality(file_name)  # Extract quality from file name
 
                 # Process word replacements in the caption as well (for {file_caption})
                 caption_text = message.caption or "No caption"
@@ -730,7 +679,6 @@ async def auto_edit_caption(bot, message):
                         language=language,
                         year=year,
                         quality=quality,  # Include quality
-                        quality_term=quality_term,  # Include quality term (Webdl, Bluray)
                         wish=wish,
                         subtitles=subtitles,  # Include subtitles (ESub or MSub)
                         duration=duration_text  # Add the duration placeholder
@@ -741,4 +689,4 @@ async def auto_edit_caption(bot, message):
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
-    return                   
+    return
