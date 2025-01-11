@@ -574,34 +574,76 @@ def extract_year(title):
     year_match = re.search(r"(\d{4})", title)
     return year_match.group(1) if year_match else "Unknown"
 
-global_button = None  # Global variable to store the button
-
 @Client.on_message(filters.command("add_button"))
 async def add_button(bot, message):
-    global global_button
-    
-    # Get the command arguments (button name and URL)
+    chnl_id = message.chat.id
     command_args = message.text.split(" ", 2)
-    
+
     # If there are not enough arguments, ask for the correct format
     if len(command_args) < 3:
         await message.reply("Please provide the button title and URL. Example: /add_button [testing] [https://t.me/RxBotz]")
         return
-    
+
     # Extract button name and URL from the arguments
     button_name = command_args[1].strip("[]")  # Extract the button name without brackets
     button_url = command_args[2].strip("[]")  # Remove any spaces around the URL
-    
+
     # Validate the URL format
     if not re.match(r'^https?://', button_url):
         await message.reply("Invalid URL. Please provide a valid URL starting with 'http://' or 'https://'.")
         return
-    
+
     # Create the inline keyboard button
     button = InlineKeyboardButton(button_name, url=button_url)
-    global_button = InlineKeyboardMarkup([[button]])  # Store the button globally
-    
-    await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
+    button_markup = InlineKeyboardMarkup([[button]])
+
+    # Store the button for the specific channel in the database
+    existing_channel = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if existing_channel:
+        # If channel already exists, update the button
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$set": {"button": button_markup}}
+        )
+        await message.reply(f"Button '{button_name}' updated for this channel.")
+    else:
+        # If channel doesn't exist, insert a new channel entry
+        await addCap(chnl_id, {"button": button_markup})
+        await message.reply(f"Button '{button_name}' set for this channel.")
+
+@Client.on_message(filters.command("del_button"))
+async def del_button(bot, message):
+    chnl_id = message.chat.id
+
+    # Delete the button for this channel from the database
+    existing_channel = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if existing_channel and "button" in existing_channel:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$unset": {"button": ""}}
+        )
+        await message.reply("Button removed from this channel.")
+    else:
+        await message.reply("No button found for this channel.")
+
+@Client.on_message(filters.channel)
+async def auto_edit_caption(bot, message):
+    chnl_id = message.chat.id
+
+    # Fetch the channel's button from the database
+    channel_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if not channel_data or "button" not in channel_data:
+        return  # No button set for this channel, so we don't add any button
+
+    button_markup = channel_data["button"]
+
+    if message.media:
+        file_name = message.caption or "No caption"
+        
+        # Apply any other modifications to the caption (you can add any additional logic here)
+
+        # Send the edited message with the specific channel button
+        await message.edit(file_name, reply_markup=button_markup)
 
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
@@ -693,8 +735,6 @@ async def auto_edit_caption(bot, message):
                         subtitles=subtitles,  # Include subtitles (ESub or MSub)
                         duration=duration_text  # Add the duration placeholder
                     )
-
-                    await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
 
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
