@@ -313,6 +313,87 @@ def extract_year(default_caption):
     match = re.search(r'\b(19\d{2}|20\d{2})\b', default_caption)
     return match.group(1) if match else None
 
+#Command to set prefix in caption
+@Client.on_message(filters.command("set_prefix") & filters.channel)
+async def set_prefix(bot, message):
+    chnl_id = message.chat.id
+    
+    if len(message.command) < 2:
+        return await message.reply("<b>Provide a prefix to set</b>\n<u>Example:</u> ⬇️\n\n<code>/set_prefix @rxbotz~</code>")
+    
+    prefix = message.text.split(" ", 1)[1]
+    
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if chk_data:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$set": {"prefix": prefix}}
+        )
+        return await message.reply(f"Prefix set for this channel ✅: {prefix}")
+    else:
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "prefix": prefix})
+        return await message.reply(f"Prefix set for this channel ✅: {prefix}")
+
+
+# Command to clear prefix from caption
+@Client.on_message(filters.command("clear_prefix") & filters.channel)
+async def clear_prefix(bot, message):
+    chnl_id = message.chat.id
+    
+    try:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$unset": {"prefix": ""}}
+        )
+        return await message.reply("Prefix has been cleared for this channel.")
+    except Exception as e:
+        rkn = await message.reply(f"Error: {e}")
+        await asyncio.sleep(5)
+        await rkn.delete()
+
+
+# Command to set suffix in caption
+@Client.on_message(filters.command("set_suffix") & filters.channel)
+async def set_suffix(bot, message):
+    chnl_id = message.chat.id
+    
+    # Ensure the user has provided a suffix
+    if len(message.command) < 2:
+        return await message.reply("<b>Provide a suffix to set</b>\n<u>Example:</u> ⬇️\n\n<code>/set_suffix ~@rxbotz</code>")
+    
+    # Extract suffix from the message
+    suffix = message.text.split(" ", 1)[1]
+    
+    # Save or update the suffix in the database
+    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
+    if chk_data:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$set": {"suffix": suffix}}
+        )
+        return await message.reply(f"Suffix set for this channel ✅: {suffix}")
+    else:
+        await chnl_ids.insert_one({"chnl_id": chnl_id, "suffix": suffix})
+        return await message.reply(f"Suffix set for this channel ✅: {suffix}")
+
+
+# Command to clear suffix from caption
+@Client.on_message(filters.command("clear_suffix") & filters.channel)
+async def clear_suffix(bot, message):
+    chnl_id = message.chat.id
+    
+    # Remove the suffix setting from the database
+    try:
+        await chnl_ids.update_one(
+            {"chnl_id": chnl_id},
+            {"$unset": {"suffix": ""}}
+        )
+        return await message.reply("Suffix has been cleared for this channel.")
+    except Exception as e:
+        rkn = await message.reply(f"Error: {e}")
+        await asyncio.sleep(5)
+        await rkn.delete()
+        
 # Generate greetings based on the current time
 def generate_wish():
     current_hour = datetime.now().hour
