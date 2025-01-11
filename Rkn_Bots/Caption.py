@@ -159,6 +159,19 @@ async def remove_word_callback(bot, callback_query):  # Renamed function
         ])
     )
     
+# Handle the "replace_word_button" button callback
+@Client.on_callback_query(filters.regex('replace_word_button'))
+async def remove_word_callback(bot, callback_query):  # Renamed function
+    await callback_query.message.edit_text(
+        script.REPLACE_WORD_BUTTON,
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton('🔙 Back to Help', callback_data='help_button')
+            ]
+        ])
+    )
+    
 # Handle the "ABOUT" button callback
 @Client.on_callback_query(filters.regex('about_button'))
 async def about_callback(bot, callback_query):
@@ -303,57 +316,7 @@ async def del_replace_word(bot, message):
         await asyncio.sleep(5)
         await rkn.delete()
 
-# Command to toggle URL removal in captions
-@client.on_message(filters.command("rm_url") & filters.channel)
-async def remove_url(bot, message):
-    chnl_id = message.chat.id
-    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
-    
-    if chk_data:
-        # Toggle the 'rm_url' setting (on/off)
-        rm_url_status = chk_data.get("rm_url", False)
-        
-        if rm_url_status:
-            # If it's already enabled, turn it off
-            updated_caption = chk_data.get("caption", "")
-            updated_caption = re.sub(r'http[s]?://\S+', '', updated_caption)  # Remove URLs
-            
-            # Disable the feature
-            await chnl_ids.update_one({"chnl_id": chnl_id}, {"$set": {"rm_url": False, "caption": updated_caption}})
-            await message.reply("URLs have been removed from the caption. URL removal is now <b>OFF</b>.")
-        else:
-            # If it's not enabled, turn it on
-            await chnl_ids.update_one({"chnl_id": chnl_id}, {"$set": {"rm_url": True}})
-            await message.reply("URL removal is now <b>ON</b>.")
-    else:
-        await message.reply("No caption data found for this channel.")
-
-# Command to toggle mention removal in captions
-@client.on_message(filters.command("rm_metion") & filters.channel)
-async def remove_mentions(bot, message):
-    chnl_id = message.chat.id
-    chk_data = await chnl_ids.find_one({"chnl_id": chnl_id})
-    
-    if chk_data:
-        # Toggle the 'rm_metion' setting (on/off)
-        rm_metion_status = chk_data.get("rm_metion", False)
-        
-        if rm_metion_status:
-            # If it's already enabled, turn it off
-            updated_caption = chk_data.get("caption", "")
-            updated_caption = re.sub(r'@\w+', '', updated_caption)  # Remove mentions
-            
-            # Disable the feature
-            await chnl_ids.update_one({"chnl_id": chnl_id}, {"$set": {"rm_metion": False, "caption": updated_caption}})
-            await message.reply("Mentions have been removed from the caption. Mention removal is now <b>OFF</b>.")
-        else:
-            # If it's not enabled, turn it on
-            await chnl_ids.update_one({"chnl_id": chnl_id}, {"$set": {"rm_metion": True}})
-            await message.reply("Mention removal is now <b>ON</b>.")
-    else:
-        await message.reply("No caption data found for this channel.")
-
-# Command to view current caption settings
+    # Command to view current caption settings
 @Client.on_message(filters.command("view") & filters.channel)
 async def view_caption(bot, message):
     chnl_id = message.chat.id
@@ -365,8 +328,6 @@ async def view_caption(bot, message):
         suffix = chk_data.get("suffix", "None")
         removable_words = chk_data.get("removable_words", None)
         replace_words = chk_data.get("replace_words", None)
-        rem_url = chk_data.get("rem_url", "Off")
-        rem_mention = chk_data.get("rem_mention", "Off")
         
         if removable_words:
             removable_words_text = ", ".join(removable_words)
@@ -383,13 +344,12 @@ async def view_caption(bot, message):
             f"<b>Prefix:</b> {prefix}\n"
             f"<b>Suffix:</b> {suffix}\n"
             f"<b>Removable Words:</b> {removable_words_text}\n"
-            f"<b>Replace Words:</b> {replace_words_text}\n"
-            f"<b>Remove URL:</b> {rem_url}\n"
-            f"<b>Remove Mentions:</b> {rem_mention}\n\n"
+            f"<b>Replace Words:</b> {replace_words_text}\n\n"
             f"<b>Caption Template:</b>\n{current_caption}"
         )
     else:
         return await message.reply("<b>No custom caption set. Using the default caption.</b>")
+
 
 # Command to set removable words
 @Client.on_message(filters.command("rem_words") & filters.channel)
