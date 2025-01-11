@@ -575,63 +575,46 @@ def extract_year(title):
     year_match = re.search(r"(\d{4})", title)
     return year_match.group(1) if year_match else "Unknown"
 
-# Define a dictionary to store buttons for specific channels
-chnl_ids = {}
+global_button = None  # Global variable to store the button
 
-# /add_button Command
-@Client.on_message(filters.command("add_button"))
+@Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command("add_button"))
 async def add_button(bot, message):
-    chnl_id = message.chat.id
+    global global_button
+    
+    # Get the command arguments (button name and URL)
     command_args = message.text.split(" ", 2)
-
+    
     # If there are not enough arguments, ask for the correct format
     if len(command_args) < 3:
         await message.reply("Please provide the button title and URL. Example: /add_button [testing] [https://t.me/RxBotz]")
         return
-
+    
     # Extract button name and URL from the arguments
     button_name = command_args[1].strip("[]")  # Extract the button name without brackets
     button_url = command_args[2].strip("[]")  # Remove any spaces around the URL
-
+    
     # Validate the URL format
     if not re.match(r'^https?://', button_url):
         await message.reply("Invalid URL. Please provide a valid URL starting with 'http://' or 'https://'.")
         return
-
+    
     # Create the inline keyboard button
     button = InlineKeyboardButton(button_name, url=button_url)
-    button_markup = InlineKeyboardMarkup([[button]])
+    global_button = InlineKeyboardMarkup([[button]])  # Store the button globally
+    
+    await message.reply(f"Global button '{button_name}' set. It will be applied to all media in the channel.")
 
-    # Store the button for the specific channel in the dictionary
-    chnl_ids[chnl_id] = button_markup
-
-    # Send the button to the channel
-    await message.reply(f"Button '{button_name}' added with URL: {button_url}", reply_markup=button_markup)
-
-# /del_button Command
-@Client.on_message(filters.command("del_button"))
+@Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command("del_button"))
 async def del_button(bot, message):
-    chnl_id = message.chat.id
+    global global_button
+    
+    # Remove the global button by setting it to None
+    global_button = None
+    await message.reply("Global button has been deleted and will no longer be applied to media.")
 
-    # Remove the button for the specific channel from the dictionary
-    if chnl_id in chnl_ids:
-        del chnl_ids[chnl_id]
-        await message.reply("Button removed from this channel.")
-    else:
-        await message.reply("No button found for this channel.")
-
-# Auto edit caption for any message in the channel (with button)
 @Client.on_message(filters.channel)
 async def auto_edit_caption(bot, message):
-    chnl_id = message.chat.id
-
-    # Fetch the button for this specific channel from the dictionary
-    if chnl_id in chnl_ids:
-        button_markup = chnl_ids[chnl_id]
-        await message.reply(
-            message.text,  # This will echo the message text
-            reply_markup=button_markup  # Attach the button from the dictionary
-        )
+    global global_button  # Use the global button
     
     chnl_id = message.chat.id
     if message.media:
@@ -720,7 +703,9 @@ async def auto_edit_caption(bot, message):
                         duration=duration_text  # Add the duration placeholder
                     )
 
+                    await message.edit(replaced_caption, reply_markup=global_button if global_button else None)
+
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
-    return                
+    return
