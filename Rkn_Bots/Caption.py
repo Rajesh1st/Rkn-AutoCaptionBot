@@ -13,6 +13,7 @@ import asyncio
 import os
 from datetime import datetime
 import asyncio, re, time, sys
+import motor.motor_asyncio
 from .database import total_user, getid, delete, addCap, updateCap, insert, chnl_ids, total_channels
 from pyrogram.errors import FloodWait
 
