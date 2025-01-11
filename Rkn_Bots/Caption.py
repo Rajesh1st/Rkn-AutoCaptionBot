@@ -551,18 +551,28 @@ def extract_quality(title):
     quality_terms = ["Blu-ray", "WEB-DL", "HDRip", "DVDRip", "CAM", "SD", "HD", "HDR"]
 
     # Search for quality numbers in the title
-    found_quality_number = [quality for quality in quality_numbers if quality.upper() in title.upper()]
+    found_quality_number = [quality for quality in quality_numbers if quality in title]
 
     # Search for quality terms in the title
-    found_quality_terms = [term for term in quality_terms if term.upper() in title.upper()]
+    found_quality_terms = [term for term in quality_terms if term in title]
 
     # Combine the first found quality number and terms
     quality_number = found_quality_number[0] if found_quality_number else "Unknown"
     quality_terms_str = ", ".join(found_quality_terms) if found_quality_terms else "Unknown"
 
-    # Return combined quality string
+    # Return combined quality string in the format: quality number (terms)
     return f"{quality_number} ({quality_terms_str})"
 
+# Function to extract language (dummy function for now)
+def extract_language(title):
+    # Simple placeholder function, can be modified based on actual need
+    return "Hindi" if "Hindi" in title else "English"
+
+# Function to extract year (dummy function for now)
+def extract_year(title):
+    # Look for year pattern in parentheses, e.g., (2008)
+    year_match = re.search(r"(\d{4})", title)
+    return year_match.group(1) if year_match else "Unknown"
 
 global_button = None  # Global variable to store the button
 
@@ -689,4 +699,4 @@ async def auto_edit_caption(bot, message):
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
                     continue
-    return
+    return                
