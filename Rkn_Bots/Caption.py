@@ -102,8 +102,7 @@ async def unban(client, message):
     except ValueError:
         await message.reply_text("Invalid User ID.")
 
-# Middleware to block banned users
-@Client.on_message(filters.private)
+@Client.on_message(filters.private | filters.channel)
 async def block_banned_users(client, message):
     user_id = message.from_user.id
     if await is_banned(user_id):
