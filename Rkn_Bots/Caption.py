@@ -5,74 +5,120 @@
 # Telegram Channel @RknDeveloper & @Rkn_Botz
 # Developer @RknDeveloperr
 
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client, filters, errors, types
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.errors import FloodWait
 from config import Rkn_Bots
 from Script import script
+from datetime import datetime
 import asyncio
 import os
-from datetime import datetime
-import asyncio, re, time, sys
+import re
+import sys
+import time
 import motor.motor_asyncio
-from .database import total_user, getid, delete, addCap, updateCap, insert, chnl_ids, total_channels
-from pyrogram.errors import FloodWait
+from .database import total_user, total_channels, getid, delete, addCap, updateCap, insert, chnl_ids, ban_user, unban_user, is_banned
 
+# Command to display bot stats
+@Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["rknusers"]))
+async def all_db_users_here(client, message
+
+# Command to display bot stats
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["rknusers"]))
 async def all_db_users_here(client, message):
     start_t = time.time()
     rkn = await message.reply_text("Processing...")
-    uptime = time.strftime("%Hh%Mm%Ss", time.gmtime(time.time() - client.uptime))    
+    uptime = time.strftime("%Hh%Mm%Ss", time.gmtime(time.time() - client.uptime))
     total_users = await total_user()
-    total_chnls = await total_channels()  # Get the total number of channels
+    total_chnls = await total_channels()  # Get total channels
     end_t = time.time()
     time_taken_s = (end_t - start_t) * 1000
-    await rkn.edit(text=f"**--Bot Processed--** \n\n**> 𝙼𝚢 𝚂𝚝𝚊𝚝𝚜**\n\n"
-                        "```text\n"
-                        f"‣ Bot ᴜᴘᴛɪᴍᴇ: {uptime}\n"
-                        f"‣ Bot ᴘɪɴɢ: {time_taken_s:.3f} ᴍꜱ\n"
-                        f"‣ ᴛᴏᴛᴀʟ ᴜꜱᴇʀꜱ: {total_users}\n"
-                        f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: {total_chnls}\n"
-                        "```")
-                        
+    await rkn.edit(
+        text=f"**--Bot Processed--** \n\n**> 𝙼𝚢 𝚂𝚝𝚊𝚝𝚜**\n\n"
+             "```text\n"
+             f"‣ Bot ᴜᴘᴛɪᴍᴇ: {uptime}\n"
+             f"‣ Bot ᴘɪɴɢ: {time_taken_s:.3f} ᴍꜱ\n"
+             f"‣ ᴛᴏᴛᴀʟ ᴜsᴇʀs: {total_users}\n"
+             f"‣ ᴛᴏᴛᴀʟ ᴄʜᴀɴɴᴇʟꜱ: {total_chnls}\n"
+             "```"
+    )
+
+# Command to broadcast messages
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command(["broadcast"]))
 async def broadcast(bot, message):
-    if (message.reply_to_message):
+    if message.reply_to_message:
         rkn = await message.reply_text("Bot Processing.\nI am checking all bot users.")
         all_users = await getid()
         tot = await total_user()
-        success = 0
-        failed = 0
-        deactivated = 0
-        blocked = 0
-        await rkn.edit(f"bot ʙʀᴏᴀᴅᴄᴀsᴛɪɴɢ started...")
+        success, failed, deactivated, blocked = 0, 0, 0, 0
+        await rkn.edit("bot ʙʀᴏᴀᴅᴄᴀsᴛɪɴɢ started...")
         async for user in all_users:
             try:
                 time.sleep(1)
-                await message.reply_to_message.copy(user['_id'])
+                await message.reply_to_message.copy(user["_id"])
                 success += 1
             except errors.InputUserDeactivated:
-                deactivated +=1
-                await delete({"_id": user['_id']})
+                deactivated += 1
+                await delete({"_id": user["_id"]})
             except errors.UserIsBlocked:
-                blocked +=1
-                await delete({"_id": user['_id']})
-            except Exception as e:
+                blocked += 1
+                await delete({"_id": user["_id"]})
+            except Exception:
                 failed += 1
-                await delete({"_id": user['_id']})
-                pass
-            try:
-                await rkn.edit(f"<u>ʙʀᴏᴀᴅᴄᴀsᴛ ᴘʀᴏᴄᴇssɪɴɢ</u>\n\n• ᴛᴏᴛᴀʟ ᴜsᴇʀs: {tot}\n• sᴜᴄᴄᴇssғᴜʟ: {success}\n• ʙʟᴏᴄᴋᴇᴅ ᴜsᴇʀs: {blocked}\n• ᴅᴇʟᴇᴛᴇᴅ ᴀᴄᴄᴏᴜɴᴛs: {deactivated}\n• ᴜɴsᴜᴄᴄᴇssғᴜʟ: {failed}")
-            except FloodWait as e:
-                await asyncio.sleep(t.x)
-        await rkn.edit(f"<u>ʙʀᴏᴀᴅᴄᴀsᴛ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</u>\n\n• ᴛᴏᴛᴀʟ ᴜsᴇʀs: {tot}\n• sᴜᴄᴄᴇssғᴜʟ: {success}\n• ʙʟᴏᴄᴋᴇᴅ ᴜsᴇʀs: {blocked}\n• ᴅᴇʟᴇᴛᴇᴅ ᴀᴄᴄᴏᴜɴᴛs: {deactivated}\n• ᴜɴsᴜᴄᴄᴇssғᴜʟ: {failed}")
-        
-# Restart to cancell all process 
+                await delete({"_id": user["_id"]})
+        await rkn.edit(
+            f"<u>ʙʀᴏᴀᴅᴄᴀsᴛ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</u>\n\n"
+            f"• ᴛᴏᴛᴀʟ ᴜsᴇʀs: {tot}\n"
+            f"• sᴜᴄᴄᴇssғᴜʟ: {success}\n"
+            f"• ʙʟᴏᴄᴋᴇᴅ ᴜsᴇʀs: {blocked}\n"
+            f"• ᴅᴇʟᴇᴛᴇᴅ ᴀᴄᴄᴏᴜɴᴛs: {deactivated}\n"
+            f"• ᴜɴsᴜᴄᴄᴇssғᴜʟ: {failed}"
+        )
+
+# Command to restart the bot
 @Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command("restart"))
 async def restart_bot(b, m):
-    rkn_msg = await b.send_message(text="**🔄 𝙿𝚁𝙾𝙲𝙴𝚂𝚂𝙴𝚂 𝚂𝚃𝙾𝙿𝙴𝙳. 𝙱𝙾𝚃 𝙸𝚂 𝚁𝙴𝚂𝚃𝙰𝚁𝚃𝙸𝙽𝙶...**", chat_id=m.chat.id)       
+    rkn_msg = await b.send_message(
+        text="**🔄 𝙿𝚁𝙾𝙲𝙴𝚂𝚂𝙴𝚂 𝚂𝚃𝙾𝙿𝙴ᴅ. 𝙱𝙾𝚃 𝙸𝚂 𝚁𝙴𝚂𝚃𝙰𝚁𝚃𝙸𝙽𝙶...**", 
+        chat_id=m.chat.id
+    )
     await asyncio.sleep(3)
-    await rkn_msg.edit("**✅️ 𝙱𝙾𝚃 𝙸𝚂 𝚁𝙴𝚂𝚃𝙰𝚁𝚃𝙴𝙳. 𝙽𝙾𝚆 𝚈𝙾𝚄 𝙲𝙰𝙽 𝚄𝚂𝙴 𝙼𝙴**")
+    await rkn_msg.edit("**✅️ 𝙱𝙾ᴛ 𝙸𝚂 𝚁𝙴𝚂𝚃ᴀʀᴛᴇᴅ. 𝙽ᴏᴡ ʏᴏᴜ ᴄᴀɴ ᴜsᴇ ᴍᴇ**")
     os.execl(sys.executable, sys.executable, *sys.argv)
+
+# Ban a user
+@Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command("ban"))
+async def ban(client, message):
+    if len(message.command) < 2:
+        await message.reply_text("Usage: /ban <user_id>")
+        return
+    try:
+        user_id = int(message.command[1])
+        await ban_user(user_id)
+        await message.reply_text(f"User {user_id} has been banned.")
+    except ValueError:
+        await message.reply_text("Invalid User ID.")
+
+# Unban a user
+@Client.on_message(filters.private & filters.user(Rkn_Bots.ADMIN) & filters.command("unban"))
+async def unban(client, message):
+    if len(message.command) < 2:
+        await message.reply_text("Usage: /unban <user_id>")
+        return
+    try:
+        user_id = int(message.command[1])
+        await unban_user(user_id)
+        await message.reply_text(f"User {user_id} has been unbanned.")
+    except ValueError:
+        await message.reply_text("Invalid User ID.")
+
+# Middleware to block banned users
+@Client.on_message(filters.private)
+async def block_banned_users(client, message):
+    user_id = message.from_user.id
+    if await is_banned(user_id):
+        await message.reply_text("You are banned from using this bot.")
+        return
     
 @Client.on_message(filters.command("start") & filters.private)
 async def start_cmd(bot, message):
